@@ -1,0 +1,22 @@
+<tabs>
+    <tab
+        id="@+id/tab_dashboard"
+        icon="@drawable/ic_action_android"
+        title="Dashboard" />
+    <tab
+        id="@+id/tab_upload"
+        icon="@drawable/ic_action_android"
+        title="Upload" />
+    <tab
+        id="@+id/tab_camera"
+        icon="@drawable/ic_action_android"
+        title="Camera" />
+    <tab
+        id="@+id/tab_history"
+        icon="@drawable/ic_action_android"
+        title="History" />
+    <tab
+        id="@+id/tab_settings"
+        icon="@drawable/ic_action_android"
+        title="Settings" />
+</tabs>
