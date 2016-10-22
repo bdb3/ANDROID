@@ -19,8 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void signIn(View v){
        Intent i= new Intent(MainActivity.this, Activity2.class);
-        EditText et =(EditText)findViewById(R.id.editText);
-        i.putExtra("userName", et.getText().toString());
+        //EditText et =(EditText)findViewById(R.id.editText);
+        //i.putExtra("userName", et.getText().toString());
         startActivity(i);
 
 
