@@ -1,5 +1,6 @@
 package com.example.edwin.photoarchive;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -29,7 +30,7 @@ public class Activity2 extends AppCompatActivity {
     public static final int REQUEST_CAPTURE = 1;
     ImageView resultPhoto;
     private String imageFileLocation="";
-    private static final int ACTIVITY_START_CAMERA_APP = 0;
+    private static final int ACTIVITY_START_CAMERA_APP = 1;
 
 
 
@@ -39,7 +40,7 @@ public class Activity2 extends AppCompatActivity {
         setContentView(R.layout.activity_2);
 
         //TextView name=(TextView)findViewById(R.id.textView4);
-        //name.setText("Hello "+getIntent().getExtras().getString("userName") );
+        //name.setText("Hello "+getIntent().getExtras().getString("userName"));
 
         BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar.setActiveColor("#2D67F7");
@@ -113,7 +114,12 @@ public class Activity2 extends AppCompatActivity {
             Bitmap photo = rotateImage(BitmapFactory.decodeFile(imageFileLocation));
             resultPhoto.setImageBitmap(photo);
 
+        }
+        if(requestCode == ACTIVITY_START_CAMERA_APP && resultCode == RESULT_CANCELED) {
+            File file = new File(imageFileLocation);
+            file.delete();
 
+            this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(imageFileLocation))));
         }
 
     }
@@ -166,7 +172,6 @@ public class Activity2 extends AppCompatActivity {
                 break;
             default:
         }
-
 
 
         Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true );
