@@ -16,7 +16,6 @@ public class ImageAdapter extends BaseAdapter  {
     private ArrayList<String> imgPathList;
     private TabFragment3 tf3;
 
-
     public ImageAdapter(Context context, ArrayList<String> imgPathList, TabFragment3 t) {
         this.context = context;
         this.imgPathList = imgPathList;
@@ -37,7 +36,7 @@ public class ImageAdapter extends BaseAdapter  {
 
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        ImageView imageView;
+        final ImageView imageView;
         if (convertView == null) {
             imageView = new ImageView(this.context);
             imageView.setLayoutParams(new GridView.LayoutParams(150, 150));
@@ -52,9 +51,33 @@ public class ImageAdapter extends BaseAdapter  {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tf3.setSelected(imgPathList.get(position));
+                if(tf3.getUploadBtnClicked()){
+                    if(imageView.getColorFilter() == null){
+                        tf3.addToImgViewSet(imageView);
+                        imageView.setColorFilter(Color.argb(110, 20, 197, 215));
+
+                    }
+                    else {
+                        imageView.clearColorFilter();
+                        tf3.removeFromImgViewSet(imageView);
+                    }
+
+                    if(tf3.getImgViewSetSize()<1){
+                        tf3.uploadBtnBottom.setEnabled(false);
+
+                    }
+                    else{tf3.uploadBtnBottom.setEnabled(true);
+                        //enable btn
+                    }
+
+
+                }
+
             }
         });
+
+
+
 
         return imageView;
     }
