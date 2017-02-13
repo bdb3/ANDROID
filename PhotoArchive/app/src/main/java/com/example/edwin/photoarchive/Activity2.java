@@ -25,15 +25,15 @@ public class Activity2 extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Dash"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tags"));
         tabLayout.addTab(tabLayout.newTab().setText("Camera"));
-        tabLayout.addTab(tabLayout.newTab().setText("Upload"));
         tabLayout.addTab(tabLayout.newTab().setText("History"));
         tabLayout.addTab(tabLayout.newTab().setText("Settings"));
 
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_home);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_camera);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_upload);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_upload);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_camera);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_history);
         tabLayout.getTabAt(4).setIcon(R.drawable.ic_action_settings);
 
@@ -53,6 +53,15 @@ public class Activity2 extends AppCompatActivity {
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            int position = extras.getInt("viewpager_position");
+            viewPager.setCurrentItem(position);
+        }
+
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

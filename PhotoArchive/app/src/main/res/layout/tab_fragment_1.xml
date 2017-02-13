@@ -23,10 +23,34 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload queue"
-        android:id="@+id/textView4"
-        android:layout_marginTop="30dp"
+        android:text="Tags status: up to date"
+        android:textSize="15dp"
+        android:id="@+id/textView5"
+        android:layout_marginTop="10dp"
         android:layout_below="@+id/textViewDash"
+        android:layout_alignParentStart="true"
+        android:textColor="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Required Permissions: granted"
+        android:textSize="15dp"
+        android:id="@+id/textView6"
+        android:layout_marginTop="2dp"
+        android:layout_below="@+id/textView5"
+        android:layout_alignParentStart="true"
+        android:textColor="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Photos to be uploaded"
+        android:id="@+id/textView4"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textView6"
         android:layout_alignParentStart="true"
         android:textColor="#000000" />
 

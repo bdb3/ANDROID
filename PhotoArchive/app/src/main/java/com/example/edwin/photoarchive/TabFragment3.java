@@ -1,144 +1,421 @@
 package com.example.edwin.photoarchive;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 
 public class TabFragment3 extends Fragment {
+    private String imageFileLocation="";
+    private static final int ACTIVITY_START_CAMERA_APP = 1;
     private Context context = null;
-    private GridView imageGrid;
-    private ArrayList<String> imgPathList;
-    private boolean deleteBtnClicked = false;
-    private boolean uploadBtnClicked= false;
-    private HashSet<ImageView> imgViewSet = new HashSet<ImageView>();
-    public static Button uploadBtnBottom = null;
+    GPSTracker gps;
+    private ListView ctxListView;
+    private  Button button = null;
+    private  Button buttonUpload = null;
+    SharedPreferences sharedpreferences;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-            context = this.getContext();
-            View view = inflater.inflate(R.layout.tab_fragment_3, container, false);
+        View view = inflater.inflate(R.layout.tab_fragment_3, container, false);
+        context= this.getContext();
 
-            File path = new File(Environment.getExternalStorageDirectory(), "DCIM/Camera");
-            File path2 = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
+        //camera btn
+        button = (Button) view.findViewById(R.id.button);
+
+        //list view
+
+        ctxListView = (ListView) view.findViewById(R.id.listView);
+        String[] values = new String[] { "Meeting",
+                "Permit",
+                "Project",
+                "Cell tower"
+        };
+
+        final Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
+
+        for(int i=0; i < values.length; i++){
+
+            ArrayList<String> list = new ArrayList<String>();
+
+            if(i==0){
+                list.add("How many people are in the photo?");
+                list.add("Where was the photo taken?");
+                list.add("What is the topic of the meeting?");
+
+            }
+            else if(i==1){
+                list.add("Where was the photo taken?");
+                list.add("What is the Permit Number?");
+            }
+            else if(i==2){
+                list.add("Where was the photo taken?");
+                list.add("What is the Project Number?");
+            }
+            else if(i==3){
+                list.add("Where was the photo taken?");
+                list.add("What is the company that owns this tower?");
+                list.add("How far does the signal reach?");
+
+            }
+
+            map.put(values[i], list);
+
+        }
+
+        ArrayAdapter adapter = new ArrayAdapter(context, R.layout.list_layout_1, R.id.text1, values);
+
+        ctxListView.setAdapter(adapter);
+        final Button btn1 = (Button) view.findViewById(R.id.button5);
+        final Button btn2 = (Button) view.findViewById(R.id.button6);
+        final TextView tf = (TextView) view.findViewById(R.id.textView2);
+        final ScrollView sv = (ScrollView) view.findViewById(R.id.scrollView);
+        final LinearLayout linLay = (LinearLayout) view.findViewById(R.id.linearLayout1);
+
+        ctxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,
+                                    int position, long arg3) {
+                int itemPosition     = position;
+                String  itemValue    = (String) ctxListView.getItemAtPosition(position);
+                btn1.setVisibility(View.VISIBLE);
+                btn1.setText(itemValue);
+                btn2.setVisibility(View.VISIBLE);
+                ctxListView.setVisibility(View.INVISIBLE);
+                tf.setText("Category:");
+                sv.setVisibility(View.VISIBLE);
+                linLay.setVisibility(View.VISIBLE);
+
+                ArrayList<String> attList = new ArrayList<String>(map.get(itemValue));
+
+                //questions for context hard coded for now
+
+                for(String s: attList){
+                    TextView textView = new TextView(context);
+                    textView.setText(s);
+                    linLay.addView(textView);
+                    EditText editText = new EditText(context);
+                    linLay.addView(editText);
+
+                }
+
+                ///
 
 
-            String[] fileNames = null;
-            String[] fileNames2 = null;
-
-            imageGrid = (GridView) view.findViewById(R.id.gridview);
-            imgPathList = new ArrayList<String>();
-
-            if (path2.exists()) {
-                fileNames2 = path2.list();
-
-
-             for (int i = fileNames2.length-1; i>=0; i--) {
-                  if(!fileNames2[i].equals(".nomedia")){
-                    imgPathList.add(path2 + "/" + fileNames2[i]);
-                 }
-             }
-
-             }
-
-            if (path.exists()) {
-                fileNames = path.list();
-
-                for (String s : fileNames) {
-                    if(!s.equals(".nomedia")){
-                        imgPathList.add(path + "/" + s);
+                TextView myTextView;
+                for (int i=0; i<linLay.getChildCount();i++) {
+                    View view = linLay.getChildAt(i);
+                    if (view instanceof TextView){
+                        myTextView= (TextView) view;
+                        myTextView.setTextColor(Color.BLACK);
                     }
+                }
+
+
+                final Button okBtn = new Button(context);
+                okBtn.setText("UPLOAD");
+                linLay.addView(okBtn);
+
+                okBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        for (View view : linLay.getTouchables()){
+                            if (view instanceof EditText){
+                                EditText editText = (EditText) view;
+                                editText.setEnabled(false);
+                                editText.setFocusable(false);
+                                editText.setFocusableInTouchMode(false);
+                            }
+                        }
+                        okBtn.setEnabled(false);
+
+                 /// add image path to queue list
+                        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+
+                        sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+
+                        if(!sharedpreferences.contains("pathList")){
+                            Set<String> pathSet = new HashSet<String>();
+                            pathSet.add(imageFileLocation);
+
+                            editor.putStringSet("pathList", pathSet);
+                            editor.commit();
+
+
+                        }
+                        else{
+                            sharedpreferences.getStringSet("pathList", null).add(imageFileLocation);
+                            Set<String> pathSet = new HashSet<String>(sharedpreferences.getStringSet("pathList", null));
+                            editor.remove("pathList");
+                            editor.apply();
+                            editor.putStringSet("pathList", pathSet);
+                            editor.apply();
+
+                        }
+
+
+
+                        getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(2)).attach(getFragmentManager().getFragments().get(2)).commitAllowingStateLoss();
+                        getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(0)).attach(getFragmentManager().getFragments().get(0)).commitAllowingStateLoss();
+                        viewPager.setCurrentItem(0);
+                        Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
+
+
+
+
+
+
+                        ///end of add image path to queue list
+
+                    }
+                });
+
+
+            }
+        });
+
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn1.setVisibility(View.INVISIBLE);
+                btn2.setVisibility(View.INVISIBLE);
+                ctxListView.setVisibility(View.VISIBLE);
+                tf.setText("Select a category for the image");
+
+                linLay.setVisibility(View.INVISIBLE);
+                sv.setVisibility(View.INVISIBLE);
+
+                if(((LinearLayout) linLay).getChildCount() > 0)
+                    ((LinearLayout) linLay).removeAllViews();
+
+
+
+
+            }
+        });
+
+
+        //end of list view
+
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(button.getText() == "Take another"){
+                    buttonUpload.setEnabled(false);
+                    btn2.performClick();
+                    tf.setVisibility(View.INVISIBLE);
+                    ctxListView.setVisibility(View.INVISIBLE);
+                    buttonUpload.setBackgroundColor(Color.parseColor("#adadad"));
+
+
+
+
+                }
+                if (hasCamera() ) {
+                    launchCamera(null);
                 }
 
 
             }
-            imageGrid.setAdapter(new ImageAdapter(context, imgPathList, this));
+        });
 
-             final SurfaceView sv = (SurfaceView) view.findViewById(R.id.surfaceView);
-             final Button btn1 = (Button) view.findViewById(R.id.button1);
-             uploadBtnBottom = (Button) view.findViewById(R.id.button2);
 
-             btn1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                 public void onClick(View v) {
-                    uploadBtnClicked = false;
-                    uploadBtnBottom.setEnabled(false);
-                    sv.setVisibility(View.INVISIBLE);
-                    btn1.setVisibility(View.INVISIBLE);
-                    uploadBtnBottom.setVisibility(View.INVISIBLE);
+        buttonUpload = (Button) view.findViewById(R.id.buttonUpload);
 
-                    for(ImageView iv: imgViewSet){
-                        iv.clearColorFilter();
-                    }
-                    imgViewSet.clear();
+        buttonUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tf.setVisibility(View.VISIBLE);
+                ctxListView.setVisibility(View.VISIBLE);
+                buttonUpload.setEnabled(false);
 
-                }
 
-                 });
+
+            }
+        });
 
 
 
 
-            Button button = (Button) view.findViewById(R.id.button3);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    uploadBtnClicked = true;
-                    sv.setVisibility(View.VISIBLE);
-                    btn1.setVisibility(View.VISIBLE);
-                    uploadBtnBottom.setVisibility(View.VISIBLE);
 
-                    /*
-                    AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                    alertDialog.setTitle("Photo Archive");
-                    alertDialog.setMessage("You chose " + selected);
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
-                    */
-
-                }
-            });
-
-
-            return view;
-
+        return view;
     }
-    public boolean getUploadBtnClicked(){
-        return uploadBtnClicked;
+
+
+    public boolean hasCamera() {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+    }
+
+
+    public void launchCamera(View v) {
+        gps = new GPSTracker(context);
+            Intent i = new Intent();
+            i.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+
+
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
+
+           i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            startActivityForResult(i, ACTIVITY_START_CAMERA_APP);
 
     }
 
-    public void addToImgViewSet(ImageView iv){
-        imgViewSet.add(iv);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_OK ) {
+            button.setText("Take another");
+            buttonUpload.setEnabled(true);
+            buttonUpload.setBackgroundColor(Color.GREEN);
+            getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(1)).attach(getFragmentManager().getFragments().get(1)).commitAllowingStateLoss();
+
+
+
+            //  Bitmap photo = rotateImage(BitmapFactory.decodeFile(imageFileLocation));
+
+            //exif code
+
+            /*
+            ExifInterface exif = null;
+
+            try{
+                exif= new ExifInterface(imageFileLocation);
+
+                double latitude = gps.getLatitude();
+                double longitude = gps.getLongitude();
+
+                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, GPS.convert(latitude));
+                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, GPS.latitudeRef(latitude));
+                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, GPS.convert(longitude));
+                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, GPS.longitudeRef(longitude));
+                exif.saveAttributes();
+
+                System.out.println("lat: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
+                System.out.println("lat ref: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF));
+                System.out.println("lon: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+                System.out.println("lon ref: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
+
+            }catch(IOException e){
+                e.printStackTrace();
+
+            }
+
+            //
+            //resultPhoto.setImageBitmap(photo);
+
+            */
+
+        }
+        else if(requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_CANCELED) {
+            File file = new File(imageFileLocation);
+            file.delete();
+
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(imageFileLocation))));
+        }
+        else{
+            File file = new File(imageFileLocation);
+            file.delete();
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(imageFileLocation))));
+
+        }
+
+
+
+        }
+
+
+    File createImageFile() throws IOException{
+        String timeStamp= new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime());
+        String imageFileName = "IMAGES_"+ timeStamp+ "_";
+        File dir = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
+        if(!dir.exists()){
+            dir.mkdirs();
+            File output = new File(dir, ".nomedia");
+            boolean fileCreated = output.createNewFile();
+        }
+        File image= File.createTempFile(imageFileName, ".jpg", dir);
+        imageFileLocation = image.getAbsolutePath();
+
+        return image;
     }
-    public void removeFromImgViewSet(ImageView iv){
-        imgViewSet.remove(iv);
 
+
+
+        /*
+    private Bitmap rotateImage(Bitmap bitmap){
+        ExifInterface exif = null;
+
+        try{
+            exif= new ExifInterface(imageFileLocation);
+
+        }catch(IOException e){
+            e.printStackTrace();
+
+        }
+
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+        Matrix matrix= new Matrix();
+        switch(orientation){
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            default:
+        }
+
+
+        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true );
+        return rotatedBitmap;
     }
 
-    public long getImgViewSetSize(){
-        return imgViewSet.size();
-    }
-
+*/
 
 }

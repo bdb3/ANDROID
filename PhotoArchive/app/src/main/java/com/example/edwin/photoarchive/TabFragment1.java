@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class TabFragment1 extends Fragment {
 
 
 
-        SharedPreferences sharedpreferences = getActivity().getSharedPreferences(TabFragment2.MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences sharedpreferences = getActivity().getSharedPreferences(TabFragment3.MyPREFERENCES, Context.MODE_PRIVATE);
 
         if(sharedpreferences.contains("pathList")) {
             pathSet= new ArrayList<>(sharedpreferences.getStringSet("pathList", null)) ;
@@ -53,7 +54,7 @@ public class TabFragment1 extends Fragment {
 
             for (String s: pathSet) {
                 ImageView imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(150, 150));
+                imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics())));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 Glide.with(context).load(s).into(imageView);
                 queueContainer.addView(imageView);

@@ -1,9 +1,11 @@
 package com.example.edwin.photoarchive;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +26,7 @@ public class TabFragment4 extends Fragment {
 
         final LinearLayout historyContainer = (LinearLayout) view.findViewById(R.id.historyContainer);
 
-        // image containers
+
 
         for(int i= 0; i<11; i++) {
 
@@ -36,7 +38,9 @@ public class TabFragment4 extends Fragment {
             layoutParams1.setMargins(0,15,0,0);
 
             ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams(150, 150));
+            imageView.setLayoutParams(new GridView.LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics())));
+
+
             imageView.setBackgroundColor(Color.BLUE);
             imageContainer.addView(imageView);
 
@@ -67,6 +71,9 @@ public class TabFragment4 extends Fragment {
 
 
 
+
         return view;
     }
+
+
 }

@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
     }
 
     public void signIn(View v){
@@ -22,11 +23,6 @@ public class MainActivity extends AppCompatActivity {
         //EditText et =(EditText)findViewById(R.id.editText);
         //i.putExtra("userName", et.getText().toString());
         startActivity(i);
-
-
-
-
-
 
     }
 }

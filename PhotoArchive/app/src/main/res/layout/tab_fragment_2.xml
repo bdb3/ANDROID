@@ -1,114 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView3"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/centerPoint"
-        android:text="Take Picture"
-        android:textStyle="bold"
-        android:id="@+id/button"
-        android:background="#e4dede"
-        android:layout_marginBottom="2dp"
-        android:layout_marginStart="2dp"/>
-
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:layout_height="wrap_content"
+    android:id="@+id/relativeLayout3">
 
     <TextView
-        android:id="@+id/centerPoint"
-        android:text=""
-        android:layout_width="4dip"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="2dp"/>
-
-    <Button
-        android:id="@+id/buttonUpload"
-        android:text="NEXT"
+        android:id="@+id/textViewTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/centerPoint"
-        android:enabled="false"
-        android:background="#e4dede"
-        android:layout_marginBottom="2dp"
-        android:layout_marginEnd="2dp"
-        android:textStyle="bold"
-        />
-
-    <ListView
-        android:layout_marginTop="4dp"
-        android:layout_width="wrap_content"
-        android:id="@+id/listView"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/button"
-        android:visibility="invisible"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Select a category for the image"
-        android:id="@+id/textView2"
+        android:text="Tagging"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:visibility="invisible"/>
+        android:textStyle="bold" />
 
-    <Button
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/button5"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="2dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="In-app Images"
+        android:layout_marginTop="8dp"
+        android:id="@+id/textView7"
+        android:layout_below="@+id/textViewTag"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:visibility="invisible"
-        android:background="#0d1496"
-        android:clickable="false"
-        android:textColor="#ffffff" />
+        android:textStyle="bold"
+        android:textSize="16dp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_below="@+id/textView7"
+        android:layout_marginTop="10dp"
+        android:id="@+id/horizontalScrollView" >
+
+        <LinearLayout
+            android:id="@+id/picContainer"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="110dp"
+            />
+
+    </HorizontalScrollView>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View all"
+        android:id="@+id/button2"
+        android:textStyle="bold"
+        android:layout_below="@+id/horizontalScrollView"
+         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@+id/button2"
+        android:text="Gallery Images"
+        android:layout_marginTop="5dp"
+        android:id="@+id/textView3"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"
+        android:textSize="16dp"/>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_below="@+id/textView3"
+        android:layout_marginTop="10dp"
+        android:id="@+id/horizontalScrollView2" >
+
+        <LinearLayout
+            android:id="@+id/picContainer2"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="110dp"
+           />
+
+    </HorizontalScrollView>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View all"
+        android:textStyle="bold"
+        android:id="@+id/button3"
+        android:layout_below="@+id/horizontalScrollView2"
+         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Tags:"
+        android:id="@+id/textView8"
+        android:layout_below="@+id/button3"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:textSize="16dp"/>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/textView8"
+        android:layout_marginTop="7dp"
+        android:id="@+id/horizontalScrollView3" >
+
+        <LinearLayout
+            android:id="@+id/tagsContainer"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            />
+
+    </HorizontalScrollView>
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="&#9660;"
-        android:id="@+id/button6"
-        android:layout_alignTop="@+id/button5"
-        android:layout_alignParentEnd="true"
-        android:visibility="invisible"
-        android:background="#959c96" />
-
-
-
-        <ScrollView
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/scrollView"
-            android:layout_below="@+id/button5"
-            android:layout_above="@+id/button"
-            android:visibility="invisible">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:id="@+id/linearLayout1"
+        android:text="Add tags"
+        android:textStyle="bold"
+        android:layout_below="@+id/horizontalScrollView3"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/button4"
+        android:onClick="tagsActivity"/>
+    <Button
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
-        />
-    </ScrollView>
-
+        android:text="Upload"
+        android:id="@+id/button5"
+        android:textStyle="bold"
+        android:layout_below="@+id/button4"
+        android:background="#11a21d" />
 
 </RelativeLayout>
+
+    </ScrollView>
