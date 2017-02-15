@@ -227,8 +227,6 @@ public class TabFragment3 extends Fragment {
                     ((LinearLayout) linLay).removeAllViews();
 
 
-
-
             }
         });
 
