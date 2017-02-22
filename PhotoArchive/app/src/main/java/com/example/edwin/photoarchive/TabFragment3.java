@@ -179,7 +179,6 @@ public class TabFragment3 extends Fragment {
                             editor.putStringSet("pathList", pathSet);
                             editor.commit();
 
-
                         }
                         else{
                             sharedpreferences.getStringSet("pathList", null).add(imageFileLocation);
@@ -243,9 +242,6 @@ public class TabFragment3 extends Fragment {
                     tf.setVisibility(View.INVISIBLE);
                     ctxListView.setVisibility(View.INVISIBLE);
                     buttonUpload.setBackgroundColor(Color.parseColor("#adadad"));
-
-
-
 
                 }
                 if (hasCamera() ) {
