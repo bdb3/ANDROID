@@ -1,6 +1,5 @@
 package com.example.edwin.photoarchive;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,25 +7,19 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-
 import android.view.View;
 import android.view.ViewParent;
-
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -53,7 +46,6 @@ public class TagsActivity extends AppCompatActivity {
                 "Permit",
                 "Project",
                 "Cell tower"
-
         };
 
         for(int i=0; i < values.length; i++){
@@ -152,19 +144,45 @@ public class TagsActivity extends AppCompatActivity {
 
         }
 
-        //TEST
+        sharedPreferences = getSharedPreferences(MyTagsPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-       // ((LinearLayout)linearLayoutContextContainer.getChildAt(0)).setBackgroundColor(Color.LTGRAY);
-        //((TextView)((LinearLayout)linearLayoutContextContainer.getChildAt(0)).getChildAt(0)).setEnabled(false);
+        if(sharedPreferences.contains("listOfTags")){
+            String mapString  = sharedPreferences.getString("listOfTags", null);
+
+            Map<String, Map<String, String>> outputMap = new HashMap<String, Map<String, String>>();
+            try {
+                JSONObject jsonObject2 = new JSONObject(mapString);
+                Iterator<String> keysItr = jsonObject2.keys();
+
+                while(keysItr.hasNext()) {
+                    String key = keysItr.next();
+
+                    Map<String, String> valueMap = new HashMap<String, String>();
+                    Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
+
+                    while(keysItr2.hasNext()) {
+                        String key2 = keysItr2.next();
+                        String value = (String)((JSONObject)jsonObject2.get(key)).get(key2);
+
+                        valueMap.put(key2, value);
+                    }
+
+                    outputMap.put(key, valueMap);
+                }
 
 
+            }catch(Exception e){
+                e.printStackTrace();
+
+            };
+
+            tagList =  new HashMap<String, Map<String, String>>(outputMap);
 
 
+        }
 
-
-
-
-
+        grayOutSelectedCategories();
 
         tv9 = (TextView) findViewById(R.id.textView9);
         attrList = (LinearLayout) findViewById(R.id.linearLayout1);
@@ -191,61 +209,64 @@ public class TagsActivity extends AppCompatActivity {
 
                 }
 
-                tagList.put(tv9.getText().toString(), attributesMap);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
 
+                if(!sharedPreferences.contains("listOfTags")) {
+                    tagList.put(tv9.getText().toString(), attributesMap);
 
-                // test  ////////////////////////////////////
+                    JSONObject tagListMapAsJSON = new JSONObject(tagList);
+                    String tagListMapAsJSONString   = tagListMapAsJSON.toString();
 
-                // System.out.println(tagList.toString());
+                    editor.putString("listOfTags", tagListMapAsJSONString);
+                    editor.commit();
 
-                JSONObject jsonObject = new JSONObject(tagList);
-                String jsonString = jsonObject.toString();
-                //System.out.println(jsonString);
+                    //System.out.println(sharedPreferences.getString("listOfTags", null));
+                }
 
-                 Map<String, Map<String, String>> outputMap = new HashMap<String, Map<String, String>>();
-                try {
-                    JSONObject jsonObject2 = new JSONObject(jsonString);
-                    Iterator<String> keysItr = jsonObject.keys();
+                else{
+                    String mapString  = sharedPreferences.getString("listOfTags", null);
 
-                    while(keysItr.hasNext()) {
-                        String key = keysItr.next();
+                    Map<String, Map<String, String>> outputMap = new HashMap<String, Map<String, String>>();
+                    try {
+                        JSONObject jsonObject2 = new JSONObject(mapString);
+                        Iterator<String> keysItr = jsonObject2.keys();
 
+                        while(keysItr.hasNext()) {
+                            String key = keysItr.next();
 
-                        Map<String, String> valueMap = new HashMap<String, String>();
-                        Iterator<String> keysItr2 = ((JSONObject)jsonObject.get(key)).keys();
+                            Map<String, String> valueMap = new HashMap<String, String>();
+                            Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
 
-                        while(keysItr2.hasNext()) {
-                            String key2 = keysItr2.next();
-                            String value = (String)((JSONObject)jsonObject.get(key)).get(key2);
+                            while(keysItr2.hasNext()) {
+                                String key2 = keysItr2.next();
+                                String value = (String)((JSONObject)jsonObject2.get(key)).get(key2);
 
-                            valueMap.put(key2, value);
+                                valueMap.put(key2, value);
+                            }
+
+                            outputMap.put(key, valueMap);
                         }
 
-                       // System.out.println(jsonObject.get(key));
+
+                    }catch(Exception e){
+                        e.printStackTrace();
+
+                    };
+
+                    tagList =  new HashMap<String, Map<String, String>>(outputMap);
+                    tagList.put(tv9.getText().toString(), attributesMap);
+
+                    JSONObject finalJsonObject = new JSONObject(tagList);
+
+                    editor.remove("listOfTags");
+                    editor.apply();
+                    editor.putString("listOfTags", finalJsonObject.toString() );
+                    editor.apply();
+
+                  //  System.out.println(sharedPreferences.getString("listOfTags", null));
 
 
-                        outputMap.put(key, valueMap);
-                    }
-
-
-                }catch(Exception e){
-
-                };
-
-                System.out.println(outputMap.toString());
-
-
-
-
-
-
-
-
-
-
-                ////////////////////////////////////////////////////////
-
-
+                }
 
                 attrList.setVisibility(View.INVISIBLE);
                 ok.setVisibility(View.INVISIBLE);
@@ -255,43 +276,9 @@ public class TagsActivity extends AppCompatActivity {
                 if(((LinearLayout) attrList).getChildCount() > 0)
                     ((LinearLayout) attrList).removeAllViews();
 
-
-
-                //add tags list to shared preferences
-
-               // sharedPreferences = getSharedPreferences(MyTagsPREFERENCES, Context.MODE_PRIVATE);
-               // SharedPreferences.Editor editor = sharedPreferences.edit();
-
-               //editor.putString("listOfTags", tagList.toString());
-
-              // editor.commit();
-
-
-
-
                 // gray out selected category
 
-
-
-                for(int i=0; i<linearLayoutContextContainer.getChildCount(); i++){
-                    LinearLayout row = (LinearLayout) linearLayoutContextContainer.getChildAt(i);
-                    TextView category =  (TextView) row.getChildAt(0);
-
-                    if(tagList.get(category.getText().toString()) != null){
-                        row.setBackgroundColor(Color.LTGRAY);
-
-                        ((ImageButton)row.getChildAt(1)).setVisibility(View.VISIBLE);
-                        ((ImageButton)row.getChildAt(2)).setVisibility(View.VISIBLE);
-                        category.setEnabled(false);
-
-
-                    }
-
-                }
-
-
-
-
+                grayOutSelectedCategories();
 
                 linearLayoutContextContainer.setVisibility(View.VISIBLE);
                 tv9.setText("Select a Category");
@@ -416,13 +403,19 @@ public class TagsActivity extends AppCompatActivity {
 
 
     public void grayOutSelectedCategories(){
-        Map<String, Map<String, String>> tagList = new HashMap<String, Map<String, String>>();
-        sharedPreferences = getSharedPreferences(MyTagsPREFERENCES, Context.MODE_PRIVATE);
+        for(int i=0; i<linearLayoutContextContainer.getChildCount(); i++){
+            LinearLayout row = (LinearLayout) linearLayoutContextContainer.getChildAt(i);
+            TextView category =  (TextView) row.getChildAt(0);
 
-        if(sharedPreferences.contains("listOfTags")) {
-           String mapInStringForm =  sharedPreferences.getString("listOfTags",null);
+            if(tagList.get(category.getText().toString()) != null){
+                row.setBackgroundColor(Color.LTGRAY);
+
+                ((ImageButton)row.getChildAt(1)).setVisibility(View.VISIBLE);
+                ((ImageButton)row.getChildAt(2)).setVisibility(View.VISIBLE);
+                category.setEnabled(false);
 
 
+            }
 
         }
 

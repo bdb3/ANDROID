@@ -3,6 +3,7 @@ package com.example.edwin.photoarchive;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -22,9 +23,15 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 public class TabFragment2 extends Fragment {
     private Context context = null;
@@ -161,10 +168,32 @@ public class TabFragment2 extends Fragment {
         //////////////////////////////////// ADDING TAGS /////////////////////////////////////////////////////////
 
         final LinearLayout tagsContainer = (LinearLayout) view.findViewById(R.id.tagsContainer);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+        ArrayList<String> tagNames =  new ArrayList<String>();
 
-        for(int i = 1 ; i<6; i++) {
+        if(sharedPreferences.contains("listOfTags")) {
+            String mapString = sharedPreferences.getString("listOfTags", null);
+
+            try {
+                JSONObject jsonObject2 = new JSONObject(mapString);
+                Iterator<String> keysItr = jsonObject2.keys();
+
+                while(keysItr.hasNext()) {
+
+                    tagNames.add(keysItr.next());
+                }
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+
+            };
+
+        }
+
+        for(String s: tagNames) {
             Button tag1 = new Button(context);
-            tag1.setText("Tag " + i);
+            tag1.setText(s);
             tagsContainer.addView(tag1);
             ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) tag1.getLayoutParams();
             marginParams.setMargins(0, 0, 10, 0);
