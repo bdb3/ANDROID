@@ -30,7 +30,8 @@
             android:name=".Activity2"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".TagsActivity"></activity>
+        <activity android:name=".TagsActivity" />
+        <activity android:name=".ActivityEditDeleteTags"></activity>
     </application>
 
 </manifest>

@@ -322,6 +322,7 @@ public class TagsActivity extends AppCompatActivity {
         for(String s: attList){
             TextView textView = new TextView(getApplicationContext());
             textView.setText(s);
+            textView.setTextColor(Color.BLACK);
             attrList.addView(textView);
             final EditText editText = new EditText(getApplicationContext());
 
@@ -354,37 +355,10 @@ public class TagsActivity extends AppCompatActivity {
 
         }
 
-        TextView myTextView;
-        for (int i=0; i<attrList.getChildCount();i++) {
-            View view = attrList.getChildAt(i);
-            if (view instanceof TextView){
-                myTextView= (TextView) view;
-                myTextView.setTextColor(Color.BLACK);
-            }
-        }
 
     }
 
-    public void editAttributes(View v){
 
-        ViewParent linearLayout = v.getParent();
-
-        TextView textView = (TextView) ((View) linearLayout).findViewById(R.id.text1);
-        String text = textView.getText().toString();
-
-        System.out.println("edit: " + text);
-
-    }
-
-    public void deleteCurrentTag(View v){
-        ViewParent linearLayout = v.getParent();
-
-        TextView textView = (TextView) ((View) linearLayout).findViewById(R.id.text1);
-        String text = textView.getText().toString();
-
-        System.out.println("delete: " + text);
-
-    }
 
     public boolean allAreFilledOut(){
         for (int i=0; i<attrList.getChildCount(); i++) {

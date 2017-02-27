@@ -13,6 +13,9 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +42,12 @@ public class TabFragment2 extends Fragment {
     private ArrayList<String> imgPathList;
     private ArrayList<String> imgPathList2;
     private HashSet<ImageView> imgViewSet = new HashSet<ImageView>();
+    private Menu menu;
+    private LinearLayout picContainer;
+    private LinearLayout picContainer2;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
 
         context = this.getContext();
         View view = inflater.inflate(R.layout.tab_fragment_2, container, false);
@@ -62,7 +69,7 @@ public class TabFragment2 extends Fragment {
 
         }
 
-        final LinearLayout picContainer = (LinearLayout) view.findViewById(R.id.picContainer);
+         picContainer = (LinearLayout) view.findViewById(R.id.picContainer);
 
         int counter2 = 0;
 
@@ -84,6 +91,7 @@ public class TabFragment2 extends Fragment {
                         imageView.setColorFilter(Color.argb(110, 20, 197, 215));
                         imgViewSet.add(imageView);
                         getActivity().setTitle("Selected: " + imgViewSet.size());
+                        showOption(0);
 
                     }
                     else {
@@ -92,6 +100,7 @@ public class TabFragment2 extends Fragment {
 
                         if(imgViewSet.size() == 0){
                             getActivity().setTitle("Photo Archive");
+                            hideOption(0);
 
                         }
                         else{
@@ -116,7 +125,7 @@ public class TabFragment2 extends Fragment {
 
         ///////////////////////////// IMAGES FROM GALLERY //////////////////////////////////////////////////
 
-        final LinearLayout picContainer2 = (LinearLayout) view.findViewById(R.id.picContainer2);
+        picContainer2 = (LinearLayout) view.findViewById(R.id.picContainer2);
         int counter = 0;
 
         for(int i = imgPathList.size()-1; i>=0; i--) {
@@ -137,6 +146,7 @@ public class TabFragment2 extends Fragment {
                             imageView.setColorFilter(Color.argb(110, 20, 197, 215));
                             imgViewSet.add(imageView);
                             getActivity().setTitle("Selected: " + imgViewSet.size());
+                            showOption(0);
 
                         }
                         else {
@@ -145,6 +155,7 @@ public class TabFragment2 extends Fragment {
 
                             if(imgViewSet.size() == 0){
                                 getActivity().setTitle("Photo Archive");
+                                hideOption(0);
 
                             }
                             else{
@@ -192,11 +203,21 @@ public class TabFragment2 extends Fragment {
         }
 
         for(String s: tagNames) {
-            Button tag1 = new Button(context);
+            final Button tag1 = new Button(context);
             tag1.setText(s);
             tagsContainer.addView(tag1);
             ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) tag1.getLayoutParams();
             marginParams.setMargins(0, 0, 10, 0);
+
+            tag1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i= new Intent(getActivity(), ActivityEditDeleteTags.class);
+                    i.putExtra("tag_name", tag1.getText());
+                    startActivity(i);
+
+                }
+            });
 
         }
 
@@ -216,7 +237,47 @@ public class TabFragment2 extends Fragment {
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        this.menu = menu;
+        menu.add(Menu.NONE, 0, Menu.NONE, "Cancel")
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        MenuItem item = menu.findItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                deselectAllImages();
+                return true;
+            }});
+
+
+        hideOption(0);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void deselectAllImages(){
+        for(int i=0; i<picContainer.getChildCount(); i++ ){
+            ((ImageView)picContainer.getChildAt(i)).clearColorFilter();
+
+        }
+        for(int i=0; i<picContainer2.getChildCount(); i++ ){
+            ((ImageView)picContainer2.getChildAt(i)).clearColorFilter();
+
+        }
+        imgViewSet.clear();
+        getActivity().setTitle("Photo Archive");
+        hideOption(0);
+    }
+
+    private void showOption(int id) {
+        MenuItem item = menu.findItem(id);
+        item.setVisible(true);
+    }
+
+    private void hideOption(int id) {
+        MenuItem item = menu.findItem(id);
+        item.setVisible(false);
+    }
 
 
     public static ArrayList<String> getImagesPath(Activity activity) {
