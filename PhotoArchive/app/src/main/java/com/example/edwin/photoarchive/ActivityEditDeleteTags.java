@@ -8,7 +8,11 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -28,7 +32,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_edit_delete_tags);
 
-        LinearLayout linearLayoutEditTags = (LinearLayout) findViewById(R.id.linearLayoutEditTags);
+        final LinearLayout linearLayoutEditTags = (LinearLayout) findViewById(R.id.linearLayoutEditTags);
 
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
@@ -91,7 +95,8 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
 
                 }
 
-                ImageButton deleteBtn = (ImageButton) findViewById(R.id.button13);
+                final ImageButton deleteBtn = (ImageButton) findViewById(R.id.button13);
+                final ImageButton editBtn = (ImageButton) findViewById(R.id.button12);
 
                 deleteBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -103,6 +108,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                                 .setNegativeButton(android.R.string.cancel, null)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override public void onClick(DialogInterface dialog, int which) {
+                                        System.out.println(which);
 
                                         // delete tag
                                         outputMap.remove(name);
@@ -129,6 +135,96 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                     }
                 });
 
+                editBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteBtn.setEnabled(false);
+                        deleteBtn.setColorFilter(Color.GRAY);
+                        editBtn.setEnabled(false);
+                        editBtn.setColorFilter(Color.GRAY);
+
+                        //enable EditTexts
+
+                        for(int i=0; i < linearLayoutEditTags.getChildCount(); i++){
+                            View view = linearLayoutEditTags.getChildAt(i);
+
+                            if(view instanceof EditText){
+                                ((EditText)view).setEnabled(true);
+
+                            }
+                        }
+
+                        // add cancel and ok btns
+
+                        LinearLayout okCancelBtnsContainer = new LinearLayout(getApplicationContext());
+                        okCancelBtnsContainer.setOrientation(LinearLayout.HORIZONTAL);
+                        okCancelBtnsContainer.setGravity(Gravity.CENTER);
+
+                        Button ok = new Button(getApplicationContext());
+                        ok.setText("OK");
+
+                        okCancelBtnsContainer.addView(ok);
+
+                        Button cancel = new Button(getApplicationContext());
+                        cancel.setText("Cancel");
+
+                        // cancel click evt
+
+                        cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                recreate();
+                            }
+                        });
+
+                        ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String key = name;
+                                Map<String, String> value = new HashMap<String, String>();
+
+                                for (int i=0; i<linearLayoutEditTags.getChildCount()-1; i+=2) {
+                                    View view = linearLayoutEditTags.getChildAt(i);
+                                    View view2 = linearLayoutEditTags.getChildAt(i+1);
+
+                                    value.put(((TextView) view).getText().toString(), ((EditText) view2).getText().toString() );
+
+                                }
+
+
+
+
+                                outputMap.remove(name);
+
+                                outputMap.put(key, value);
+
+                                //update shared prefs
+                                JSONObject finalJsonObject = new JSONObject(outputMap);
+
+                                editor.remove("listOfTags");
+                                editor.apply();
+                                editor.putString("listOfTags", finalJsonObject.toString() );
+                                editor.apply();
+
+                                recreate();
+                            }
+                        });
+
+
+                        okCancelBtnsContainer.addView(cancel);
+
+                        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                        layoutParams1.setMargins(0,25,0,0);
+
+                        linearLayoutEditTags.addView(okCancelBtnsContainer, layoutParams1);
+
+
+                    }
+                });
+
 
 
             }
@@ -141,6 +237,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
 
 
     }
+
 
     public void backToTab2(View v){
         Intent i= new Intent(ActivityEditDeleteTags.this, Activity2.class);

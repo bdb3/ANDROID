@@ -16,7 +16,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SurfaceView;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -30,24 +30,25 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+
 
 public class TabFragment2 extends Fragment {
     private Context context = null;
-    private GridView imageGrid;
     private ArrayList<String> imgPathList;
     private ArrayList<String> imgPathList2;
-    private HashSet<ImageView> imgViewSet = new HashSet<ImageView>();
+    private HashSet<String> imgViewSet = new HashSet<String>();
     private Menu menu;
     private LinearLayout picContainer;
     private LinearLayout picContainer2;
+    private int tagCount = 0;
+    private Button uploadBtn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
 
         context = this.getContext();
         View view = inflater.inflate(R.layout.tab_fragment_2, container, false);
@@ -55,6 +56,21 @@ public class TabFragment2 extends Fragment {
         imgPathList = new ArrayList<String>(getImagesPath(getActivity()));
         File inAppImagesPath = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
         imgPathList2 = new ArrayList<String>();
+
+         uploadBtn = (Button) view.findViewById(R.id.button5);
+
+        uploadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                for (String s : imgViewSet) {
+                    System.out.println(s);
+                }
+
+
+
+            }
+        });
 
         String[] inAppImgList = null;
 
@@ -74,6 +90,7 @@ public class TabFragment2 extends Fragment {
         int counter2 = 0;
 
         for(int i = 0; i<imgPathList2.size(); i++) {
+            final int index = i;
 
             if(counter2 == 15)
                 break;
@@ -81,6 +98,8 @@ public class TabFragment2 extends Fragment {
             final ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics())));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+
             Glide.with(context).load(imgPathList2.get(i)).into(imageView);
 
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -89,18 +108,27 @@ public class TabFragment2 extends Fragment {
 
                     if(imageView.getColorFilter() == null){
                         imageView.setColorFilter(Color.argb(110, 20, 197, 215));
-                        imgViewSet.add(imageView);
+                        imgViewSet.add(imgPathList2.get(index));
                         getActivity().setTitle("Selected: " + imgViewSet.size());
                         showOption(0);
+
+                        if(tagCount>0){
+                            //enable upload
+                            uploadBtn.setEnabled(true);
+
+                        }
 
                     }
                     else {
                         imageView.clearColorFilter();
-                        imgViewSet.remove(imageView);
+                        imgViewSet.remove(imgPathList2.get(index));
 
                         if(imgViewSet.size() == 0){
                             getActivity().setTitle("Photo Archive");
                             hideOption(0);
+
+                            //disable upload btn
+                            uploadBtn.setEnabled(false);
 
                         }
                         else{
@@ -130,6 +158,8 @@ public class TabFragment2 extends Fragment {
 
         for(int i = imgPathList.size()-1; i>=0; i--) {
 
+            final int index = i;
+
             if(counter == 15)
                 break;
 
@@ -144,18 +174,26 @@ public class TabFragment2 extends Fragment {
 
                         if(imageView.getColorFilter() == null){
                             imageView.setColorFilter(Color.argb(110, 20, 197, 215));
-                            imgViewSet.add(imageView);
+                            imgViewSet.add(imgPathList.get(index));
                             getActivity().setTitle("Selected: " + imgViewSet.size());
                             showOption(0);
+
+                            if(tagCount>0){
+                                //enable upload
+                                uploadBtn.setEnabled(true);
+
+                            }
 
                         }
                         else {
                             imageView.clearColorFilter();
-                            imgViewSet.remove(imageView);
+                            imgViewSet.remove(imgPathList.get(index));
 
                             if(imgViewSet.size() == 0){
                                 getActivity().setTitle("Photo Archive");
                                 hideOption(0);
+
+                                uploadBtn.setEnabled(false);
 
                             }
                             else{
@@ -201,6 +239,8 @@ public class TabFragment2 extends Fragment {
             };
 
         }
+
+        tagCount = tagNames.size();
 
         for(String s: tagNames) {
             final Button tag1 = new Button(context);
@@ -267,6 +307,7 @@ public class TabFragment2 extends Fragment {
         imgViewSet.clear();
         getActivity().setTitle("Photo Archive");
         hideOption(0);
+        uploadBtn.setEnabled(false);
     }
 
     private void showOption(int id) {
@@ -278,7 +319,6 @@ public class TabFragment2 extends Fragment {
         MenuItem item = menu.findItem(id);
         item.setVisible(false);
     }
-
 
     public static ArrayList<String> getImagesPath(Activity activity) {
         Uri uri;
@@ -305,6 +345,5 @@ public class TabFragment2 extends Fragment {
         return listOfAllImages;
     }
 
-
-
 }
+

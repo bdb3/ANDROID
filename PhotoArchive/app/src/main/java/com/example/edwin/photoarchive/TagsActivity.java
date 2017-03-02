@@ -121,20 +121,9 @@ public class TagsActivity extends AppCompatActivity {
             });
 
 
-            ImageButton btn1 = new ImageButton(this);
-            btn1.setImageResource(R.drawable.edit);
-            btn1.setBackgroundColor(Color.TRANSPARENT);
-            btn1.setVisibility(View.INVISIBLE);
-
-            LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            layoutParams2.setMargins(0,0,18,0);
-
-            contextRow.addView(btn1, layoutParams2);
 
             ImageButton btn2 = new ImageButton(this);
-            btn2.setImageResource(R.drawable.delete_icon);
+            btn2.setImageResource(R.drawable.ic_check);
             btn2.setBackgroundColor(Color.TRANSPARENT);
             btn2.setVisibility(View.INVISIBLE);
 
@@ -351,6 +340,7 @@ public class TagsActivity extends AppCompatActivity {
 
 
             editText.setBackgroundColor(Color.LTGRAY);
+            editText.setTextColor(Color.BLACK);
             attrList.addView(editText);
 
         }
@@ -385,7 +375,7 @@ public class TagsActivity extends AppCompatActivity {
                 row.setBackgroundColor(Color.LTGRAY);
 
                 ((ImageButton)row.getChildAt(1)).setVisibility(View.VISIBLE);
-                ((ImageButton)row.getChildAt(2)).setVisibility(View.VISIBLE);
+
                 category.setEnabled(false);
 
 

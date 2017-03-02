@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,6 +28,8 @@ import java.util.Set;
 
 public class TabFragment1 extends Fragment {
     private Context context = null;
+    private GridView imageGrid;
+    private ArrayList<String> imgPathList;
 
     private ArrayList<String> pathSet = null;
 
@@ -34,36 +38,25 @@ public class TabFragment1 extends Fragment {
         context= this.getContext();
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
 
+        imageGrid = (GridView) view.findViewById(R.id.gridview);
+        imgPathList = new ArrayList<String>();
+
+        File path2 = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
+        String[] fileNames2 = null;
+
+        if (path2.exists()) {
+            fileNames2 = path2.list();
 
 
-
-        SharedPreferences sharedpreferences = getActivity().getSharedPreferences(TabFragment3.MyPREFERENCES, Context.MODE_PRIVATE);
-
-        if(sharedpreferences.contains("pathList")) {
-            pathSet= new ArrayList<>(sharedpreferences.getStringSet("pathList", null)) ;
-            Collections.sort(pathSet, Collections.<String>reverseOrder());
-
-
-        }
-
-
-
-        final LinearLayout queueContainer = (LinearLayout) view.findViewById(R.id.queueContainer);
-
-        if(pathSet !=null) {
-
-            for (String s: pathSet) {
-                ImageView imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics())));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Glide.with(context).load(s).into(imageView);
-                queueContainer.addView(imageView);
-
-                ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) imageView.getLayoutParams();
-                marginParams.setMargins(0, 0, 10, 0);
+            for (int i = fileNames2.length-1; i>=0; i--) {
+                if(!fileNames2[i].equals(".nomedia")){
+                    imgPathList.add(path2 + "/" + fileNames2[i]);
+                }
             }
 
         }
+
+        imageGrid.setAdapter(new ImageAdapter(context, imgPathList));
 
         return view;
     }
