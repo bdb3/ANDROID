@@ -52,7 +52,7 @@ public class TabFragment4 extends Fragment {
             layoutParams.setMargins(10, 0, 0, 0);
 
             TextView textView = new TextView(context);
-            textView.setText("Department: Meeting");
+            textView.setText("Context: Meeting");
             imageInfoContainer.addView(textView);
 
             TextView textView1 = new TextView(context);

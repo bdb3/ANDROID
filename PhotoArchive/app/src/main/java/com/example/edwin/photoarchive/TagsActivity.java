@@ -7,10 +7,12 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.Button;
@@ -22,7 +24,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
+//azure
+
+import java.net.MalformedURLException;
+import com.microsoft.windowsazure.mobileservices.*;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.MobileServiceException;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 public class TagsActivity extends AppCompatActivity {
     private LinearLayout linearLayoutContextContainer;
@@ -36,10 +47,62 @@ public class TagsActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     public static final String MyTagsPREFERENCES = "Preferences" ;
 
+    //Azure variables
+       private MobileServiceClient client;
+       private MobileServiceTable<com.example.edwin.photoarchive.Context> contextTable;
+       private MobileServiceTable<Attribute> attributeTable;
+       private MobileServiceTable<Context_Attribute> caTable;
+
+
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
+
+
+        //initialize client
+              try {
+                  client = new MobileServiceClient("https://boephotoarchive-dev.azurewebsites.net",
+                                        this
+                                        );
+                   }catch (MalformedURLException m){
+                        System.out.println("MalformedURL " + m.toString());
+              }
+
+        contextTable = client.getTable(com.example.edwin.photoarchive.Context.class);
+        attributeTable = client.getTable(Attribute.class);
+        caTable = client.getTable(Context_Attribute.class);
+
+        //query contexts
+
+
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+            @Override
+                protected Void doInBackground(Void... params) {
+                    Log.d("Azure", "Starting async");
+
+                    try {
+                        final List<com.example.edwin.photoarchive.Context> contextList = contextTable.execute().get();
+                        Log.d("Azure", contextList.size() +"");
+
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                //mAdapter.clear();
+                                for (com.example.edwin.photoarchive.Context item : contextList) {
+                                    //mAdapter.add(item);
+                                    Log.d("Azure", item.getId());
+                                }
+                            }
+                        });
+                    } catch (Exception exception) {
+                        Log.d("Azure", exception.toString());
+                    }
+                    return null;
+                }
+            };
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         linearLayoutContextContainer = (LinearLayout) findViewById(R.id.linearLayoutContextContainer);
         String[] values = new String[] { "Meeting",

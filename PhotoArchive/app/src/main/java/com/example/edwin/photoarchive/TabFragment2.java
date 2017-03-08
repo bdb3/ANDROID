@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -38,17 +36,15 @@ public class TabFragment2 extends Fragment {
     private Context context = null;
     private ArrayList<String> imgPathList;
     private ArrayList<String> imgPathList2;
-    private HashSet<String> imgViewSet = new HashSet<String>();
-    private Menu menu;
+    private HashSet<String> imgPathSet = new HashSet<String>();
     private LinearLayout picContainer;
     private LinearLayout picContainer2;
-    private int tagCount = 0;
     private Button uploadBtn;
+    private Menu menu;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-
 
         context = this.getContext();
         View view = inflater.inflate(R.layout.tab_fragment_2, container, false);
@@ -63,7 +59,7 @@ public class TabFragment2 extends Fragment {
             @Override
             public void onClick(View v) {
 
-                for (String s : imgViewSet) {
+                for (String s : imgPathSet) {
                     System.out.println(s);
                 }
 
@@ -71,6 +67,39 @@ public class TabFragment2 extends Fragment {
 
             }
         });
+
+        Bundle extras = getActivity().getIntent().getExtras();
+        if(extras != null) {
+           if( extras.containsKey("selectedImagesFromGallery")){
+
+               HashSet<String> galleryPathSet = new HashSet<String>((HashSet) extras.get("selectedImagesFromGallery"));
+
+               for(String s: galleryPathSet){
+                   imgPathSet.add(s);
+
+               }
+
+
+            }
+            if( extras.containsKey("selectedImagesFromApp")){
+
+                HashSet<String> appPathSet = new HashSet<String>((HashSet) extras.get("selectedImagesFromApp"));
+
+                for(String s: appPathSet){
+                    imgPathSet.add(s);
+
+                }
+
+
+            }
+
+            if(imgPathSet.size()>0)
+            getActivity().setTitle("Selected: " + imgPathSet.size());
+
+
+        }
+
+///////////////////////////// IN-APP IMAGES  //////////////////////////////////////////////////
 
         String[] inAppImgList = null;
 
@@ -106,37 +135,9 @@ public class TabFragment2 extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    if(imageView.getColorFilter() == null){
-                        imageView.setColorFilter(Color.argb(110, 20, 197, 215));
-                        imgViewSet.add(imgPathList2.get(index));
-                        getActivity().setTitle("Selected: " + imgViewSet.size());
-                        showOption(0);
-
-                        if(tagCount>0){
-                            //enable upload
-                            uploadBtn.setEnabled(true);
-
-                        }
-
-                    }
-                    else {
-                        imageView.clearColorFilter();
-                        imgViewSet.remove(imgPathList2.get(index));
-
-                        if(imgViewSet.size() == 0){
-                            getActivity().setTitle("Photo Archive");
-                            hideOption(0);
-
-                            //disable upload btn
-                            uploadBtn.setEnabled(false);
-
-                        }
-                        else{
-                            getActivity().setTitle("Selected: " + imgViewSet.size());
-
-                        }
-
-                    }
+                    Intent i = new Intent(getActivity(), ImagePreview.class);
+                    i.putExtra("imagePath", imgPathList2.get(index));
+                    startActivity(i);
 
                 }
             });
@@ -149,6 +150,26 @@ public class TabFragment2 extends Fragment {
             counter2++;
         }
 
+        Button viewAllInAppImages  = (Button) view.findViewById(R.id.button2);
+        viewAllInAppImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i= new Intent(getActivity(), InAppViewAllActivity.class);
+                startActivity(i);
+
+            }
+        });
+
+        Button viewAllGalleryImages  = (Button) view.findViewById(R.id.button3);
+        viewAllGalleryImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i= new Intent(getActivity(), GalleryViewAllActivity.class);
+                startActivity(i);
+
+            }
+        });
+
 
 
         ///////////////////////////// IMAGES FROM GALLERY //////////////////////////////////////////////////
@@ -157,7 +178,6 @@ public class TabFragment2 extends Fragment {
         int counter = 0;
 
         for(int i = imgPathList.size()-1; i>=0; i--) {
-
             final int index = i;
 
             if(counter == 15)
@@ -172,36 +192,9 @@ public class TabFragment2 extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                        if(imageView.getColorFilter() == null){
-                            imageView.setColorFilter(Color.argb(110, 20, 197, 215));
-                            imgViewSet.add(imgPathList.get(index));
-                            getActivity().setTitle("Selected: " + imgViewSet.size());
-                            showOption(0);
-
-                            if(tagCount>0){
-                                //enable upload
-                                uploadBtn.setEnabled(true);
-
-                            }
-
-                        }
-                        else {
-                            imageView.clearColorFilter();
-                            imgViewSet.remove(imgPathList.get(index));
-
-                            if(imgViewSet.size() == 0){
-                                getActivity().setTitle("Photo Archive");
-                                hideOption(0);
-
-                                uploadBtn.setEnabled(false);
-
-                            }
-                            else{
-                                getActivity().setTitle("Selected: " + imgViewSet.size());
-
-                            }
-
-                        }
+                    Intent i = new Intent(getActivity(), ImagePreview.class);
+                    i.putExtra("imagePath", imgPathList.get(index));
+                    startActivity(i);
 
                 }
             });
@@ -240,7 +233,10 @@ public class TabFragment2 extends Fragment {
 
         }
 
-        tagCount = tagNames.size();
+        if(tagNames.size()>0 && imgPathSet.size()>0){
+            uploadBtn.setEnabled(true);
+
+        }
 
         for(String s: tagNames) {
             final Button tag1 = new Button(context);
@@ -286,29 +282,24 @@ public class TabFragment2 extends Fragment {
 
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                deselectAllImages();
+                //clear set of paths
+
+                imgPathSet.clear();
+                getActivity().setTitle("Photo Archive");
+                hideOption(0);
+                uploadBtn.setEnabled(false);
+
                 return true;
             }});
 
 
-        hideOption(0);
+        if(imgPathSet.size()<1) {
+            hideOption(0);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void deselectAllImages(){
-        for(int i=0; i<picContainer.getChildCount(); i++ ){
-            ((ImageView)picContainer.getChildAt(i)).clearColorFilter();
 
-        }
-        for(int i=0; i<picContainer2.getChildCount(); i++ ){
-            ((ImageView)picContainer2.getChildAt(i)).clearColorFilter();
-
-        }
-        imgViewSet.clear();
-        getActivity().setTitle("Photo Archive");
-        hideOption(0);
-        uploadBtn.setEnabled(false);
-    }
 
     private void showOption(int id) {
         MenuItem item = menu.findItem(id);
@@ -319,6 +310,9 @@ public class TabFragment2 extends Fragment {
         MenuItem item = menu.findItem(id);
         item.setVisible(false);
     }
+
+
+
 
     public static ArrayList<String> getImagesPath(Activity activity) {
         Uri uri;
