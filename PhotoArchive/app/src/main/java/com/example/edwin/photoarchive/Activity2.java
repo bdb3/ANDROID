@@ -7,11 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.Menu.*;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 
 public class Activity2 extends AppCompatActivity {
 
@@ -22,6 +17,7 @@ public class Activity2 extends AppCompatActivity {
         setContentView(R.layout.activity_2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Dash"));
@@ -68,7 +64,37 @@ public class Activity2 extends AppCompatActivity {
                 viewPager.setCurrentItem(tab.getPosition());
 
 
-            }
+
+                    if (tab.getPosition() == 0) {
+                        setTitle("Dashboard");
+                    }
+                    else if(tab.getPosition() == 1){
+                        Bundle extras = getIntent().getExtras();
+                        if(extras != null) {
+                             if(extras.getInt("totalSelected") != 0)
+                                 setTitle("Selected: " + extras.getInt("totalSelected"));
+                             else
+                                 setTitle("Photo Archive");
+
+                        }
+                        else
+                            setTitle("Photo Archive");
+
+                    }
+                    else if (tab.getPosition() == 2) {
+                        setTitle("Camera");
+
+                    } else if (tab.getPosition() == 3) {
+                        setTitle("History");
+
+                    } else {
+                        setTitle("Settings");
+
+                    }
+
+                }
+
+
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {

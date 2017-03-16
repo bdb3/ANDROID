@@ -55,6 +55,7 @@ public class TabFragment3 extends Fragment {
         View view = inflater.inflate(R.layout.tab_fragment_3, container, false);
         context= this.getContext();
 
+
         //camera btn
         button = (Button) view.findViewById(R.id.button);
 

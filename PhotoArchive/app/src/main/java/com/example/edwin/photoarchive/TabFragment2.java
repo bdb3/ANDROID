@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -28,8 +30,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 
 public class TabFragment2 extends Fragment {
@@ -41,6 +45,9 @@ public class TabFragment2 extends Fragment {
     private LinearLayout picContainer2;
     private Button uploadBtn;
     private Menu menu;
+    private Map<String, Map<String, Map<String, String>>> imagesTagsMap = new HashMap<String, Map<String, Map<String, String>>>();
+    private SharedPreferences sharedPreferences;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,20 +60,148 @@ public class TabFragment2 extends Fragment {
         File inAppImagesPath = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
         imgPathList2 = new ArrayList<String>();
 
-         uploadBtn = (Button) view.findViewById(R.id.button5);
+        uploadBtn = (Button) view.findViewById(R.id.button5);
+        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+
+        ///////////////////////////////////// SEND TO QUEUE CODE/////////////////////////////////////
 
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                for (String s : imgPathSet) {
-                    System.out.println(s);
+                //get tags from shared preferences
+
+                    uploadBtn.setEnabled(false);
+
+                    String mapString  = sharedPreferences.getString("listOfTags", null);
+
+                    Map<String, Map<String, String>> outputMap = new HashMap<String, Map<String, String>>();
+                    try {
+                        JSONObject jsonObject2 = new JSONObject(mapString);
+                        Iterator<String> keysItr = jsonObject2.keys();
+
+                        while(keysItr.hasNext()) {
+                            String key = keysItr.next();
+
+                            Map<String, String> valueMap = new HashMap<String, String>();
+                            Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
+
+                            while(keysItr2.hasNext()) {
+                                String key2 = keysItr2.next();
+                                String value = (String)((JSONObject)jsonObject2.get(key)).get(key2);
+
+                                valueMap.put(key2, value);
+                            }
+
+                            outputMap.put(key, valueMap);
+                        }
+
+
+                    }catch(Exception e){
+                        e.printStackTrace();
+
+                    };
+
+                    for(String s: imgPathSet){
+                        imagesTagsMap.put(s, outputMap);
+
+                    }
+
+
+
+
+                // put imagesTagsMap in shared preferences
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+
+                if(!sharedPreferences.contains("listOfImagesWithTags")) {
+
+
+                    JSONObject imagesTagsMapAsJSON = new JSONObject(imagesTagsMap);
+                    String imgTagsMapAsJSONString   = imagesTagsMapAsJSON.toString();
+
+                    editor.putString("listOfImagesWithTags", imgTagsMapAsJSONString);
+                    editor.commit();
+
+                    // reset data
+                    clearTagsAndSelectedImages();
+                    //
+
+                    Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
+
+
                 }
+
+
+
+
+                else{
+                    String mapString2  = sharedPreferences.getString("listOfImagesWithTags", null);
+
+                    Map<String, Map<String, Map<String, String>>> outputMap2 = new HashMap<String, Map<String, Map<String, String>>>();
+                    try {
+                        JSONObject jsonObject2 = new JSONObject(mapString2);
+                        Iterator<String> keysItr = jsonObject2.keys();
+
+                        while(keysItr.hasNext()) {
+                            String key = keysItr.next();
+
+                            Map<String, Map<String, String>> valueMap = new HashMap<String, Map<String, String>>();
+                            Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
+
+                            while(keysItr2.hasNext()) {
+                                String key2 = keysItr2.next();
+
+                                Map<String, String> innerMap = new HashMap<String, String>();
+                                Iterator<String> keysItr3 = ((JSONObject)((JSONObject)jsonObject2.get(key)).get(key2)).keys();
+
+                                while(keysItr3.hasNext()){
+                                    String key3 = keysItr3.next();
+                                    String value = (String)((JSONObject)((JSONObject)jsonObject2.get(key)).get(key2)).get(key3);
+                                    innerMap.put(key3, value);
+
+                                }
+
+                                valueMap.put(key2, innerMap);
+                            }
+
+                            outputMap2.put(key, valueMap);
+                        }
+
+
+                    }catch(Exception e){
+                        e.printStackTrace();
+
+                    };
+
+                    //add curent map to sharedpreferences map
+
+                    for(String s: imgPathSet){
+                        outputMap2.put(s, outputMap);
+
+                    }
+
+
+
+                    JSONObject finalJsonObject = new JSONObject(outputMap2);
+
+                    editor.remove("listOfImagesWithTags");
+                    editor.apply();
+                    editor.putString("listOfImagesWithTags", finalJsonObject.toString() );
+                    editor.apply();
+                    clearTagsAndSelectedImages();
+                    Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
+
+
+                }
+
 
 
 
             }
         });
+
+        /////////////////////////////////////END OF SEND TO QUEUE CODE//////////////////////////////////
 
         Bundle extras = getActivity().getIntent().getExtras();
         if(extras != null) {
@@ -79,7 +214,6 @@ public class TabFragment2 extends Fragment {
 
                }
 
-
             }
             if( extras.containsKey("selectedImagesFromApp")){
 
@@ -90,12 +224,11 @@ public class TabFragment2 extends Fragment {
 
                 }
 
-
             }
 
             if(imgPathSet.size()>0)
-            getActivity().setTitle("Selected: " + imgPathSet.size());
-
+                getActivity().setTitle("Selected: " + imgPathSet.size());
+                getActivity().getIntent().putExtra("totalSelected", imgPathSet.size());
 
         }
 
@@ -155,6 +288,7 @@ public class TabFragment2 extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent i= new Intent(getActivity(), InAppViewAllActivity.class);
+                i.putExtra("selectedImages", imgPathSet);
                 startActivity(i);
 
             }
@@ -165,12 +299,11 @@ public class TabFragment2 extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent i= new Intent(getActivity(), GalleryViewAllActivity.class);
+                i.putExtra("selectedImages", imgPathSet);
                 startActivity(i);
 
             }
         });
-
-
 
         ///////////////////////////// IMAGES FROM GALLERY //////////////////////////////////////////////////
 
@@ -205,12 +338,10 @@ public class TabFragment2 extends Fragment {
             counter++;
         }
 
-
-
         //////////////////////////////////// ADDING TAGS /////////////////////////////////////////////////////////
 
         final LinearLayout tagsContainer = (LinearLayout) view.findViewById(R.id.tagsContainer);
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+
         ArrayList<String> tagNames =  new ArrayList<String>();
 
         if(sharedPreferences.contains("listOfTags")) {
@@ -250,6 +381,8 @@ public class TabFragment2 extends Fragment {
                 public void onClick(View v) {
                     Intent i= new Intent(getActivity(), ActivityEditDeleteTags.class);
                     i.putExtra("tag_name", tag1.getText());
+                    i.putExtra("selectedImages", imgPathSet);
+
                     startActivity(i);
 
                 }
@@ -263,6 +396,10 @@ public class TabFragment2 extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent i= new Intent(getActivity(), TagsActivity.class);
+                // send selected images to tags activity so they are not removed
+
+                i.putExtra("selectedImages", imgPathSet);
+
                 startActivity(i);
 
             }
@@ -286,6 +423,7 @@ public class TabFragment2 extends Fragment {
 
                 imgPathSet.clear();
                 getActivity().setTitle("Photo Archive");
+                getActivity().getIntent().putExtra("totalSelected", 0);
                 hideOption(0);
                 uploadBtn.setEnabled(false);
 
@@ -309,6 +447,32 @@ public class TabFragment2 extends Fragment {
     private void hideOption(int id) {
         MenuItem item = menu.findItem(id);
         item.setVisible(false);
+    }
+
+    private void clearTagsAndSelectedImages(){
+        imgPathSet.clear();
+        getActivity().setTitle("Photo Archive");
+
+        getActivity().getIntent().replaceExtras(new Bundle());
+        getActivity().getIntent().setAction("");
+        getActivity().getIntent().setData(null);
+        getActivity().getIntent().setFlags(0);
+
+        //getActivity().getIntent().putExtra("totalSelected", 0);
+        hideOption(0);
+        imagesTagsMap.clear();
+
+        //remove tags
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("listOfTags");
+        editor.apply();
+
+
+        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+        getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(1)).attach(getFragmentManager().getFragments().get(1)).commitAllowingStateLoss();
+        getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(0)).attach(getFragmentManager().getFragments().get(0)).commitAllowingStateLoss();
+        viewPager.setCurrentItem(0);
+
     }
 
 

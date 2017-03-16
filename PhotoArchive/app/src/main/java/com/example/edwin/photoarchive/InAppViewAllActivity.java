@@ -110,8 +110,28 @@ public class InAppViewAllActivity extends AppCompatActivity {
 
                 Intent i= new Intent(InAppViewAllActivity.this, Activity2.class);
                 i.putExtra("viewpager_position", 1);
+
+                //add images passed from tab 2 to imagePathSet
+
+                Bundle extras = getIntent().getExtras();
+
+                if(extras != null ){
+                    if(extras.containsKey("selectedImages")){
+
+                        HashSet<String> passedImagesPathSet = new HashSet<String>((HashSet) extras.get("selectedImages"));
+
+                        for(String s: passedImagesPathSet){
+                            imagePathSet.add(s);
+
+                        }
+                    }
+
+                }
+
                 if(imagePathSet.size()>0){
                     i.putExtra("selectedImagesFromApp", imagePathSet);
+
+
                 }
                 startActivity(i);
 

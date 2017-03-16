@@ -23,6 +23,7 @@ import android.widget.TextView;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -315,8 +316,6 @@ public class TagsActivity extends AppCompatActivity {
                     editor.putString("listOfTags", finalJsonObject.toString() );
                     editor.apply();
 
-                  //  System.out.println(sharedPreferences.getString("listOfTags", null));
-
 
                 }
 
@@ -354,6 +353,22 @@ public class TagsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i= new Intent(TagsActivity.this, Activity2.class);
                 i.putExtra("viewpager_position", 1);
+
+                // get images sent  from tab 2 and send them back
+
+                Bundle extras = getIntent().getExtras();
+
+                if(extras != null ){
+                    if(extras.containsKey("selectedImages")){
+
+                        HashSet<String> passedImagesPathSet = new HashSet<String>((HashSet) extras.get("selectedImages"));
+
+                        i.putExtra("selectedImagesFromGallery", passedImagesPathSet);
+                    }
+
+                }
+
+
                 startActivity(i);
             }
         });
