@@ -1,1 +1,1 @@
-Android application
+Android app
