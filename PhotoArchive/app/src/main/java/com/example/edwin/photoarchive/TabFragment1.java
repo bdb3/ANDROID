@@ -72,8 +72,7 @@ import java.util.Iterator;
                         permissionsStatus.setText("Required Permissions: all granted");
                         permissionsStatus.setTextColor(Color.GREEN);
 
-                        if(Activity2.getInstance()!=null)
-                            Activity2.getInstance().updateUI();
+            
                     }
 
                     if(netInfo.getState() == NetworkInfo.State.DISCONNECTED){
