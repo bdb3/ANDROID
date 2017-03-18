@@ -4,12 +4,13 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 public class Activity2 extends AppCompatActivity {
-
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +18,7 @@ public class Activity2 extends AppCompatActivity {
         setContentView(R.layout.activity_2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        
 
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -38,6 +40,7 @@ public class Activity2 extends AppCompatActivity {
         tabLayout.getTabAt(2).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(3).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(4).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+
 
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -107,4 +110,6 @@ public class Activity2 extends AppCompatActivity {
             }
         });
     }
+
+   
 }

@@ -17,13 +17,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Required Permissions: granted"
+            android:text="Required Permissions: all granted"
             android:textSize="15dp"
             android:id="@+id/textView6"
             android:layout_marginTop="2dp"
             android:layout_below="@+id/textView5"
             android:layout_alignParentStart="true"
-            android:textColor="#000000" />
+            android:textColor="#12a705" />
 
         <TextView
             android:layout_width="wrap_content"

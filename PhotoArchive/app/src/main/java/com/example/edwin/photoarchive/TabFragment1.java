@@ -1,16 +1,24 @@
 package com.example.edwin.photoarchive;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,12 +35,13 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.Iterator;
 
 
-public class TabFragment1 extends Fragment {
+ public class TabFragment1 extends Fragment {
     private Context context = null;
     private GridView imageGrid;
     private ArrayList<String> imgPathList;
@@ -41,6 +50,7 @@ public class TabFragment1 extends Fragment {
     private SharedPreferences sharedPreferences;
     private Menu menu;
     private TextView photosToBeUploaded;
+    private TextView permissionsStatus;
 
 
     @Override
@@ -49,10 +59,54 @@ public class TabFragment1 extends Fragment {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
 
+         permissionsStatus = (TextView) view.findViewById(R.id.textView6);
+        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(android.content.Context context, Intent intent) {
+                if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
+                    NetworkInfo netInfo = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                    if(netInfo.isConnected()) {
+                        permissionsStatus.invalidate();
+                        permissionsStatus.setText("Required Permissions: all granted");
+                        permissionsStatus.setTextColor(Color.GREEN);
+
+                        if(Activity2.getInstance()!=null)
+                            Activity2.getInstance().updateUI();
+                    }
+
+                    if(netInfo.getState() == NetworkInfo.State.DISCONNECTED){
+                        permissionsStatus.invalidate();
+                        permissionsStatus.setText("No wifi connection");
+                        permissionsStatus.setTextColor(Color.RED);
+
+                        if(imgPathList.size()>0)
+                            Toast.makeText(context, "Please connect to Wifi. "+ imgPathList.size() + " image(s) waiting to upload.", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        getActivity().registerReceiver(receiver, intentFilter);
+
+        if(!isConnectedViaWifi()) {
+            permissionsStatus.invalidate();
+            permissionsStatus.setText("No wifi connection");
+            permissionsStatus.setTextColor(Color.RED);
+
+
+        }
+
+
         imageGrid = (GridView) view.findViewById(R.id.gridview);
         photosToBeUploaded = (TextView) view.findViewById(R.id.textView20);
         imgPathList = new ArrayList<String>();
-        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
         if(sharedPreferences.contains("listOfImagesWithTags")) {
             String mapString = sharedPreferences.getString("listOfImagesWithTags", null);
@@ -183,5 +237,24 @@ public class TabFragment1 extends Fragment {
         }
     }
 
+    private boolean isConnectedViaWifi() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        if(info != null) {
+            if (info.getType() == ConnectivityManager.TYPE_WIFI)
+                return true;
+        }
+
+        return false;
+    }
+
+    public void updateStatus(String s){
+        permissionsStatus.invalidate();
+        permissionsStatus.setText(s);
+
+    }
+
+
 
 }
+
