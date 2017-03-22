@@ -29,10 +29,15 @@ import com.bumptech.glide.Glide;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 
@@ -40,12 +45,12 @@ public class TabFragment2 extends Fragment {
     private Context context = null;
     private ArrayList<String> imgPathList;
     private ArrayList<String> imgPathList2;
-    private HashSet<String> imgPathSet = new HashSet<String>();
+    private HashSet<String> imgPathSet = new LinkedHashSet<String>();
     private LinearLayout picContainer;
     private LinearLayout picContainer2;
     private Button uploadBtn;
     private Menu menu;
-    private Map<String, Map<String, Map<String, String>>> imagesTagsMap = new HashMap<String, Map<String, Map<String, String>>>();
+    private Map<String, Map<String, Map<String, String>>> imagesTagsMap = new LinkedHashMap<String, Map<String, Map<String, String>>>();
     private SharedPreferences sharedPreferences;
 
 
@@ -75,7 +80,7 @@ public class TabFragment2 extends Fragment {
 
                     String mapString  = sharedPreferences.getString("listOfTags", null);
 
-                    Map<String, Map<String, String>> outputMap = new HashMap<String, Map<String, String>>();
+                    Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
                     try {
                         JSONObject jsonObject2 = new JSONObject(mapString);
                         Iterator<String> keysItr = jsonObject2.keys();
@@ -83,7 +88,7 @@ public class TabFragment2 extends Fragment {
                         while(keysItr.hasNext()) {
                             String key = keysItr.next();
 
-                            Map<String, String> valueMap = new HashMap<String, String>();
+                            Map<String, String> valueMap = new LinkedHashMap<String, String>();
                             Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
 
                             while(keysItr2.hasNext()) {
@@ -103,7 +108,11 @@ public class TabFragment2 extends Fragment {
                     };
 
                     for(String s: imgPathSet){
+
+                       // String key = s + "~" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                         imagesTagsMap.put(s, outputMap);
+
+
 
                     }
 
@@ -123,6 +132,7 @@ public class TabFragment2 extends Fragment {
                     editor.putString("listOfImagesWithTags", imgTagsMapAsJSONString);
                     editor.commit();
 
+
                     // reset data
                     clearTagsAndSelectedImages();
                     //
@@ -133,12 +143,10 @@ public class TabFragment2 extends Fragment {
                 }
 
 
-
-
                 else{
                     String mapString2  = sharedPreferences.getString("listOfImagesWithTags", null);
 
-                    Map<String, Map<String, Map<String, String>>> outputMap2 = new HashMap<String, Map<String, Map<String, String>>>();
+                    Map<String, Map<String, Map<String, String>>> outputMap2 = new LinkedHashMap<String, Map<String, Map<String, String>>>();
                     try {
                         JSONObject jsonObject2 = new JSONObject(mapString2);
                         Iterator<String> keysItr = jsonObject2.keys();
@@ -146,13 +154,13 @@ public class TabFragment2 extends Fragment {
                         while(keysItr.hasNext()) {
                             String key = keysItr.next();
 
-                            Map<String, Map<String, String>> valueMap = new HashMap<String, Map<String, String>>();
+                            Map<String, Map<String, String>> valueMap = new LinkedHashMap<String, Map<String, String>>();
                             Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
 
                             while(keysItr2.hasNext()) {
                                 String key2 = keysItr2.next();
 
-                                Map<String, String> innerMap = new HashMap<String, String>();
+                                Map<String, String> innerMap = new LinkedHashMap<String, String>();
                                 Iterator<String> keysItr3 = ((JSONObject)((JSONObject)jsonObject2.get(key)).get(key2)).keys();
 
                                 while(keysItr3.hasNext()){
@@ -177,6 +185,7 @@ public class TabFragment2 extends Fragment {
                     //add curent map to sharedpreferences map
 
                     for(String s: imgPathSet){
+                       // String key = s + "~" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                         outputMap2.put(s, outputMap);
 
                     }
@@ -207,7 +216,7 @@ public class TabFragment2 extends Fragment {
         if(extras != null) {
            if( extras.containsKey("selectedImagesFromGallery")){
 
-               HashSet<String> galleryPathSet = new HashSet<String>((HashSet) extras.get("selectedImagesFromGallery"));
+               HashSet<String> galleryPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
 
                for(String s: galleryPathSet){
                    imgPathSet.add(s);
@@ -217,7 +226,7 @@ public class TabFragment2 extends Fragment {
             }
             if( extras.containsKey("selectedImagesFromApp")){
 
-                HashSet<String> appPathSet = new HashSet<String>((HashSet) extras.get("selectedImagesFromApp"));
+                HashSet<String> appPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromApp"));
 
                 for(String s: appPathSet){
                     imgPathSet.add(s);
@@ -385,6 +394,7 @@ public class TabFragment2 extends Fragment {
 
                     startActivity(i);
 
+
                 }
             });
 
@@ -401,6 +411,7 @@ public class TabFragment2 extends Fragment {
                 i.putExtra("selectedImages", imgPathSet);
 
                 startActivity(i);
+
 
             }
         });
@@ -472,10 +483,9 @@ public class TabFragment2 extends Fragment {
         getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(1)).attach(getFragmentManager().getFragments().get(1)).commitAllowingStateLoss();
         getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(0)).attach(getFragmentManager().getFragments().get(0)).commitAllowingStateLoss();
         viewPager.setCurrentItem(0);
+        getActivity().getSupportFragmentManager().popBackStack();
 
     }
-
-
 
 
     public static ArrayList<String> getImagesPath(Activity activity) {

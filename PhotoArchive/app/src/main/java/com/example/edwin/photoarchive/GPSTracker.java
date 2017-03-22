@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -30,10 +31,12 @@ public class GPSTracker extends Service implements LocationListener{
 	private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
 	
 	protected LocationManager locationManager;
+
 	
 	public GPSTracker(Context context) {
 		this.context = context;
 		getLocation();
+
 	}
 	
 	public Location getLocation() {
@@ -142,11 +145,11 @@ public class GPSTracker extends Service implements LocationListener{
 	public void showSettingsAlert() {
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 		
-		alertDialog.setTitle("Application needs GPS access");
+		alertDialog.setTitle("Location services turned off");
 		
-		alertDialog.setMessage("Please enable GPS before you open the camera");
+		alertDialog.setMessage("Photo Archive would like to access your location");
 		
-		alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+		alertDialog.setPositiveButton("Go to settings", new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -155,11 +158,12 @@ public class GPSTracker extends Service implements LocationListener{
 			}
 		});
 		
-		alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		alertDialog.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
+
 			}
 		});
 		

@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
@@ -33,9 +34,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
-
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.Iterator;
@@ -51,6 +49,8 @@ import java.util.Iterator;
     private Menu menu;
     private TextView photosToBeUploaded;
     private TextView permissionsStatus;
+     private GPSTracker gps;
+
 
 
     @Override
@@ -62,17 +62,41 @@ import java.util.Iterator;
          permissionsStatus = (TextView) view.findViewById(R.id.textView6);
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
+        //show enable gps alert
+
+        if(!sharedPreferences.contains("locationAlertShown")) {
+            gps = new GPSTracker(context);
+
+            if (!gps.isGPSEnabled) {
+                gps.showSettingsAlert();
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("locationAlertShown", true);
+                editor.commit();
+
+            }
+
+        }
+
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(android.content.Context context, Intent intent) {
                 if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
                     NetworkInfo netInfo = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                    if(netInfo.isConnected()) {
+
+
+                    if(netInfo.getState() == NetworkInfo.State.CONNECTED) {
+
+
                         permissionsStatus.invalidate();
                         permissionsStatus.setText("Required Permissions: all granted");
                         permissionsStatus.setTextColor(Color.GREEN);
 
-            
+                        Log.d("connectionStatus", "now connected");
+
+                        //resume uploading
+
+
                     }
 
                     if(netInfo.getState() == NetworkInfo.State.DISCONNECTED){
@@ -80,9 +104,12 @@ import java.util.Iterator;
                         permissionsStatus.setText("No wifi connection");
                         permissionsStatus.setTextColor(Color.RED);
 
-                        if(imgPathList.size()>0)
-                            Toast.makeText(context, "Please connect to Wifi. "+ imgPathList.size() + " image(s) waiting to upload.", Toast.LENGTH_SHORT).show();
+                        Log.d("connectionStatus", "lost wifi connection");
+
+                        //pause uploading
+
                     }
+
 
                 }
 
@@ -90,7 +117,7 @@ import java.util.Iterator;
         };
 
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        //intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         getActivity().registerReceiver(receiver, intentFilter);
 
@@ -100,6 +127,12 @@ import java.util.Iterator;
             permissionsStatus.setTextColor(Color.RED);
 
 
+
+
+        }
+        else{
+            Log.d("connectionStatus", "connected to wifi");
+            //start uploading
         }
 
 
@@ -114,6 +147,7 @@ import java.util.Iterator;
                 JSONObject jsonObject2 = new JSONObject(mapString);
                 Iterator<String> keysItr = jsonObject2.keys();
 
+
                 while(keysItr.hasNext()) {
 
                     imgPathList.add(keysItr.next());
@@ -125,10 +159,9 @@ import java.util.Iterator;
 
             };
 
-
         }
         photosToBeUploaded.invalidate();
-        photosToBeUploaded.setText(imgPathList.size() + " images waiting to upload");
+        photosToBeUploaded.setText(imgPathList.size() + " image(s) waiting to upload");
 
 
         imageGrid.setAdapter(new ImageAdapterDashboard(context, imgPathList));
@@ -226,10 +259,14 @@ import java.util.Iterator;
 
                 return true;
             case R.id.delete:
-                //
+
+                deleteImage(imgPathList.get(info.position));
                 return true;
+
             case R.id.viewInfo:
-                //
+                Intent j= new Intent(getActivity(), ViewInfo.class);
+                j.putExtra("imagePath", imgPathList.get(info.position));
+                startActivity(j);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -247,11 +284,33 @@ import java.util.Iterator;
         return false;
     }
 
-    public void updateStatus(String s){
-        permissionsStatus.invalidate();
-        permissionsStatus.setText(s);
+ private void deleteImage(String s){
 
-    }
+     if(sharedPreferences.contains("listOfImagesWithTags")) {
+         String mapString = sharedPreferences.getString("listOfImagesWithTags", null);
+
+         try {
+             JSONObject jsonObject2 = new JSONObject(mapString);
+             jsonObject2.remove(s);
+
+             SharedPreferences.Editor editor = sharedPreferences.edit();
+             editor.remove("listOfImagesWithTags");
+             editor.apply();
+             editor.putString("listOfImagesWithTags", jsonObject2.toString());
+             editor.apply();
+
+         }catch(Exception e){
+             e.printStackTrace();
+
+         };
+
+         getActivity().recreate();
+         ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+         viewPager.setCurrentItem(0);
+
+     }
+
+ }
 
 
 

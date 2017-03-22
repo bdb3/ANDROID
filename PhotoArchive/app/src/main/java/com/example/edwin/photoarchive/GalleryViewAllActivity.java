@@ -18,13 +18,14 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class GalleryViewAllActivity extends AppCompatActivity {
     private GridView imageGrid;
     private ArrayList<String> imgPathList;
     private Menu menu;
     private boolean isSelectEnabled = false;
-    private HashSet<String> imagePathSet = new HashSet<String>();
+    private HashSet<String> imagePathSet = new LinkedHashSet<String>();
     private HashSet<ImageView> imageViewSet = new HashSet<ImageView>();
     private Button selectButton;
 
@@ -107,7 +108,7 @@ public class GalleryViewAllActivity extends AppCompatActivity {
                 if(extras != null ){
                     if(extras.containsKey("selectedImages")){
 
-                        HashSet<String> passedImagesPathSet = new HashSet<String>((HashSet) extras.get("selectedImages"));
+                        HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImages"));
 
                         for(String s: passedImagesPathSet){
                             imagePathSet.add(s);
@@ -122,6 +123,7 @@ public class GalleryViewAllActivity extends AppCompatActivity {
                 }
 
                 startActivity(i);
+                finish();
 
 
                 return true;

@@ -20,6 +20,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 public class ActivityEditDeleteTags extends AppCompatActivity {
@@ -44,7 +46,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
 
                 String mapString = sharedPreferences.getString("listOfTags", null);
 
-                final Map<String, Map<String, String>> outputMap = new HashMap<String, Map<String, String>>();
+                final Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
                 try {
                     JSONObject jsonObject2 = new JSONObject(mapString);
                     Iterator<String> keysItr = jsonObject2.keys();
@@ -52,7 +54,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                     while (keysItr.hasNext()) {
                         String key = keysItr.next();
 
-                        Map<String, String> valueMap = new HashMap<String, String>();
+                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
                         Iterator<String> keysItr2 = ((JSONObject) jsonObject2.get(key)).keys();
 
                         while (keysItr2.hasNext()) {
@@ -74,7 +76,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
 
                 //find attributes and values in map using key=name
 
-                Map<String, String> valueMap = new HashMap<String, String>(outputMap.get(name));
+                Map<String, String> valueMap = new LinkedHashMap<String, String>(outputMap.get(name));
 
                 for (Map.Entry<String, String> entry : valueMap.entrySet()) {
                     String key = entry.getKey();
@@ -128,7 +130,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                                         if(extras != null ){
                                             if(extras.containsKey("selectedImages")){
 
-                                                HashSet<String> passedImagesPathSet = new HashSet<String>((HashSet) extras.get("selectedImages"));
+                                                HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImages"));
 
                                                 i.putExtra("selectedImagesFromGallery", passedImagesPathSet);
                                             }
@@ -136,6 +138,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                                         }
 
                                         startActivity(i);
+                                        finish();
 
                                         Toast.makeText(getApplicationContext(), "Tag deleted", Toast.LENGTH_SHORT).show();
 
@@ -194,7 +197,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 String key = name;
-                                Map<String, String> value = new HashMap<String, String>();
+                                Map<String, String> value = new LinkedHashMap<String, String>();
 
                                 for (int i=0; i<linearLayoutEditTags.getChildCount()-1; i+=2) {
                                     View view = linearLayoutEditTags.getChildAt(i);
@@ -256,7 +259,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
         if(extras != null ){
             if(extras.containsKey("selectedImages")){
 
-                HashSet<String> passedImagesPathSet = new HashSet<String>((HashSet) extras.get("selectedImages"));
+                HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImages"));
 
                 i.putExtra("selectedImagesFromGallery", passedImagesPathSet);
             }
@@ -264,5 +267,6 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
         }
 
         startActivity(i);
+        finish();
     }
 }

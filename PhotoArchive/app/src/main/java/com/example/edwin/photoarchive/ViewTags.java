@@ -1,6 +1,7 @@
 package com.example.edwin.photoarchive;
 
 import android.content.*;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ViewTags extends AppCompatActivity {
@@ -26,14 +28,13 @@ public class ViewTags extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
             final String path = extras.getString("imagePath");
-            TextView title = (TextView) findViewById(R.id.textViewContextName);
 
             SharedPreferences sharedPreferences = getSharedPreferences(TagsActivity.MyTagsPREFERENCES, android.content.Context.MODE_PRIVATE);
 
             if(sharedPreferences.contains("listOfImagesWithTags")) {
                 String mapString = sharedPreferences.getString("listOfImagesWithTags", null);
 
-                final Map<String, Map<String, String>> outputMap = new HashMap<String, Map<String, String>>();
+                final Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
 
                 try {
                     JSONObject jsonObject2 = new JSONObject(mapString);
@@ -46,15 +47,17 @@ public class ViewTags extends AppCompatActivity {
 
                         Button ctx = new Button(this);
                         ctx.setText(key);
+                        ctx.setClickable(false);
                         linearLayoutTags.addView(ctx);
 
-                        Map<String, String> valueMap = new HashMap<String, String>();
+                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
                         Iterator<String> keysItr2 = ((JSONObject) jsonObject3.get(key)).keys();
 
                         while (keysItr2.hasNext()) {
                             String key2 = keysItr2.next();
 
                             TextView q = new TextView(this);
+                            q.setTextColor(Color.BLACK);
                             q.setText(key2);
                             linearLayoutTags.addView(q);
 

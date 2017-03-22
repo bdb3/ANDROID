@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +46,7 @@ public class TagsActivity extends AppCompatActivity {
     private Button ok;
     private Button cancelBtn;
     private Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
-    private Map<String, Map<String, String>> tagList = new HashMap<String, Map<String, String>>();
+    private Map<String, Map<String, String>> tagList = new LinkedHashMap<String, Map<String, String>>();
     SharedPreferences sharedPreferences;
     public static final String MyTagsPREFERENCES = "Preferences" ;
 
@@ -203,7 +205,7 @@ public class TagsActivity extends AppCompatActivity {
         if(sharedPreferences.contains("listOfTags")){
             String mapString  = sharedPreferences.getString("listOfTags", null);
 
-            Map<String, Map<String, String>> outputMap = new HashMap<String, Map<String, String>>();
+            Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
             try {
                 JSONObject jsonObject2 = new JSONObject(mapString);
                 Iterator<String> keysItr = jsonObject2.keys();
@@ -211,7 +213,7 @@ public class TagsActivity extends AppCompatActivity {
                 while(keysItr.hasNext()) {
                     String key = keysItr.next();
 
-                    Map<String, String> valueMap = new HashMap<String, String>();
+                    Map<String, String> valueMap = new LinkedHashMap<String, String>();
                     Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
 
                     while(keysItr2.hasNext()) {
@@ -230,7 +232,7 @@ public class TagsActivity extends AppCompatActivity {
 
             };
 
-            tagList =  new HashMap<String, Map<String, String>>(outputMap);
+            tagList =  new LinkedHashMap<String, Map<String, String>>(outputMap);
 
 
         }
@@ -248,10 +250,7 @@ public class TagsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Map<String, String> attributesMap = new HashMap<String, String>();
-
-                String myKey = "";
-                String myValue = "";
+                Map<String, String> attributesMap = new LinkedHashMap<String, String>();
 
 
                 for (int i=0; i<attrList.getChildCount(); i+=2) {
@@ -279,7 +278,7 @@ public class TagsActivity extends AppCompatActivity {
                 else{
                     String mapString  = sharedPreferences.getString("listOfTags", null);
 
-                    Map<String, Map<String, String>> outputMap = new HashMap<String, Map<String, String>>();
+                    Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
                     try {
                         JSONObject jsonObject2 = new JSONObject(mapString);
                         Iterator<String> keysItr = jsonObject2.keys();
@@ -287,7 +286,7 @@ public class TagsActivity extends AppCompatActivity {
                         while(keysItr.hasNext()) {
                             String key = keysItr.next();
 
-                            Map<String, String> valueMap = new HashMap<String, String>();
+                            Map<String, String> valueMap = new LinkedHashMap<String, String>();
                             Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
 
                             while(keysItr2.hasNext()) {
@@ -306,7 +305,7 @@ public class TagsActivity extends AppCompatActivity {
 
                     };
 
-                    tagList =  new HashMap<String, Map<String, String>>(outputMap);
+                    tagList =  new LinkedHashMap<String, Map<String, String>>(outputMap);
                     tagList.put(tv9.getText().toString(), attributesMap);
 
                     JSONObject finalJsonObject = new JSONObject(tagList);
@@ -361,7 +360,7 @@ public class TagsActivity extends AppCompatActivity {
                 if(extras != null ){
                     if(extras.containsKey("selectedImages")){
 
-                        HashSet<String> passedImagesPathSet = new HashSet<String>((HashSet) extras.get("selectedImages"));
+                        HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImages"));
 
                         i.putExtra("selectedImagesFromGallery", passedImagesPathSet);
                     }
@@ -370,6 +369,7 @@ public class TagsActivity extends AppCompatActivity {
 
 
                 startActivity(i);
+                finish();
             }
         });
 

@@ -9,10 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 
 public class TabFragment5 extends Fragment {
+    private GPSTracker gps;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +45,20 @@ public class TabFragment5 extends Fragment {
 
             }
         });
+
+        Switch swLocation = (Switch) view.findViewById(R.id.switch2);
+
+        gps= new GPSTracker(getContext());
+
+
+       if(gps.isGPSEnabled){
+           swLocation.setChecked(true);
+       }
+        else{
+           swLocation.setChecked(false);
+
+       }
+
 
 
         return  view;

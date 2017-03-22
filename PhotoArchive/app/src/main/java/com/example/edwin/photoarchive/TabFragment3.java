@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,12 +44,7 @@ public class TabFragment3 extends Fragment {
     private static final int ACTIVITY_START_CAMERA_APP = 1;
     private Context context = null;
     GPSTracker gps;
-    private ListView ctxListView;
     private  Button button = null;
-    private  Button buttonUpload = null;
-    SharedPreferences sharedpreferences;
-    public static final String MyPREFERENCES = "MyPrefs" ;
-
 
 
     @Override
@@ -55,222 +53,19 @@ public class TabFragment3 extends Fragment {
         View view = inflater.inflate(R.layout.tab_fragment_3, container, false);
         context= this.getContext();
 
-
         //camera btn
         button = (Button) view.findViewById(R.id.button);
-
-        //list view
-
-        ctxListView = (ListView) view.findViewById(R.id.listView);
-        String[] values = new String[] { "Meeting",
-                "Permit",
-                "Project",
-                "Cell tower"
-        };
-
-        final Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
-
-        for(int i=0; i < values.length; i++){
-
-            ArrayList<String> list = new ArrayList<String>();
-
-            if(i==0){
-                list.add("How many people are in the photo?");
-                list.add("Where was the photo taken?");
-                list.add("What is the topic of the meeting?");
-
-            }
-            else if(i==1){
-                list.add("Where was the photo taken?");
-                list.add("What is the Permit Number?");
-            }
-            else if(i==2){
-                list.add("Where was the photo taken?");
-                list.add("What is the Project Number?");
-            }
-            else if(i==3){
-                list.add("Where was the photo taken?");
-                list.add("What is the company that owns this tower?");
-                list.add("How far does the signal reach?");
-
-            }
-
-            map.put(values[i], list);
-
-        }
-
-        ArrayAdapter adapter = new ArrayAdapter(context, R.layout.list_layout_1, R.id.text1, values);
-
-        ctxListView.setAdapter(adapter);
-        final Button btn1 = (Button) view.findViewById(R.id.button5);
-        final Button btn2 = (Button) view.findViewById(R.id.button6);
-        final TextView tf = (TextView) view.findViewById(R.id.textView2);
-        final ScrollView sv = (ScrollView) view.findViewById(R.id.scrollView);
-        final LinearLayout linLay = (LinearLayout) view.findViewById(R.id.linearLayout1);
-
-        ctxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1,
-                                    int position, long arg3) {
-                int itemPosition     = position;
-                String  itemValue    = (String) ctxListView.getItemAtPosition(position);
-                btn1.setVisibility(View.VISIBLE);
-                btn1.setText(itemValue);
-                btn2.setVisibility(View.VISIBLE);
-                ctxListView.setVisibility(View.INVISIBLE);
-                tf.setText("Category:");
-                sv.setVisibility(View.VISIBLE);
-                linLay.setVisibility(View.VISIBLE);
-
-                ArrayList<String> attList = new ArrayList<String>(map.get(itemValue));
-
-                //questions for context hard coded for now
-
-                for(String s: attList){
-                    TextView textView = new TextView(context);
-                    textView.setText(s);
-                    linLay.addView(textView);
-                    EditText editText = new EditText(context);
-                    linLay.addView(editText);
-
-                }
-
-                ///
-
-
-                TextView myTextView;
-                for (int i=0; i<linLay.getChildCount();i++) {
-                    View view = linLay.getChildAt(i);
-                    if (view instanceof TextView){
-                        myTextView= (TextView) view;
-                        myTextView.setTextColor(Color.BLACK);
-                    }
-                }
-
-
-                final Button okBtn = new Button(context);
-                okBtn.setText("UPLOAD");
-                linLay.addView(okBtn);
-
-                okBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        for (View view : linLay.getTouchables()){
-                            if (view instanceof EditText){
-                                EditText editText = (EditText) view;
-                                editText.setEnabled(false);
-                                editText.setFocusable(false);
-                                editText.setFocusableInTouchMode(false);
-                            }
-                        }
-                        okBtn.setEnabled(false);
-
-                 /// add image path to queue list
-                        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
-
-                        sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-
-                        if(!sharedpreferences.contains("pathList")){
-                            Set<String> pathSet = new HashSet<String>();
-                            pathSet.add(imageFileLocation);
-
-                            editor.putStringSet("pathList", pathSet);
-                            editor.commit();
-
-                        }
-                        else{
-                            sharedpreferences.getStringSet("pathList", null).add(imageFileLocation);
-                            Set<String> pathSet = new HashSet<String>(sharedpreferences.getStringSet("pathList", null));
-                            editor.remove("pathList");
-                            editor.apply();
-                            editor.putStringSet("pathList", pathSet);
-                            editor.apply();
-
-                        }
-
-
-
-                        getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(2)).attach(getFragmentManager().getFragments().get(2)).commitAllowingStateLoss();
-                        getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(0)).attach(getFragmentManager().getFragments().get(0)).commitAllowingStateLoss();
-                        viewPager.setCurrentItem(0);
-                        Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
-
-
-
-
-
-
-                        ///end of add image path to queue list
-
-                    }
-                });
-
-
-            }
-        });
-
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn1.setVisibility(View.INVISIBLE);
-                btn2.setVisibility(View.INVISIBLE);
-                ctxListView.setVisibility(View.VISIBLE);
-                tf.setText("Select a category for the image");
-
-                linLay.setVisibility(View.INVISIBLE);
-                sv.setVisibility(View.INVISIBLE);
-
-                if(((LinearLayout) linLay).getChildCount() > 0)
-                    ((LinearLayout) linLay).removeAllViews();
-
-
-            }
-        });
-
-
-        //end of list view
-
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(button.getText() == "Take another"){
-                    buttonUpload.setEnabled(false);
-                    btn2.performClick();
-                    tf.setVisibility(View.INVISIBLE);
-                    ctxListView.setVisibility(View.INVISIBLE);
-                    buttonUpload.setBackgroundColor(Color.parseColor("#adadad"));
 
-                }
                 if (hasCamera() ) {
                     launchCamera(null);
                 }
 
-
             }
         });
-
-
-        buttonUpload = (Button) view.findViewById(R.id.buttonUpload);
-
-        buttonUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tf.setVisibility(View.VISIBLE);
-                ctxListView.setVisibility(View.VISIBLE);
-                buttonUpload.setEnabled(false);
-
-
-
-            }
-        });
-
-
-
-
 
         return view;
     }
@@ -305,46 +100,42 @@ public class TabFragment3 extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_OK ) {
+            Toast.makeText(context, "Photo saved in In-app images", Toast.LENGTH_LONG).show();
             button.setText("Take another");
-            buttonUpload.setEnabled(true);
-            buttonUpload.setBackgroundColor(Color.GREEN);
             getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(1)).attach(getFragmentManager().getFragments().get(1)).commitAllowingStateLoss();
-
 
 
             //  Bitmap photo = rotateImage(BitmapFactory.decodeFile(imageFileLocation));
 
             //exif code
+            gps = new GPSTracker(context);
 
-            /*
-            ExifInterface exif = null;
+            if (gps.isGPSEnabled) {
 
-            try{
-                exif= new ExifInterface(imageFileLocation);
 
-                double latitude = gps.getLatitude();
-                double longitude = gps.getLongitude();
+                ExifInterface exif = null;
 
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, GPS.convert(latitude));
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, GPS.latitudeRef(latitude));
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, GPS.convert(longitude));
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, GPS.longitudeRef(longitude));
-                exif.saveAttributes();
+                try {
+                    exif = new ExifInterface(imageFileLocation);
 
-                System.out.println("lat: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
-                System.out.println("lat ref: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF));
-                System.out.println("lon: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
-                System.out.println("lon ref: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
 
-            }catch(IOException e){
-                e.printStackTrace();
+                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, GPS.convert(latitude));
+                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, GPS.latitudeRef(latitude));
+                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, GPS.convert(longitude));
+                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, GPS.longitudeRef(longitude));
+                    exif.saveAttributes();
 
+                    System.out.println("lat: " + latitude);
+                    System.out.println("long: " + longitude);
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                }
             }
-
-            //
-            //resultPhoto.setImageBitmap(photo);
-
-            */
 
         }
         else if(requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_CANCELED) {
@@ -359,7 +150,6 @@ public class TabFragment3 extends Fragment {
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(imageFileLocation))));
 
         }
-
 
 
         }
