@@ -1,4 +1,4 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.Adapters;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.edwin.photoarchive.Activities.ImagePreview;
+import com.example.edwin.photoarchive.Activities.InAppViewAllActivity;
 
 import java.util.ArrayList;
 
@@ -100,7 +102,7 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
                         inAppViewAllActivityInstance.removeFromImageViewSet(iv);
 
                         if(inAppViewAllActivityInstance.getImagePathSetSize() == 0){
-                            inAppViewAllActivityInstance.setTitle("App Images");
+                            inAppViewAllActivityInstance.setTitle("App Images (" + imgPathList.size()+")");
 
                         }
                         else{

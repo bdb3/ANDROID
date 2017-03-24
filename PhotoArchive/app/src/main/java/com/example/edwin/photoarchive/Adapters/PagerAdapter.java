@@ -1,8 +1,14 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.Adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.example.edwin.photoarchive.TabFragment1;
+import com.example.edwin.photoarchive.TabFragment2;
+import com.example.edwin.photoarchive.TabFragment3;
+import com.example.edwin.photoarchive.TabFragment4;
+import com.example.edwin.photoarchive.TabFragment5;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;

@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 
+import com.example.edwin.photoarchive.Adapters.ImageAdapterHistory;
+
 import java.io.File;
 import java.util.ArrayList;
 

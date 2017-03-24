@@ -1,11 +1,8 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.Activities;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -15,12 +12,15 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.example.edwin.photoarchive.Adapters.ImageAdapterForAppImages;
+import com.example.edwin.photoarchive.R;
+
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
-public class GalleryViewAllActivity extends AppCompatActivity {
+public class InAppViewAllActivity extends AppCompatActivity {
     private GridView imageGrid;
     private ArrayList<String> imgPathList;
     private Menu menu;
@@ -29,23 +29,38 @@ public class GalleryViewAllActivity extends AppCompatActivity {
     private HashSet<ImageView> imageViewSet = new HashSet<ImageView>();
     private Button selectButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery_view_all);
+        setContentView(R.layout.activity_in_app_view_all);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Gallery Images");
-
-        imageGrid = (GridView) findViewById(R.id.gridView2);
-        imgPathList = new ArrayList<String>(getImagesPath(this));
-        Collections.reverse(imgPathList);
-
-        imageGrid.setAdapter(new ImageAdapterForGallery(GalleryViewAllActivity.this, imgPathList, this));
 
 
+        imageGrid = (GridView) findViewById(R.id.gridView3);
+        imgPathList = new ArrayList<String>();
 
-         selectButton = (Button)findViewById(R.id.button14);
+        File path2 = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
+        String[] fileNames2 = null;
+
+        if (path2.exists()) {
+            fileNames2 = path2.list();
+
+
+            for (int i = fileNames2.length-1; i>=0; i--) {
+                if(!fileNames2[i].equals(".nomedia")){
+                    imgPathList.add(path2 + "/" + fileNames2[i]);
+                }
+            }
+
+        }
+
+        setTitle("App Images ("+ imgPathList.size()+")");
+        imageGrid.setAdapter(new ImageAdapterForAppImages(InAppViewAllActivity.this, imgPathList, this));
+
+
+        selectButton = (Button)findViewById(R.id.button15);
 
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +75,7 @@ public class GalleryViewAllActivity extends AppCompatActivity {
         });
 
     }
+
     private void showOption(int id) {
         MenuItem item = menu.findItem(id);
         item.setVisible(true);
@@ -98,7 +114,7 @@ public class GalleryViewAllActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                Intent i= new Intent(GalleryViewAllActivity.this, Activity2.class);
+                Intent i= new Intent(InAppViewAllActivity.this, Activity2.class);
                 i.putExtra("viewpager_position", 1);
 
                 //add images passed from tab 2 to imagePathSet
@@ -119,9 +135,10 @@ public class GalleryViewAllActivity extends AppCompatActivity {
                 }
 
                 if(imagePathSet.size()>0){
-                    i.putExtra("selectedImagesFromGallery", imagePathSet);
-                }
+                    i.putExtra("selectedImagesFromApp", imagePathSet);
 
+
+                }
                 startActivity(i);
                 finish();
 
@@ -148,7 +165,7 @@ public class GalleryViewAllActivity extends AppCompatActivity {
     }
 
     private void deselectAllImages(){
-        setTitle("Gallery Images");
+        setTitle("App Images ("+ imgPathList.size()+")");
         hideOption(0);
         hideOption(1);
         selectButton.setEnabled(true);
@@ -173,50 +190,22 @@ public class GalleryViewAllActivity extends AppCompatActivity {
     }
     public void addToImageViewSet(ImageView iv){
 
-            this.imageViewSet.add(iv);
+        this.imageViewSet.add(iv);
 
 
 
     }
     public void removeFromImageViewSet(ImageView iv){
 
-            this.imageViewSet.remove(iv);
+        this.imageViewSet.remove(iv);
 
 
 
     }
-
-
 
     public int getImagePathSetSize(){
         return imagePathSet.size();
 
-    }
-
-
-    public static ArrayList<String> getImagesPath(Activity activity) {
-        Uri uri;
-        ArrayList<String> listOfAllImages = new ArrayList<String>();
-        Cursor cursor;
-        int column_index_data, column_index_folder_name;
-        String PathOfImage = null;
-        uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-
-        String[] projection = { MediaStore.MediaColumns.DATA,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
-
-        cursor = activity.getContentResolver().query(uri, projection, null,
-                null, null);
-
-        column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        column_index_folder_name = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
-        while (cursor.moveToNext()) {
-            PathOfImage = cursor.getString(column_index_data);
-
-            listOfAllImages.add(PathOfImage);
-        }
-        return listOfAllImages;
     }
 
 }

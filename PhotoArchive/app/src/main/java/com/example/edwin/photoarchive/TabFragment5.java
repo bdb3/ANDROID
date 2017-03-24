@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.edwin.photoarchive.Activities.MainActivity;
+
 
 public class TabFragment5 extends Fragment {
     private GPSTracker gps;

@@ -1,4 +1,4 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.AzureClasses;
 
 public class Context {
     private String id;

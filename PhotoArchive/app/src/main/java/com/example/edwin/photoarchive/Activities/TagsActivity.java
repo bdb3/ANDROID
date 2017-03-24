@@ -1,4 +1,4 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +14,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -33,9 +32,11 @@ import java.util.Map;
 //azure
 
 import java.net.MalformedURLException;
-import com.microsoft.windowsazure.mobileservices.*;
+
+import com.example.edwin.photoarchive.AzureClasses.Attribute;
+import com.example.edwin.photoarchive.AzureClasses.Context_Attribute;
+import com.example.edwin.photoarchive.R;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.MobileServiceException;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 public class TagsActivity extends AppCompatActivity {
@@ -52,7 +53,7 @@ public class TagsActivity extends AppCompatActivity {
 
     //Azure variables
        private MobileServiceClient client;
-       private MobileServiceTable<com.example.edwin.photoarchive.Context> contextTable;
+       private MobileServiceTable<com.example.edwin.photoarchive.AzureClasses.Context> contextTable;
        private MobileServiceTable<Attribute> attributeTable;
        private MobileServiceTable<Context_Attribute> caTable;
 
@@ -72,7 +73,7 @@ public class TagsActivity extends AppCompatActivity {
                         System.out.println("MalformedURL " + m.toString());
               }
 
-        contextTable = client.getTable(com.example.edwin.photoarchive.Context.class);
+        contextTable = client.getTable(com.example.edwin.photoarchive.AzureClasses.Context.class);
         attributeTable = client.getTable(Attribute.class);
         caTable = client.getTable(Context_Attribute.class);
 
@@ -85,7 +86,7 @@ public class TagsActivity extends AppCompatActivity {
                     Log.d("Azure", "Starting async");
 
                     try {
-                        final List<com.example.edwin.photoarchive.Context> contextList = contextTable.execute().get();
+                        final List<com.example.edwin.photoarchive.AzureClasses.Context> contextList = contextTable.execute().get();
                         Log.d("Azure", contextList.size() +"");
 
                         runOnUiThread(new Runnable() {
@@ -93,7 +94,7 @@ public class TagsActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 //mAdapter.clear();
-                                for (com.example.edwin.photoarchive.Context item : contextList) {
+                                for (com.example.edwin.photoarchive.AzureClasses.Context item : contextList) {
                                     //mAdapter.add(item);
                                     Log.d("Azure", item.getId());
                                 }

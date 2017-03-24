@@ -9,9 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
@@ -33,13 +31,24 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.edwin.photoarchive.Activities.TagsActivity;
+import com.example.edwin.photoarchive.Activities.ViewInfo;
+import com.example.edwin.photoarchive.Activities.ViewTags;
+import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
+import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import java.util.Iterator;
+import java.util.List;
 
 
- public class TabFragment1 extends Fragment {
+public class TabFragment1 extends Fragment {
     private Context context = null;
     private GridView imageGrid;
     private ArrayList<String> imgPathList;
@@ -49,7 +58,8 @@ import java.util.Iterator;
     private Menu menu;
     private TextView photosToBeUploaded;
     private TextView permissionsStatus;
-     private GPSTracker gps;
+    private GPSTracker gps;
+    private BroadcastReceiver receiver;
 
 
 
@@ -78,7 +88,8 @@ import java.util.Iterator;
 
         }
 
-        BroadcastReceiver receiver = new BroadcastReceiver() {
+
+                receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(android.content.Context context, Intent intent) {
                 if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
@@ -141,23 +152,15 @@ import java.util.Iterator;
         imgPathList = new ArrayList<String>();
 
         if(sharedPreferences.contains("listOfImagesWithTags")) {
-            String mapString = sharedPreferences.getString("listOfImagesWithTags", null);
+            String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
+            Type listType = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
+            List<TaggedImageObject> taggedImageObjectsList = new Gson().fromJson(savedArraylist, listType);
 
-            try {
-                JSONObject jsonObject2 = new JSONObject(mapString);
-                Iterator<String> keysItr = jsonObject2.keys();
+            for(TaggedImageObject t: taggedImageObjectsList){
+                imgPathList.add(t.getImgPath());
 
+            }
 
-                while(keysItr.hasNext()) {
-
-                    imgPathList.add(keysItr.next());
-                }
-
-
-            }catch(Exception e){
-                e.printStackTrace();
-
-            };
 
         }
         photosToBeUploaded.invalidate();
@@ -233,6 +236,11 @@ import java.util.Iterator;
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public void onDestroy() {
+        getActivity().unregisterReceiver(receiver);
+        super.onDestroy();
+    }
 
 
     private void showOption(int id) {
@@ -287,22 +295,25 @@ import java.util.Iterator;
  private void deleteImage(String s){
 
      if(sharedPreferences.contains("listOfImagesWithTags")) {
-         String mapString = sharedPreferences.getString("listOfImagesWithTags", null);
+         String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
+         Type listType = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
+         List<TaggedImageObject> taggedImageObjectsList = new Gson().fromJson(savedArraylist, listType);
 
-         try {
-             JSONObject jsonObject2 = new JSONObject(mapString);
-             jsonObject2.remove(s);
+         for(TaggedImageObject t: taggedImageObjectsList){
+             if (t.getImgPath().equals(s)){
+                 taggedImageObjectsList.remove(t);
+                 break;
+             }
+
+         }
 
              SharedPreferences.Editor editor = sharedPreferences.edit();
              editor.remove("listOfImagesWithTags");
              editor.apply();
-             editor.putString("listOfImagesWithTags", jsonObject2.toString());
+             editor.putString("listOfImagesWithTags", new Gson().toJson(taggedImageObjectsList));
              editor.apply();
 
-         }catch(Exception e){
-             e.printStackTrace();
 
-         };
 
          getActivity().recreate();
          ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
@@ -311,6 +322,7 @@ import java.util.Iterator;
      }
 
  }
+
 
 
 

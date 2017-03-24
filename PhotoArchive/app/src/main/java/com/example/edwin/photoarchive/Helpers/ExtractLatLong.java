@@ -1,27 +1,28 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.Helpers;
 
 import android.graphics.Color;
 import android.media.ExifInterface;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
 
-public class ViewInfo extends AppCompatActivity {
+/**
+ * Created by Edwin on 3/23/2017.
+ */
+public class ExtractLatLong {
+    private  double lat;
+    private double lon;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_info);
+    public double getLon() {
+        return lon;
+    }
 
-        final LinearLayout linearLayoutInfo = (LinearLayout) findViewById(R.id.linearLayoutInfo);
+    public double getLat() {
 
+        return lat;
+    }
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            final String path = extras.getString("imagePath");
+    public ExtractLatLong(String path){
 
             ExifInterface exif = null;
 
@@ -31,27 +32,17 @@ public class ViewInfo extends AppCompatActivity {
                 if(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) != null &&
                         exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE) !=null ) {
 
-                    String lat = String.valueOf(convertRationalLatLonToFloat(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE),
-                            exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF)));
+                    this.lat = convertRationalLatLonToFloat(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE),
+                            exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF));
 
-                    TextView tv = new TextView(this);
-                    tv.setTextColor(Color.BLACK);
-                    tv.setText("Lat: " + lat);
-                    linearLayoutInfo.addView(tv);
 
-                    String lon = String.valueOf(convertRationalLatLonToFloat(exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE),
-                            exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF)));
+                    this.lon = convertRationalLatLonToFloat(exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE),
+                            exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
 
-                    TextView tv2 = new TextView(this);
-                    tv2.setText("Lon: " + lon);
-                    tv2.setTextColor(Color.BLACK);
-                    linearLayoutInfo.addView(tv2);
                 }
                 else{
-                    TextView tv3 = new TextView(this);
-                    tv3.setText("No EXIF data available");
-                    tv3.setTextColor(Color.BLACK);
-                    linearLayoutInfo.addView(tv3);
+                    this.lat = 0;
+                    this.lon = 0;
 
                 }
 
@@ -63,7 +54,6 @@ public class ViewInfo extends AppCompatActivity {
             }
 
         }
-    }
 
     private float convertRationalLatLonToFloat(String rationalString, String ref) {
         try {
@@ -89,4 +79,5 @@ public class ViewInfo extends AppCompatActivity {
             throw new IllegalArgumentException();
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.AzureClasses;
 
 public class Image {
     private String id;

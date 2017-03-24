@@ -1,4 +1,4 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.Activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,8 +16,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.edwin.photoarchive.R;
+
 import org.json.JSONObject;
-import java.util.HashMap;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;

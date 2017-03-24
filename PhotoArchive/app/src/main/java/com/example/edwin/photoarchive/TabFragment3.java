@@ -3,40 +3,25 @@ package com.example.edwin.photoarchive;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.edwin.photoarchive.Helpers.GPS;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 
 public class TabFragment3 extends Fragment {
@@ -102,8 +87,8 @@ public class TabFragment3 extends Fragment {
         if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_OK ) {
             Toast.makeText(context, "Photo saved in In-app images", Toast.LENGTH_LONG).show();
             button.setText("Take another");
-            getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(1)).attach(getFragmentManager().getFragments().get(1)).commitAllowingStateLoss();
-
+            //getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(1)).attach(getFragmentManager().getFragments().get(1)).commitAllowingStateLoss();
+           // getFragmentManager().executePendingTransactions();
 
             //  Bitmap photo = rotateImage(BitmapFactory.decodeFile(imageFileLocation));
 
@@ -127,15 +112,15 @@ public class TabFragment3 extends Fragment {
                     exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, GPS.longitudeRef(longitude));
                     exif.saveAttributes();
 
-                    System.out.println("lat: " + latitude);
-                    System.out.println("long: " + longitude);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();
 
                 }
             }
+
+            getActivity().recreate();
+            getActivity().getIntent().putExtra("viewpager_position", 2);
 
         }
         else if(requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_CANCELED) {

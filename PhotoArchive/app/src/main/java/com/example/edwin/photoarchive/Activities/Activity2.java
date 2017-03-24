@@ -1,13 +1,15 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.Activities;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.example.edwin.photoarchive.Adapters.PagerAdapter;
+import com.example.edwin.photoarchive.R;
 
 public class Activity2 extends AppCompatActivity {
     

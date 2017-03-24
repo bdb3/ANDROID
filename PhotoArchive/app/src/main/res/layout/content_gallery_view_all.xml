@@ -9,7 +9,7 @@
     android:paddingRight="3dp"
     android:paddingTop="1dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.edwin.photoarchive.GalleryViewAllActivity"
+    tools:context=".Activities.GalleryViewAllActivity"
     tools:showIn="@layout/activity_gallery_view_all">
 
     <Button

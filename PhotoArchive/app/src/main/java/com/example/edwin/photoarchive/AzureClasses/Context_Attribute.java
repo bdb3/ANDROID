@@ -1,4 +1,4 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.AzureClasses;
 
 public class Context_Attribute {
     /*For single Context-Attribute relations:

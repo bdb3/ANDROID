@@ -1,17 +1,11 @@
 package com.example.edwin.photoarchive;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,21 +13,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.example.edwin.photoarchive.Activities.ActivityEditDeleteTags;
+import com.example.edwin.photoarchive.Activities.GalleryViewAllActivity;
+import com.example.edwin.photoarchive.Activities.InAppViewAllActivity;
+import com.example.edwin.photoarchive.Activities.TagsActivity;
+import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
+import com.example.edwin.photoarchive.Helpers.ExtractLatLong;
+import com.example.edwin.photoarchive.Helpers.PopulateAppImages;
+import com.example.edwin.photoarchive.Helpers.PopulateGalleryImages;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
-import java.io.File;
-import java.security.Timestamp;
-import java.text.SimpleDateFormat;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -43,8 +40,6 @@ import java.util.Map;
 
 public class TabFragment2 extends Fragment {
     private Context context = null;
-    private ArrayList<String> imgPathList;
-    private ArrayList<String> imgPathList2;
     private HashSet<String> imgPathSet = new LinkedHashSet<String>();
     private LinearLayout picContainer;
     private LinearLayout picContainer2;
@@ -52,6 +47,8 @@ public class TabFragment2 extends Fragment {
     private Menu menu;
     private Map<String, Map<String, Map<String, String>>> imagesTagsMap = new LinkedHashMap<String, Map<String, Map<String, String>>>();
     private SharedPreferences sharedPreferences;
+    private ArrayList<TaggedImageObject> taggedImagesList = new ArrayList<TaggedImageObject>();
+
 
 
     @Override
@@ -60,10 +57,6 @@ public class TabFragment2 extends Fragment {
 
         context = this.getContext();
         View view = inflater.inflate(R.layout.tab_fragment_2, container, false);
-
-        imgPathList = new ArrayList<String>(getImagesPath(getActivity()));
-        File inAppImagesPath = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
-        imgPathList2 = new ArrayList<String>();
 
         uploadBtn = (Button) view.findViewById(R.id.button5);
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
@@ -109,103 +102,56 @@ public class TabFragment2 extends Fragment {
 
                     for(String s: imgPathSet){
 
-                       // String key = s + "~" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-                        imagesTagsMap.put(s, outputMap);
+                       // imagesTagsMap.put(s, outputMap);
 
-
+                        ExtractLatLong ell = new ExtractLatLong(s);
+                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), "user",outputMap);
+                        taggedImagesList.add(tagImgObj);
 
                     }
-
-
 
 
                 // put imagesTagsMap in shared preferences
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
+                Gson gson = new Gson();
+
                 if(!sharedPreferences.contains("listOfImagesWithTags")) {
 
-
-                    JSONObject imagesTagsMapAsJSON = new JSONObject(imagesTagsMap);
-                    String imgTagsMapAsJSONString   = imagesTagsMapAsJSON.toString();
-
-                    editor.putString("listOfImagesWithTags", imgTagsMapAsJSONString);
+                    String taggedImageslistAsString = gson.toJson(taggedImagesList);
+                    editor.putString("listOfImagesWithTags", taggedImageslistAsString);
                     editor.commit();
-
-
-                    // reset data
                     clearTagsAndSelectedImages();
-                    //
-
                     Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
 
-
                 }
+
 
 
                 else{
-                    String mapString2  = sharedPreferences.getString("listOfImagesWithTags", null);
-
-                    Map<String, Map<String, Map<String, String>>> outputMap2 = new LinkedHashMap<String, Map<String, Map<String, String>>>();
-                    try {
-                        JSONObject jsonObject2 = new JSONObject(mapString2);
-                        Iterator<String> keysItr = jsonObject2.keys();
-
-                        while(keysItr.hasNext()) {
-                            String key = keysItr.next();
-
-                            Map<String, Map<String, String>> valueMap = new LinkedHashMap<String, Map<String, String>>();
-                            Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
-
-                            while(keysItr2.hasNext()) {
-                                String key2 = keysItr2.next();
-
-                                Map<String, String> innerMap = new LinkedHashMap<String, String>();
-                                Iterator<String> keysItr3 = ((JSONObject)((JSONObject)jsonObject2.get(key)).get(key2)).keys();
-
-                                while(keysItr3.hasNext()){
-                                    String key3 = keysItr3.next();
-                                    String value = (String)((JSONObject)((JSONObject)jsonObject2.get(key)).get(key2)).get(key3);
-                                    innerMap.put(key3, value);
-
-                                }
-
-                                valueMap.put(key2, innerMap);
-                            }
-
-                            outputMap2.put(key, valueMap);
-                        }
+                    String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
+                    Type type = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
+                    ArrayList<TaggedImageObject> taggedImageObjectsList = gson.fromJson(savedArraylist, type);
 
 
-                    }catch(Exception e){
-                        e.printStackTrace();
-
-                    };
-
-                    //add curent map to sharedpreferences map
 
                     for(String s: imgPathSet){
-                       // String key = s + "~" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-                        outputMap2.put(s, outputMap);
+                        ExtractLatLong ell = new ExtractLatLong(s);
+                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), "user",outputMap);
+                        taggedImageObjectsList.add(tagImgObj);
 
                     }
-
-
-
-                    JSONObject finalJsonObject = new JSONObject(outputMap2);
-
+                    String taggedImageslistAsString = gson.toJson(taggedImageObjectsList);
                     editor.remove("listOfImagesWithTags");
                     editor.apply();
-                    editor.putString("listOfImagesWithTags", finalJsonObject.toString() );
+                    editor.putString("listOfImagesWithTags", taggedImageslistAsString);
                     editor.apply();
                     clearTagsAndSelectedImages();
                     Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
 
 
                 }
-
-
-
 
             }
         });
@@ -241,56 +187,11 @@ public class TabFragment2 extends Fragment {
 
         }
 
-///////////////////////////// IN-APP IMAGES  //////////////////////////////////////////////////
-
-        String[] inAppImgList = null;
-
-        if (inAppImagesPath.exists()) {
-            inAppImgList = inAppImagesPath.list();
-
-            for (int i = inAppImgList.length-1; i>=0; i--) {
-                if(!inAppImgList[i].equals(".nomedia")){
-                    imgPathList2.add(inAppImagesPath + "/" + inAppImgList[i]);
-                }
-            }
-
-        }
+        // POPULATE RECENT IN-APP IMAGES GRIDVIEW
 
          picContainer = (LinearLayout) view.findViewById(R.id.picContainer);
+        new PopulateAppImages(picContainer, context, getActivity());
 
-        int counter2 = 0;
-
-        for(int i = 0; i<imgPathList2.size(); i++) {
-            final int index = i;
-
-            if(counter2 == 15)
-                break;
-
-            final ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics())));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-
-            Glide.with(context).load(imgPathList2.get(i)).into(imageView);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Intent i = new Intent(getActivity(), ImagePreview.class);
-                    i.putExtra("imagePath", imgPathList2.get(index));
-                    startActivity(i);
-
-                }
-            });
-
-            picContainer.addView(imageView);
-
-            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) imageView.getLayoutParams();
-            marginParams.setMargins(0, 0, 10, 0);
-
-            counter2++;
-        }
 
         Button viewAllInAppImages  = (Button) view.findViewById(R.id.button2);
         viewAllInAppImages.setOnClickListener(new View.OnClickListener() {
@@ -314,38 +215,10 @@ public class TabFragment2 extends Fragment {
             }
         });
 
-        ///////////////////////////// IMAGES FROM GALLERY //////////////////////////////////////////////////
+        //POPULATE IMAGES FROM GALLERY GRIDVIEW
 
         picContainer2 = (LinearLayout) view.findViewById(R.id.picContainer2);
-        int counter = 0;
-
-        for(int i = imgPathList.size()-1; i>=0; i--) {
-            final int index = i;
-
-            if(counter == 15)
-                break;
-
-            final ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics())));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(context).load(imgPathList.get(i)).into(imageView);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Intent i = new Intent(getActivity(), ImagePreview.class);
-                    i.putExtra("imagePath", imgPathList.get(index));
-                    startActivity(i);
-
-                }
-            });
-            picContainer2.addView(imageView);
-            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) imageView.getLayoutParams();
-            marginParams.setMargins(0, 0, 10, 0);
-
-            counter++;
-        }
+        new PopulateGalleryImages(picContainer2, context, getActivity());
 
         //////////////////////////////////// ADDING TAGS /////////////////////////////////////////////////////////
 
@@ -487,31 +360,6 @@ public class TabFragment2 extends Fragment {
 
     }
 
-
-    public static ArrayList<String> getImagesPath(Activity activity) {
-        Uri uri;
-        ArrayList<String> listOfAllImages = new ArrayList<String>();
-        Cursor cursor;
-        int column_index_data, column_index_folder_name;
-        String PathOfImage = null;
-        uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-
-        String[] projection = { MediaStore.MediaColumns.DATA,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
-
-        cursor = activity.getContentResolver().query(uri, projection, null,
-                null, null);
-
-        column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        column_index_folder_name = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
-        while (cursor.moveToNext()) {
-            PathOfImage = cursor.getString(column_index_data);
-
-            listOfAllImages.add(PathOfImage);
-        }
-        return listOfAllImages;
-    }
 
 }
 

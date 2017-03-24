@@ -1,4 +1,4 @@
-package com.example.edwin.photoarchive;
+package com.example.edwin.photoarchive.Adapters;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,9 +11,10 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.edwin.photoarchive.Activities.GalleryViewAllActivity;
+import com.example.edwin.photoarchive.Activities.ImagePreview;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class ImageAdapterForGallery extends BaseAdapter  {
 
@@ -101,7 +102,7 @@ public class ImageAdapterForGallery extends BaseAdapter  {
                         galleryActivityInstance.removeFromImageViewSet(iv);
 
                         if(galleryActivityInstance.getImagePathSetSize() == 0){
-                            galleryActivityInstance.setTitle("Gallery Images");
+                            galleryActivityInstance.setTitle("Gallery (" + imgPathList.size()+")");
 
                         }
                         else{
