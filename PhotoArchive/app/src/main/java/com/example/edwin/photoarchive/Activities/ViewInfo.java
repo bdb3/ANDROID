@@ -1,16 +1,13 @@
 package com.example.edwin.photoarchive.Activities;
 
 import android.graphics.Color;
-import android.media.ExifInterface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.edwin.photoarchive.Helpers.ExtractLatLong;
 import com.example.edwin.photoarchive.R;
-
-import java.io.IOException;
 
 public class ViewInfo extends AppCompatActivity {
 

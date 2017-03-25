@@ -1,19 +1,17 @@
 package com.example.edwin.photoarchive.Activities;
 
-import android.content.*;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
 import com.example.edwin.photoarchive.R;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
@@ -21,9 +19,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ViewTags extends AppCompatActivity {
 

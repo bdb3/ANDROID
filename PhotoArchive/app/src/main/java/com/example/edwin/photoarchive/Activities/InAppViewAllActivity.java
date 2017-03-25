@@ -1,8 +1,13 @@
 package com.example.edwin.photoarchive.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -11,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.edwin.photoarchive.Adapters.ImageAdapterForAppImages;
 import com.example.edwin.photoarchive.R;
@@ -28,6 +34,7 @@ public class InAppViewAllActivity extends AppCompatActivity {
     private HashSet<String> imagePathSet = new LinkedHashSet<String>();
     private HashSet<ImageView> imageViewSet = new HashSet<ImageView>();
     private Button selectButton;
+    private Button deleteButton;
 
 
     @Override
@@ -56,20 +63,38 @@ public class InAppViewAllActivity extends AppCompatActivity {
 
         }
 
-        setTitle("App Images ("+ imgPathList.size()+")");
+        setTitle("In App ("+ imgPathList.size()+")");
         imageGrid.setAdapter(new ImageAdapterForAppImages(InAppViewAllActivity.this, imgPathList, this));
 
 
+
+
         selectButton = (Button)findViewById(R.id.button15);
+        deleteButton = (Button)findViewById(R.id.buttonDelete);
+
 
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectButton.setEnabled(false);
+                deleteButton.setEnabled(false);
                 isSelectEnabled = true;
                 showOption(0);
                 showOption(1);
 
+
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectButton.setEnabled(false);
+                deleteButton.setEnabled(false);
+                isSelectEnabled = true;
+                showOption(0);
+                showOption(2);
+                showOption(3);
 
             }
         });
@@ -100,12 +125,37 @@ public class InAppViewAllActivity extends AppCompatActivity {
         menu.add(Menu.NONE, 1, Menu.NONE, "DONE")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
+        menu.add(Menu.NONE, 2, Menu.NONE, "SELECT ALL")
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        menu.add(Menu.NONE, 3, Menu.NONE, "")
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        menu.findItem(3).setIcon(R.drawable.delete_icon);
+        menu.findItem(3).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+
 
         MenuItem item = menu.findItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 deselectAllImages();
+                return true;
+            }});
+
+        MenuItem itemSelectAll = menu.findItem(2).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                selectAllImages();
+                return true;
+            }});
+
+        MenuItem itemDelete = menu.findItem(3).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                deleteImage();
                 return true;
             }});
 
@@ -149,6 +199,8 @@ public class InAppViewAllActivity extends AppCompatActivity {
 
         hideOption(0);
         hideOption(1);
+        hideOption(2);
+        hideOption(3);
 
         super.onCreateOptionsMenu(menu);
         return true;
@@ -165,10 +217,13 @@ public class InAppViewAllActivity extends AppCompatActivity {
     }
 
     private void deselectAllImages(){
-        setTitle("App Images ("+ imgPathList.size()+")");
+        setTitle("In App ("+ imgPathList.size()+")");
         hideOption(0);
         hideOption(1);
+        hideOption(2);
+        hideOption(3);
         selectButton.setEnabled(true);
+        deleteButton.setEnabled(true);
         isSelectEnabled = false;
         imagePathSet.clear();
 
@@ -176,6 +231,12 @@ public class InAppViewAllActivity extends AppCompatActivity {
             iv.clearColorFilter();
 
         }
+        for(int i = 0; i < imageGrid.getChildCount(); i++ ){
+            ImageView img = (ImageView) imageGrid.getChildAt(i);
+            img.clearColorFilter();
+
+        }
+
         imageViewSet.clear();
 
     }
@@ -205,6 +266,51 @@ public class InAppViewAllActivity extends AppCompatActivity {
 
     public int getImagePathSetSize(){
         return imagePathSet.size();
+
+    }
+
+    private void deleteImage(){
+
+        new AlertDialog.Builder(InAppViewAllActivity.this)
+                .setTitle("Delete confirmation")
+                .setMessage("Are you sure you want to delete these image(s)?")
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface dialog, int which) {
+
+                        for(String s: imagePathSet){
+                            File file = new File(s);
+                            file.delete();
+                            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(s))));
+
+                        }
+
+                        Toast.makeText(InAppViewAllActivity.this, imagePathSet.size() + " image(s) deleted", Toast.LENGTH_SHORT).show();
+                        recreate();
+
+                    }
+                })
+                .create()
+                .show();
+
+
+    }
+
+    private void selectAllImages(){
+
+        for(String s: imgPathList ){
+            imagePathSet.add(s);
+
+        }
+
+        for(int i = 0; i < imageGrid.getChildCount(); i++ ){
+            ImageView img = (ImageView) imageGrid.getChildAt(i);
+            img.setColorFilter(Color.argb(110, 20, 197, 215));
+
+        }
+
+        setTitle("Selected: "+ imgPathList.size());
+
 
     }
 

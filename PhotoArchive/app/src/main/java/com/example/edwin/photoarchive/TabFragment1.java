@@ -3,7 +3,6 @@ package com.example.edwin.photoarchive;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -12,9 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
-
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -25,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -39,12 +35,8 @@ import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-
-import java.util.Iterator;
 import java.util.List;
 
 

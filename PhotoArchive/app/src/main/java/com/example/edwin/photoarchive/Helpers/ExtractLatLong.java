@@ -1,8 +1,6 @@
 package com.example.edwin.photoarchive.Helpers;
 
-import android.graphics.Color;
 import android.media.ExifInterface;
-import android.widget.TextView;
 
 import java.io.IOException;
 

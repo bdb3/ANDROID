@@ -8,8 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,7 +19,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.edwin.photoarchive.AzureClasses.Attribute;
+import com.example.edwin.photoarchive.AzureClasses.Context_Attribute;
+import com.example.edwin.photoarchive.R;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+
 import org.json.JSONObject;
+
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,14 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 //azure
-
-import java.net.MalformedURLException;
-
-import com.example.edwin.photoarchive.AzureClasses.Attribute;
-import com.example.edwin.photoarchive.AzureClasses.Context_Attribute;
-import com.example.edwin.photoarchive.R;
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 public class TagsActivity extends AppCompatActivity {
     private LinearLayout linearLayoutContextContainer;

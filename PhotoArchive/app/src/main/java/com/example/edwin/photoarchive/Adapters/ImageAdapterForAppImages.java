@@ -63,6 +63,8 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
         imageView.clearColorFilter();
         inAppViewAllActivityInstance.removeFromImageViewSet(imageView);
 
+
+
         if(inAppViewAllActivityInstance.imagePathSetContains(this.imgPathList.get(position))){
             imageView.setColorFilter(Color.argb(110, 20, 197, 215));
             inAppViewAllActivityInstance.addToImageViewSet(imageView);
@@ -102,7 +104,7 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
                         inAppViewAllActivityInstance.removeFromImageViewSet(iv);
 
                         if(inAppViewAllActivityInstance.getImagePathSetSize() == 0){
-                            inAppViewAllActivityInstance.setTitle("App Images (" + imgPathList.size()+")");
+                            inAppViewAllActivityInstance.setTitle("In App (" + imgPathList.size()+")");
 
                         }
                         else{
