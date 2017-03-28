@@ -20,11 +20,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
-import com.example.edwin.photoarchive.AzureClasses.Context_Attribute;
 import com.example.edwin.photoarchive.R;
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 import org.json.JSONObject;
 
@@ -38,7 +36,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-//azure
+
 
 public class TagsActivity extends AppCompatActivity {
     private LinearLayout linearLayoutContextContainer;
@@ -47,16 +45,11 @@ public class TagsActivity extends AppCompatActivity {
     private LinearLayout attrList;
     private Button ok;
     private Button cancelBtn;
-    private Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
     private Map<String, Map<String, String>> tagList = new LinkedHashMap<String, Map<String, String>>();
     SharedPreferences sharedPreferences;
     public static final String MyTagsPREFERENCES = "Preferences" ;
 
-    //Azure variables
-       private MobileServiceClient client;
-       private MobileServiceTable<com.example.edwin.photoarchive.AzureClasses.Context> contextTable;
-       private MobileServiceTable<Attribute> attributeTable;
-       private MobileServiceTable<Context_Attribute> caTable;
+    private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new HashMap<>();
 
 
     @Override
@@ -65,89 +58,21 @@ public class TagsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tags);
 
 
-        //initialize client
-              try {
-                  client = new MobileServiceClient("https://boephotoarchive-dev.azurewebsites.net",
-                                        this
-                                        );
-                   }catch (MalformedURLException m){
-                        System.out.println("MalformedURL " + m.toString());
-              }
+        Bundle azureDB = getIntent().getExtras();
+        contextsAndAttributes = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>)azureDB.get("azure");
 
-        contextTable = client.getTable(com.example.edwin.photoarchive.AzureClasses.Context.class);
-        attributeTable = client.getTable(Attribute.class);
-        caTable = client.getTable(Context_Attribute.class);
+        System.out.println(contextsAndAttributes);
 
-        //query contexts
-
-
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-                protected Void doInBackground(Void... params) {
-                    Log.d("Azure", "Starting async");
-
-                    try {
-                        final List<com.example.edwin.photoarchive.AzureClasses.Context> contextList = contextTable.execute().get();
-                        Log.d("Azure", contextList.size() +"");
-
-                        runOnUiThread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                //mAdapter.clear();
-                                for (com.example.edwin.photoarchive.AzureClasses.Context item : contextList) {
-                                    //mAdapter.add(item);
-                                    Log.d("Azure", item.getId());
-                                }
-                            }
-                        });
-                    } catch (Exception exception) {
-                        Log.d("Azure", exception.toString());
-                    }
-                    return null;
-                }
-            };
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         linearLayoutContextContainer = (LinearLayout) findViewById(R.id.linearLayoutContextContainer);
-        String[] values = new String[] { "Meeting",
-                "Permit",
-                "Project",
-                "Cell tower"
-        };
 
-        for(int i=0; i < values.length; i++){
-
-            ArrayList<String> list = new ArrayList<String>();
-
-            if(i==0){
-                list.add("How many people are in the photo?");
-                list.add("Where was the photo taken?");
-                list.add("What is the topic of the meeting?");
-
-            }
-            else if(i==1){
-                list.add("Where was the photo taken?");
-                list.add("What is the Permit Number?");
-            }
-            else if(i==2){
-                list.add("Where was the photo taken?");
-                list.add("What is the Project Number?");
-            }
-            else if(i==3){
-                list.add("Where was the photo taken?");
-                list.add("What is the company that owns this tower?");
-                list.add("How far does the signal reach?");
-
-            }
-
-            map.put(values[i], list);
-
-        }
 
        // generate context vertical list
 
-        for(int i = 0; i<values.length; i++){
+        for(Map.Entry<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> entry : contextsAndAttributes.entrySet()){
+
+            final com.example.edwin.photoarchive.AzureClasses.Context key = entry.getKey();
+
             LinearLayout contextRow = new LinearLayout(this);
             contextRow.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -169,7 +94,7 @@ public class TagsActivity extends AppCompatActivity {
             layoutParams1.setMargins(0,15,0,0);
 
             final TextView tv = new TextView(this);
-            tv.setText(values[i]);
+            tv.setText(key.getId());
             tv.setTextColor(Color.BLACK);
 
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
@@ -184,7 +109,7 @@ public class TagsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    showForm(tv.getText().toString());
+                    showForm(key);
                 }
             });
 
@@ -377,20 +302,20 @@ public class TagsActivity extends AppCompatActivity {
 
     }
 
-    public void showForm(String choice){
+    public void showForm(com.example.edwin.photoarchive.AzureClasses.Context choice){
 
-        tv9.setText(choice);
+        tv9.setText(choice.getId());
         linearLayoutContextContainer.setVisibility(View.INVISIBLE);
         done.setVisibility(View.INVISIBLE);
         attrList.setVisibility(View.VISIBLE);
         ok.setVisibility(View.VISIBLE);
         cancelBtn.setVisibility(View.VISIBLE);
 
-        ArrayList<String> attList = new ArrayList<String>(map.get(choice));
+        ArrayList<Attribute> attList = new ArrayList<Attribute>(contextsAndAttributes.get(choice));
 
-        for(String s: attList){
+        for(Attribute s: attList){
             TextView textView = new TextView(getApplicationContext());
-            textView.setText(s);
+            textView.setText(s.getQuestion());
             textView.setTextColor(Color.BLACK);
             attrList.addView(textView);
             final EditText editText = new EditText(getApplicationContext());

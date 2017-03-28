@@ -1,6 +1,8 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
-public class Context {
+import java.io.Serializable;
+
+public class Context implements Serializable {
     private String id;
 
     private String descriptor;

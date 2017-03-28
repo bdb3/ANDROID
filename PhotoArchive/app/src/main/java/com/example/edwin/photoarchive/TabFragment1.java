@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -31,13 +32,20 @@ import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.Activities.ViewInfo;
 import com.example.edwin.photoarchive.Activities.ViewTags;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
+import com.example.edwin.photoarchive.AzureClasses.Attribute;
+import com.example.edwin.photoarchive.AzureClasses.Context_Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import java.net.MalformedURLException;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 
 public class TabFragment1 extends Fragment {
@@ -50,8 +58,14 @@ public class TabFragment1 extends Fragment {
     private Menu menu;
     private TextView photosToBeUploaded;
     private TextView permissionsStatus;
+    private  TextView tagsStatus;
     private GPSTracker gps;
     private BroadcastReceiver receiver;
+
+    private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new HashMap<>();
+    private SharedPreferences appSharedPrefs;
+
+
 
 
 
@@ -59,9 +73,11 @@ public class TabFragment1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context= this.getContext();
         setHasOptionsMenu(true);
+        appSharedPrefs = context.getSharedPreferences("AzureDB", Context.MODE_PRIVATE);
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
 
          permissionsStatus = (TextView) view.findViewById(R.id.textView6);
+         tagsStatus = (TextView) view.findViewById(R.id.textView5);
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
         //show enable gps alert
@@ -80,8 +96,22 @@ public class TabFragment1 extends Fragment {
 
         }
 
+        //IMPORTANT! PULL INFORMATION FROM THE DB
+        //ALSO CALLED WHEN BUTTON IS PUSHED (IMPLEMENT SYNC BUTTON)
+               try{
+               getActivity().getIntent().getExtras().get("azure");
+                    //tags are up to date
+               tagsStatus.setText("Tags status: Up to date!");
+           } catch (NullPointerException n){
+               //set tags to syncing
 
-                receiver = new BroadcastReceiver() {
+               //no list exists, so pull from DB
+                   pullContextsAndAttributes();
+           }
+
+
+
+        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(android.content.Context context, Intent intent) {
                 if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
@@ -128,8 +158,6 @@ public class TabFragment1 extends Fragment {
             permissionsStatus.invalidate();
             permissionsStatus.setText("No wifi connection");
             permissionsStatus.setTextColor(Color.RED);
-
-
 
 
         }
@@ -314,6 +342,83 @@ public class TabFragment1 extends Fragment {
      }
 
  }
+
+    //PULL DATA FROM DB
+    private void pullContextsAndAttributes(){
+        try {
+            //initialize client connection
+            MobileServiceClient mClient = new MobileServiceClient(
+                    "https://boephotoarchive-dev.azurewebsites.net",
+                    context);
+
+            //create table references
+            final MobileServiceTable<com.example.edwin.photoarchive.AzureClasses.Context> contextTable = mClient.getTable(com.example.edwin.photoarchive.AzureClasses.Context.class);
+            final MobileServiceTable<Attribute> attributeTable = mClient.getTable(Attribute.class);
+            final MobileServiceTable<Context_Attribute> caTable = mClient.getTable(Context_Attribute.class);
+
+            new AsyncTask<Void, Void, Void>() {
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    try {
+
+                        //pull data into lists
+                        final List<com.example.edwin.photoarchive.AzureClasses.Context> contexts = contextTable.execute().get();
+                        final List<Attribute> attributes = attributeTable.execute().get();
+                        final List<Context_Attribute> context_attributes = caTable.execute().get();
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for(com.example.edwin.photoarchive.AzureClasses.Context current : contexts){
+
+                                    //make a new list of possible attributes
+                                    ArrayList<Attribute> currentAttributes = new ArrayList<>();
+
+                                    if(!contextsAndAttributes.containsKey(current)){
+
+                                        //generate a list of all of its attributes
+                                        for(Context_Attribute ca : context_attributes){
+
+
+                                            if(ca.getContextID().equals(current.getId())){
+
+                                                //get attribute
+                                                String attributeID = ca.getAttributeID();
+
+                                                for(Attribute a : attributes){
+
+                                                    if(a.getId().equals(attributeID)){
+
+                                                        currentAttributes.add(a);
+
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    //push the data into the map
+                                    contextsAndAttributes.put(current, currentAttributes);
+                                }
+
+                                tagsStatus.setText("Tags status: Up to date!");
+
+                                //store contextsAndAttributes into extras
+                                getActivity().getIntent().putExtra("azure", contextsAndAttributes);
+                            }
+                        });
+                    } catch (Exception exception) {
+                        Log.d("Azure", "Attribute error!");
+                    }
+                    return null;
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }catch (MalformedURLException m) {
+            Log.d("Azure", "Error! Invalid URL");
+        }
+    }
 
 
 

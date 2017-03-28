@@ -1,6 +1,8 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
-public class Attribute {
+import java.io.Serializable;
+
+public class Attribute implements Serializable {
     private String id;
 
     private String question;

@@ -20,6 +20,7 @@ import com.example.edwin.photoarchive.Activities.ActivityEditDeleteTags;
 import com.example.edwin.photoarchive.Activities.GalleryViewAllActivity;
 import com.example.edwin.photoarchive.Activities.InAppViewAllActivity;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
+import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
 import com.example.edwin.photoarchive.Helpers.ExtractLatLong;
 import com.example.edwin.photoarchive.Helpers.PopulateAppImages;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -281,7 +283,12 @@ public class TabFragment2 extends Fragment {
                 Intent i= new Intent(getActivity(), TagsActivity.class);
                 // send selected images to tags activity so they are not removed
 
+                Bundle azureDB = getActivity().getIntent().getExtras();
+                //grab ContextsAndAttributes from extras
+                HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>)azureDB.get("azure");
+
                 i.putExtra("selectedImages", imgPathSet);
+                i.putExtra("azure", caa);
 
                 startActivity(i);
 

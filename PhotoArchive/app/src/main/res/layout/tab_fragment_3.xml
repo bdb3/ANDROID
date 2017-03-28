@@ -1,21 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:id="@+id/scrollViewF3"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="true">
 
-
-    <Button
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:layout_height="wrap_content"
-        android:text="Take Picture"
-        android:textStyle="bold"
-        android:id="@+id/button"
-        android:background="#e4dede"
-        android:layout_marginEnd="7dp"
-        android:layout_marginStart="7dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/relativeLayoutF3">
+
+        <TextView
+            android:id="@+id/textViewTaken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Taken: 0"
+            android:textColor="#000000"
+            android:textSize="17dp"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            />
 
 
-</RelativeLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear"
+            android:id="@+id/clearTaken"
+            android:textStyle="bold"
+            android:layout_marginEnd="7dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+             />
+
+        <TextView
+            android:id="@+id/textViewTags"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:text="Tags:"
+            android:textColor="#000000"
+            android:textSize="17dp"
+            android:textStyle="bold"
+            android:layout_below="@+id/textViewTaken"
+            />
+
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/textViewTags"
+            android:layout_marginTop="10dp"
+            android:id="@+id/horizontalScrollViewT3" >
+
+            <LinearLayout
+                android:id="@+id/tagContainerT3"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                />
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/textViewDivider"
+            android:layout_width="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_below="@id/horizontalScrollViewT3"
+            android:layout_centerHorizontal="true"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear tags"
+            android:id="@+id/buttonClearTags"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_toStartOf="@id/textViewDivider"
+            android:layout_below="@id/horizontalScrollViewT3"
+
+
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add tags"
+            android:id="@+id/buttonAddTags"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/textViewDivider"
+            android:layout_below="@id/horizontalScrollViewT3"
+
+
+            />
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload"
+            android:id="@+id/buttonUpload"
+            android:textStyle="bold"
+            android:layout_marginEnd="7dp"
+            android:layout_below="@+id/buttonClearTags"
+            android:layout_marginTop="10dp"
+
+            />
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Take Picture"
+            android:id="@+id/button"
+            android:textStyle="bold"
+            android:layout_marginEnd="7dp"
+            android:layout_below="@id/buttonUpload"
+            android:layout_marginTop="15dp"
+
+            />
+
+
+    </RelativeLayout>
+
+</ScrollView>
