@@ -100,7 +100,7 @@ public class TabFragment1 extends Fragment {
 
         pullContextsAndAttributes();
 
-        
+
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(android.content.Context context, Intent intent) {
@@ -393,7 +393,8 @@ public class TabFragment1 extends Fragment {
                                     contextsAndAttributes.put(current, currentAttributes);
                                 }
 
-                                tagsStatus.setText("Tags status: Up to date!");
+                                tagsStatus.setTextColor(Color.GREEN);
+                                tagsStatus.setText("Tags status: up to date!");
 
                                 //store contextsAndAttributes into extras
                                 getActivity().getIntent().putExtra("azure", contextsAndAttributes);

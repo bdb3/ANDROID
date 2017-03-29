@@ -34,7 +34,8 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activities.TagsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".Activities.ActivityEditDeleteTags"
             android:configChanges="orientation|keyboardHidden|screenSize" />
