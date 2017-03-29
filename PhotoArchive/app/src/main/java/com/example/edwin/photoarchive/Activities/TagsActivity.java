@@ -48,6 +48,8 @@ public class TagsActivity extends AppCompatActivity {
     private Map<String, Map<String, String>> tagList = new LinkedHashMap<String, Map<String, String>>();
     SharedPreferences sharedPreferences;
     public static final String MyTagsPREFERENCES = "Preferences" ;
+    private String referrer = "";
+    private String prefsKey = "";
 
     private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new HashMap<>();
 
@@ -61,10 +63,16 @@ public class TagsActivity extends AppCompatActivity {
         Bundle azureDB = getIntent().getExtras();
         contextsAndAttributes = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>)azureDB.get("azure");
 
-        System.out.println(contextsAndAttributes);
-
-
         linearLayoutContextContainer = (LinearLayout) findViewById(R.id.linearLayoutContextContainer);
+
+        if(azureDB.containsKey("cameraTab")){
+            referrer = "cameraTab";
+            prefsKey = "cameraTags";
+
+        }
+        else{
+            prefsKey = "listOfTags";
+        }
 
 
        // generate context vertical list
@@ -129,8 +137,8 @@ public class TagsActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(MyTagsPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if(sharedPreferences.contains("listOfTags")){
-            String mapString  = sharedPreferences.getString("listOfTags", null);
+        if(sharedPreferences.contains(prefsKey)){
+            String mapString  = sharedPreferences.getString(prefsKey, null);
 
             Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
             try {
@@ -190,20 +198,20 @@ public class TagsActivity extends AppCompatActivity {
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                if(!sharedPreferences.contains("listOfTags")) {
+                if(!sharedPreferences.contains(prefsKey)) {
                     tagList.put(tv9.getText().toString(), attributesMap);
 
                     JSONObject tagListMapAsJSON = new JSONObject(tagList);
                     String tagListMapAsJSONString   = tagListMapAsJSON.toString();
 
-                    editor.putString("listOfTags", tagListMapAsJSONString);
+                    editor.putString(prefsKey, tagListMapAsJSONString);
                     editor.commit();
 
-                    //System.out.println(sharedPreferences.getString("listOfTags", null));
+
                 }
 
                 else{
-                    String mapString  = sharedPreferences.getString("listOfTags", null);
+                    String mapString  = sharedPreferences.getString(prefsKey, null);
 
                     Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
                     try {
@@ -237,9 +245,9 @@ public class TagsActivity extends AppCompatActivity {
 
                     JSONObject finalJsonObject = new JSONObject(tagList);
 
-                    editor.remove("listOfTags");
+                    editor.remove(prefsKey);
                     editor.apply();
-                    editor.putString("listOfTags", finalJsonObject.toString() );
+                    editor.putString(prefsKey, finalJsonObject.toString() );
                     editor.apply();
 
 
@@ -278,20 +286,34 @@ public class TagsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i= new Intent(TagsActivity.this, Activity2.class);
-                i.putExtra("viewpager_position", 1);
-
-                // get images sent  from tab 2 and send them back
-
                 Bundle extras = getIntent().getExtras();
 
-                if(extras != null ){
-                    if(extras.containsKey("selectedImages")){
+                if(referrer.equals("cameraTab")){
+                    i.putExtra("viewpager_position", 2);
+                    if (extras != null) {
+                        if (extras.containsKey("cameraImages")) {
 
-                        HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImages"));
+                            HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("cameraImages"));
 
-                        i.putExtra("selectedImagesFromGallery", passedImagesPathSet);
+                            i.putExtra("cameraImages", passedImagesPathSet);
+                        }
+
                     }
 
+                }
+                else {
+
+                    i.putExtra("viewpager_position", 1);
+
+                    if (extras != null) {
+                        if (extras.containsKey("selectedImages")) {
+
+                            HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImages"));
+
+                            i.putExtra("selectedImagesFromGallery", passedImagesPathSet);
+                        }
+
+                    }
                 }
 
 

@@ -2,7 +2,9 @@ package com.example.edwin.photoarchive;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -10,18 +12,39 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.edwin.photoarchive.Activities.ActivityEditDeleteTags;
+import com.example.edwin.photoarchive.Activities.TagsActivity;
+import com.example.edwin.photoarchive.AzureClasses.Attribute;
+import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
+import com.example.edwin.photoarchive.Helpers.ExtractLatLong;
 import com.example.edwin.photoarchive.Helpers.GPS;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 
 
 public class TabFragment3 extends Fragment {
@@ -30,6 +53,11 @@ public class TabFragment3 extends Fragment {
     private Context context = null;
     GPSTracker gps;
     private  Button button = null;
+    private HashSet<String> imgPathSet = new LinkedHashSet<String>();
+    private SharedPreferences sharedPreferences;
+    private LinearLayout tagsContainer;
+    private Button clearTags;
+    private ArrayList<TaggedImageObject> taggedImagesList = new ArrayList<TaggedImageObject>();
 
 
     @Override
@@ -37,9 +65,17 @@ public class TabFragment3 extends Fragment {
 
         View view = inflater.inflate(R.layout.tab_fragment_3, container, false);
         context= this.getContext();
+        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
         //camera btn
         button = (Button) view.findViewById(R.id.button);
+
+        final TextView taken = (TextView) view.findViewById(R.id.textViewTaken);
+
+        final Button clearTaken  = (Button)  view.findViewById(R.id.clearTaken);
+        Button addTags = (Button)  view.findViewById(R.id.buttonAddTags);
+         clearTags = (Button)  view.findViewById(R.id.buttonClearTags);
+        final Button uploadBtn = (Button)view.findViewById(R.id.buttonUpload);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +87,222 @@ public class TabFragment3 extends Fragment {
 
             }
         });
+
+        uploadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //get tags from shared preferences
+
+                uploadBtn.setEnabled(false);
+
+                String mapString  = sharedPreferences.getString("cameraTags", null);
+
+                Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
+                try {
+                    JSONObject jsonObject2 = new JSONObject(mapString);
+                    Iterator<String> keysItr = jsonObject2.keys();
+
+                    while(keysItr.hasNext()) {
+                        String key = keysItr.next();
+
+                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
+                        Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
+
+                        while(keysItr2.hasNext()) {
+                            String key2 = keysItr2.next();
+                            String value = (String)((JSONObject)jsonObject2.get(key)).get(key2);
+
+                            valueMap.put(key2, value);
+                        }
+
+                        outputMap.put(key, valueMap);
+                    }
+
+
+                }catch(Exception e){
+                    e.printStackTrace();
+
+                };
+
+                for(String s: imgPathSet){
+
+                    ExtractLatLong ell = new ExtractLatLong(s);
+                    TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), "user",outputMap);
+                    taggedImagesList.add(tagImgObj);
+
+                }
+
+
+                // put imagesTagsMap in shared preferences
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+
+                Gson gson = new Gson();
+
+                if(!sharedPreferences.contains("listOfImagesWithTags")) {
+
+                    String taggedImageslistAsString = gson.toJson(taggedImagesList);
+                    editor.putString("listOfImagesWithTags", taggedImageslistAsString);
+                    editor.commit();
+                    clearTaken.performClick();
+                    clearTags2();
+                    refreshDash();
+                    Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
+
+                }
+
+
+
+                else{
+                    String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
+                    Type type = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
+                    ArrayList<TaggedImageObject> taggedImageObjectsList = gson.fromJson(savedArraylist, type);
+
+
+
+                    for(String s: imgPathSet){
+                        ExtractLatLong ell = new ExtractLatLong(s);
+                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), "user",outputMap);
+                        taggedImageObjectsList.add(tagImgObj);
+
+                    }
+                    String taggedImageslistAsString = gson.toJson(taggedImageObjectsList);
+                    editor.remove("listOfImagesWithTags");
+                    editor.apply();
+                    editor.putString("listOfImagesWithTags", taggedImageslistAsString);
+                    editor.apply();
+                    clearTaken.performClick();
+                    clearTags2();
+                    refreshDash();
+                    Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
+
+
+                }
+
+
+
+                //END OF UPLOAD CODE
+            }
+        });
+
+        clearTags.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                uploadBtn.setEnabled(false);
+               clearTags();
+
+            }
+        });
+
+        clearTaken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imgPathSet.clear();
+                taken.invalidate();
+                taken.setText("Taken: " + imgPathSet.size());
+                clearTaken.setEnabled(false);
+                uploadBtn.setEnabled(false);
+                button.setText("Take Picture");
+
+            }
+        });
+
+        Bundle extras = getActivity().getIntent().getExtras();
+        if(extras != null) {
+            if (extras.containsKey("cameraImages")) {
+
+                HashSet<String> cameraPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("cameraImages"));
+
+                for (String s : cameraPathSet) {
+                    imgPathSet.add(s);
+
+
+                }
+
+            }
+
+        }
+
+        taken.setText("Taken: " + imgPathSet.size());
+
+        addTags.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    Intent i = new Intent(getActivity(), TagsActivity.class);
+
+                    Bundle azureDB = getActivity().getIntent().getExtras();
+                    //grab ContextsAndAttributes from extras
+                    HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
+
+                    i.putExtra("azure", caa);
+                    i.putExtra("cameraTab", 1);
+                    i.putExtra("cameraImages", imgPathSet);
+
+                    startActivity(i);
+                }catch(NullPointerException e){
+                    Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+        });
+
+        ArrayList<String> tagNames =  new ArrayList<String>();
+
+        if(sharedPreferences.contains("cameraTags")) {
+            String mapString = sharedPreferences.getString("cameraTags", null);
+
+            try {
+                JSONObject jsonObject2 = new JSONObject(mapString);
+                Iterator<String> keysItr = jsonObject2.keys();
+
+                while(keysItr.hasNext()) {
+
+                    tagNames.add(keysItr.next());
+                }
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+
+            };
+
+        }
+
+
+        if(tagNames.size()>0 && imgPathSet.size()>0){
+            uploadBtn.setEnabled(true);
+
+        }
+
+        if(tagNames.size()>0){
+            clearTags.setEnabled(true);
+
+        }
+
+        if(imgPathSet.size()>0){
+            clearTaken.setEnabled(true);
+            button.setText("Take another");
+
+        }
+
+         tagsContainer = (LinearLayout) view.findViewById(R.id.tagContainerT3);
+
+        for(String s: tagNames) {
+            final Button tag1 = new Button(context);
+            tag1.setText(s);
+            tagsContainer.addView(tag1);
+            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) tag1.getLayoutParams();
+            marginParams.setMargins(0, 0, 10, 0);
+
+
+        }
+
+
 
         return view;
     }
@@ -86,11 +338,7 @@ public class TabFragment3 extends Fragment {
 
         if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_OK ) {
             Toast.makeText(context, "Photo saved in In-app images", Toast.LENGTH_LONG).show();
-            button.setText("Take another");
-            //getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(1)).attach(getFragmentManager().getFragments().get(1)).commitAllowingStateLoss();
-           // getFragmentManager().executePendingTransactions();
 
-            //  Bitmap photo = rotateImage(BitmapFactory.decodeFile(imageFileLocation));
 
             //exif code
             gps = new GPSTracker(context);
@@ -118,9 +366,12 @@ public class TabFragment3 extends Fragment {
 
                 }
             }
+            imgPathSet.add(imageFileLocation);
 
-            getActivity().recreate();
+
             getActivity().getIntent().putExtra("viewpager_position", 2);
+            getActivity().getIntent().putExtra("cameraImages", imgPathSet);
+            getActivity().recreate();
 
         }
         else if(requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_CANCELED) {
@@ -154,6 +405,49 @@ public class TabFragment3 extends Fragment {
 
         return image;
     }
+
+    private void clearTags(){
+
+        new AlertDialog.Builder(context)
+                .setTitle("Clear confirmation")
+                .setMessage("Are you sure you want to clear all the tags?")
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface dialog, int which) {
+
+                        clearTags2();
+                        Toast.makeText(context, "All tags cleared", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .create()
+                .show();
+
+
+
+
+    }
+
+    private void clearTags2(){
+        tagsContainer.removeAllViews();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("cameraTags");
+        editor.apply();
+        clearTags.setEnabled(false);
+    }
+
+    private void refreshDash(){
+        getActivity().getIntent().replaceExtras(new Bundle());
+        getActivity().getIntent().setAction("");
+        getActivity().getIntent().setData(null);
+        getActivity().getIntent().setFlags(0);
+        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+        viewPager.setCurrentItem(0);
+        getActivity().getSupportFragmentManager().popBackStack();
+        getActivity().recreate();
+
+    }
+
 
 
 

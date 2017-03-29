@@ -280,17 +280,28 @@ public class TabFragment2 extends Fragment {
         tagsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent(getActivity(), TagsActivity.class);
-                // send selected images to tags activity so they are not removed
 
                 Bundle azureDB = getActivity().getIntent().getExtras();
                 //grab ContextsAndAttributes from extras
-                HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>)azureDB.get("azure");
 
-                i.putExtra("selectedImages", imgPathSet);
-                i.putExtra("azure", caa);
 
-                startActivity(i);
+               try {
+                   Intent i = new Intent(getActivity(), TagsActivity.class);
+                   HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
+
+                   i.putExtra("selectedImages", imgPathSet);
+                   i.putExtra("azure", caa);
+
+                   startActivity(i);
+               }catch(NullPointerException e){
+
+                   Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
+               }
+
+
+
+
+
 
 
             }
