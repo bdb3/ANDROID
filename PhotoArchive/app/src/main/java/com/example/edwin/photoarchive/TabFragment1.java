@@ -97,20 +97,10 @@ public class TabFragment1 extends Fragment {
         }
 
         //IMPORTANT! PULL INFORMATION FROM THE DB
-        //ALSO CALLED WHEN BUTTON IS PUSHED (IMPLEMENT SYNC BUTTON)
-               try{
-               getActivity().getIntent().getExtras().get("azure");
-                    //tags are up to date
-               tagsStatus.setText("Tags status: Up to date!");
-           } catch (NullPointerException n){
-               //set tags to syncing
 
-               //no list exists, so pull from DB
-                   pullContextsAndAttributes();
-           }
+        pullContextsAndAttributes();
 
-
-
+        
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(android.content.Context context, Intent intent) {
