@@ -33,6 +33,7 @@ import com.example.edwin.photoarchive.Activities.ViewInfo;
 import com.example.edwin.photoarchive.Activities.ViewTags;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
+import com.example.edwin.photoarchive.AzureClasses.AzureBlobUploader;
 import com.example.edwin.photoarchive.AzureClasses.Context_Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
 import com.google.gson.Gson;
@@ -66,9 +67,6 @@ public class TabFragment1 extends Fragment {
     private SharedPreferences appSharedPrefs;
 
 
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context= this.getContext();
@@ -97,9 +95,7 @@ public class TabFragment1 extends Fragment {
         }
 
         //IMPORTANT! PULL INFORMATION FROM THE DB
-
         pullContextsAndAttributes();
-
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -110,7 +106,6 @@ public class TabFragment1 extends Fragment {
 
                     if(netInfo.getState() == NetworkInfo.State.CONNECTED) {
 
-
                         permissionsStatus.invalidate();
                         permissionsStatus.setText("Required Permissions: all granted");
                         permissionsStatus.setTextColor(Color.GREEN);
@@ -118,7 +113,6 @@ public class TabFragment1 extends Fragment {
                         Log.d("connectionStatus", "now connected");
 
                         //resume uploading
-
 
                     }
 
@@ -148,8 +142,6 @@ public class TabFragment1 extends Fragment {
             permissionsStatus.invalidate();
             permissionsStatus.setText("No wifi connection");
             permissionsStatus.setTextColor(Color.RED);
-
-
         }
         else{
             Log.d("connectionStatus", "connected to wifi");
@@ -169,9 +161,9 @@ public class TabFragment1 extends Fragment {
             for(TaggedImageObject t: taggedImageObjectsList){
                 imgPathList.add(t.getImgPath());
 
+                Log.d("Azure", "Trying to upload image: " + t.getUser() + ", " + t.getImgPath());
+                new AzureBlobUploader(this.getActivity(), t.getUser(), t).execute();
             }
-
-
         }
         photosToBeUploaded.invalidate();
         photosToBeUploaded.setText(imgPathList.size() + " image(s) waiting to upload");
@@ -298,6 +290,8 @@ public class TabFragment1 extends Fragment {
             if (info.getType() == ConnectivityManager.TYPE_WIFI)
                 return true;
         }
+
+
 
         return false;
     }
