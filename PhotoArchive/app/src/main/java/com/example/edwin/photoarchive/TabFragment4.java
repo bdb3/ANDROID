@@ -1,9 +1,11 @@
 package com.example.edwin.photoarchive;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.os.AsyncTaskCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

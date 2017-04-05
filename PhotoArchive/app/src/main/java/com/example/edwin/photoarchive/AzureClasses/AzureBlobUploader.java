@@ -85,12 +85,6 @@ public class AzureBlobUploader extends AzureBlobLoader {
             this.setImageTable(this.getDBClient().getTable(Image.class));
             this.setIcavTable(this.getDBClient().getTable(ICAV.class));
 
-            String output = "";
-
-            output += "\n" + this.img.getImgPath();
-            output += "\n" + this.img.getUser();
-            output += "\n" + this.img.getLat() + ", " + this.img.getLon();
-
             //IMG TABLE QUERY
             String validImageID = containerName.replace("/", "_");
             Log.d("Azure", "Valid Image ID: " + validImageID);
@@ -104,10 +98,6 @@ public class AzureBlobUploader extends AzureBlobLoader {
                 for(String attribute : attributeValueMap.keySet()){
                     String value = attributeValueMap.get(attribute);
 
-                    output += "\n" + "Context: " + context
-                            + " Attribute: " + attribute
-                            + " Value: " + value;
-
                     //ICAV QUERY
                     ICAV icavRow = new ICAV();
                     icavRow.setImageID(validImageID);
@@ -119,10 +109,6 @@ public class AzureBlobUploader extends AzureBlobLoader {
                 }
 
             }
-
-            Log.d("Azure Output", output);
-
-
         } catch (Exception e) {
             System.out.println(e.toString());
         }

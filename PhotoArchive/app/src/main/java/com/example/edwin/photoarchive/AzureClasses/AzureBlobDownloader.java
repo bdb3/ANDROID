@@ -44,7 +44,7 @@ public class AzureBlobDownloader extends AzureBlobLoader{
 
             Log.d("Azure", "About to execute query");
 
-            final MobileServiceList<Image> dbImages = this.getImageTable().execute().get();
+            final List<Image> dbImages = this.getImageTable().execute().get();
 
             for(Image img : dbImages){
                 Log.d("Azure", "Path:" + img.getId());
