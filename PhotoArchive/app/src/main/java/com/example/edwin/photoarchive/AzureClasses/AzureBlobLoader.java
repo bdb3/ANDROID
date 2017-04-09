@@ -28,7 +28,6 @@ public abstract class AzureBlobLoader extends AsyncTask {
 
     AzureBlobLoader(){
         try {
-
             //make credentials
             this.accountSAS = new StorageCredentialsSharedAccessSignature(sas);
 

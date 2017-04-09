@@ -3,17 +3,17 @@ package com.example.edwin.photoarchive.AzureClasses;
 public class Image {
     private String id;
 
-    private String userID;
+    private String userid;
 
     private double lat;
 
     private double lon;
 
-    public Image(){}
+//    public Image(){}
 
-    public Image(String id, String userID, double lat, double lon){
+    public Image(String id, String userid, double lat, double lon){
         this.id = id;
-        this.userID = userID;
+        this.userid = userid;
         this.lat = lat;
         this.lon = lon;
     }
@@ -27,11 +27,11 @@ public class Image {
     }
 
     public String getUserID() {
-        return userID;
+        return userid;
     }
 
     public void setUserID(String userID) {
-        this.userID = userID;
+        this.userid = userID;
     }
 
     public double getLat() {

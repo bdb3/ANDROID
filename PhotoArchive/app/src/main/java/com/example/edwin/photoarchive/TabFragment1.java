@@ -399,7 +399,7 @@ public class TabFragment1 extends Fragment {
                     }
                     return null;
                 }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }catch (MalformedURLException m) {
             Log.d("Azure", "Error! Invalid URL");
         }
