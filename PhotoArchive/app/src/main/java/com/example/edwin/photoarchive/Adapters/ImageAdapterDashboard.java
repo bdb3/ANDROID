@@ -29,7 +29,11 @@ public class ImageAdapterDashboard extends BaseAdapter  {
     }
 
     public Object getItem(int position) {
-        return null;
+        return this.imgPathList.get(position);
+    }
+
+    public void removePath(String path){
+        this.imgPathList.remove(path);
     }
 
     public long getItemId(int position) {

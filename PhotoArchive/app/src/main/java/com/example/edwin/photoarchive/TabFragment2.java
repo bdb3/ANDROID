@@ -127,15 +127,14 @@ public class TabFragment2 extends Fragment {
                     clearTagsAndSelectedImages();
                     Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
 
+                    //Start Upload
+
                 }
-
-
 
                 else{
                     String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
                     Type type = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
                     ArrayList<TaggedImageObject> taggedImageObjectsList = gson.fromJson(savedArraylist, type);
-
 
 
                     for(String s: imgPathSet){
@@ -151,7 +150,6 @@ public class TabFragment2 extends Fragment {
                     editor.apply();
                     clearTagsAndSelectedImages();
                     Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
-
 
                 }
 
