@@ -59,12 +59,18 @@ public class TabFragment1 extends Fragment {
     private Menu menu;
     private TextView photosToBeUploaded;
     private TextView permissionsStatus;
+
     private  TextView tagsStatus;
     private GPSTracker gps;
     private BroadcastReceiver receiver;
 
     private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new HashMap<>();
     private SharedPreferences appSharedPrefs;
+
+
+
+     private TextView syncTaskStatus;
+
 
 
     @Override
@@ -75,7 +81,11 @@ public class TabFragment1 extends Fragment {
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
 
          permissionsStatus = (TextView) view.findViewById(R.id.textView6);
+
          tagsStatus = (TextView) view.findViewById(R.id.textView5);
+
+        syncTaskStatus = (TextView) view.findViewById(R.id.textView30);
+
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
         //show enable gps alert
@@ -134,7 +144,6 @@ public class TabFragment1 extends Fragment {
         };
 
         IntentFilter intentFilter = new IntentFilter();
-        //intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         getActivity().registerReceiver(receiver, intentFilter);
 

@@ -25,6 +25,17 @@
             android:layout_alignParentStart="true"
             android:textColor="#12a705" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tags are up to date"
+        android:textSize="15dp"
+        android:id="@+id/textView30"
+        android:layout_marginTop="2dp"
+        android:layout_below="@+id/textView6"
+        android:layout_alignParentStart="true"
+        android:textColor="#12a705" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +43,7 @@
             android:id="@+id/textView20"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_below="@+id/textView6"
             android:layout_alignParentStart="true"
             android:textColor="#000000" />

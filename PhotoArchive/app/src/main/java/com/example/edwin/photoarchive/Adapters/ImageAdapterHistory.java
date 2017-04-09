@@ -54,15 +54,19 @@ public class ImageAdapterHistory extends BaseAdapter  {
             @Override
             public void onClick(View v) {
                 ImageView iv = (ImageView) v;
-
                 Intent i = new Intent(context, ImagePreview.class);
                 i.putExtra("imagePath", imgPathList.get(position));
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(i);
 
             }
         });
 
+
+
         return imageView;
     }
+
+
 
 }
