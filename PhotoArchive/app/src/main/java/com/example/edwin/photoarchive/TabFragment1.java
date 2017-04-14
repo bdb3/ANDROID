@@ -1,5 +1,6 @@
 package com.example.edwin.photoarchive;
 
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -68,11 +70,6 @@ public class TabFragment1 extends Fragment {
     private SharedPreferences appSharedPrefs;
 
 
-
-     private TextView syncTaskStatus;
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context= this.getContext();
@@ -83,8 +80,6 @@ public class TabFragment1 extends Fragment {
          permissionsStatus = (TextView) view.findViewById(R.id.textView6);
 
          tagsStatus = (TextView) view.findViewById(R.id.textView5);
-
-        syncTaskStatus = (TextView) view.findViewById(R.id.textView30);
 
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
@@ -161,6 +156,7 @@ public class TabFragment1 extends Fragment {
         imageGrid = (GridView) view.findViewById(R.id.gridview);
         photosToBeUploaded = (TextView) view.findViewById(R.id.textView20);
         imgPathList = new ArrayList<String>();
+        Fragment histFragment = getFragmentManager().getFragments().get(3);
 
         if(sharedPreferences.contains("listOfImagesWithTags")) {
             String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
@@ -171,7 +167,7 @@ public class TabFragment1 extends Fragment {
                 imgPathList.add(t.getImgPath());
 
                 Log.d("Azure", "Trying to upload image: " + t.getUser() + ", " + t.getImgPath());
-                new AzureBlobUploader(this.getActivity(), t.getUser(), t).execute();
+                new AzureBlobUploader(histFragment,this.getActivity(), t.getUser(), t).execute();
             }
         }
         photosToBeUploaded.invalidate();
@@ -272,7 +268,6 @@ public class TabFragment1 extends Fragment {
 
                 Intent i= new Intent(getActivity(), ViewTags.class);
                 i.putExtra("imagePath", imgPathList.get(info.position));
-               // i.putExtra("selectedImages", imgPathSet);
 
                 startActivity(i);
 

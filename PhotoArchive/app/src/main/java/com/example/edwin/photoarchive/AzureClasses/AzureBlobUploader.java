@@ -1,11 +1,18 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
 import android.app.Activity;
+
+
 import android.content.*;
-import android.nfc.Tag;
+
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
@@ -29,12 +36,14 @@ public class AzureBlobUploader extends AzureBlobLoader {
     private Activity act;
     private String userName;
     private TaggedImageObject img;
+    private Fragment histFragment;
 
-    public AzureBlobUploader(Activity act, String userName, TaggedImageObject img) {
+    public AzureBlobUploader(Fragment f, Activity act, String userName, TaggedImageObject img) {
         super();
         this.act = act;
         this.userName = userName;
         this.img = img;
+        this.histFragment = f;
     }
 
 
@@ -136,25 +145,42 @@ public class AzureBlobUploader extends AzureBlobLoader {
         }
 
         //remove the index
-        taggedImageObjectsList.remove(toBeRemoved);
 
-        //resave it
-        String taggedImageslistAsString = new Gson().toJson(taggedImageObjectsList);
-        editor.remove("listOfImagesWithTags");
-        editor.apply();
-        editor.putString("listOfImagesWithTags", taggedImageslistAsString);
-        editor.apply();
+        //check if it successfully uploaded before removing
+        //change to  if(toBeRemoved !=-1 && successfullyUploaded)
 
-        //grab the GridView and update it!
-        GridView imageGrid = (GridView)this.act.findViewById(R.id.gridview);
-        ImageAdapterDashboard imagesAdapter = (ImageAdapterDashboard)imageGrid.getAdapter();
-        imagesAdapter.removePath(this.img.getImgPath());
+        if(toBeRemoved !=-1) {
 
-        //refresh
-        imagesAdapter.notifyDataSetChanged();
+            taggedImageObjectsList.remove(toBeRemoved);
 
-        TextView photosToBeUploaded = (TextView)this.act.findViewById(R.id.textView20);
-        photosToBeUploaded.invalidate();
-        photosToBeUploaded.setText(imagesAdapter.getCount() + " image(s) waiting to upload");
+            //resave it
+            String taggedImageslistAsString = new Gson().toJson(taggedImageObjectsList);
+            editor.remove("listOfImagesWithTags");
+            editor.apply();
+            editor.putString("listOfImagesWithTags", taggedImageslistAsString);
+            editor.apply();
+
+            //grab the GridView and update it!
+            GridView imageGrid = (GridView) this.act.findViewById(R.id.gridview);
+            ImageAdapterDashboard imagesAdapter = (ImageAdapterDashboard) imageGrid.getAdapter();
+            imagesAdapter.removePath(this.img.getImgPath());
+
+            //refresh
+            imagesAdapter.notifyDataSetChanged();
+
+            TextView photosToBeUploaded = (TextView) this.act.findViewById(R.id.textView20);
+            photosToBeUploaded.invalidate();
+            photosToBeUploaded.setText(imagesAdapter.getCount() + " image(s) waiting to upload");
+
+            //refresh history fragment
+            Toast.makeText(this.act, this.img.getImgPath() + " finished uploading", Toast.LENGTH_SHORT).show();
+            FragmentManager fm = histFragment.getActivity().getSupportFragmentManager();
+
+            fm.beginTransaction().detach(histFragment).attach(histFragment).commitAllowingStateLoss();
+
+
+        }
+
+
     }
 }

@@ -8,16 +8,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.example.edwin.photoarchive.R;
 
-import com.bumptech.glide.Glide;
-import android.graphics.Matrix;
-import android.view.ScaleGestureDetector;
-import android.view.MotionEvent;
-
-
 
 public class ImagePreview extends AppCompatActivity {
-    private ScaleGestureDetector scaleGestureDetector;
-    private Matrix matrix = new Matrix();
     private ImageView img;
 
 

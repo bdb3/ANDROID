@@ -72,7 +72,13 @@ public class AzureBlobDownloader extends AzureBlobLoader{
         ArrayList<String> results = (ArrayList<String>)o;
 
         GridView imageGrid = (GridView) this.act.findViewById(R.id.gridView4);
-        imageGrid.setAdapter(new ImageAdapterHistory(this.act.getApplicationContext(), results));
+
+        try {
+            imageGrid.setAdapter(new ImageAdapterHistory(this.act.getApplicationContext(), results));
+        }catch(NullPointerException e){
+            e.printStackTrace();
+
+        }
 
     }
 }
