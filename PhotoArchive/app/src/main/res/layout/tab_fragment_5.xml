@@ -30,6 +30,14 @@
         android:layout_below="@+id/switch1"
         android:layout_alignParentEnd="true"/>
 
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/switch3"
+        android:layout_below="@+id/switch2"
+        android:layout_alignParentEnd="true"/>
+
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -38,6 +46,16 @@
         android:id="@+id/button7"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="Edit"
+        android:id="@+id/button8"
+        android:layout_below="@id/switch3"
+        android:layout_alignParentEnd="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -52,10 +70,33 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Delete photos automatically"
+        android:id="@+id/textView7"
+        android:layout_below="@+id/textView5"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="7dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Location"
         android:id="@+id/textView6"
         android:layout_below="@+id/textView5"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Delete after 90 days"
+        android:id="@+id/textView8"
+        android:layout_below="@+id/textView7"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>
