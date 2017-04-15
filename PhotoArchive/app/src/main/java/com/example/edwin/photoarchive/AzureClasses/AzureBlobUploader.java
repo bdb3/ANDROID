@@ -20,6 +20,7 @@ import com.example.edwin.photoarchive.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
+import com.microsoft.azure.storage.blob.CopyState;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
 import java.io.File;
@@ -38,6 +39,7 @@ public class AzureBlobUploader extends AzureBlobLoader {
     private TaggedImageObject img;
     private Fragment histFragment;
 
+
     public AzureBlobUploader(Fragment f, Activity act, String userName, TaggedImageObject img) {
         super();
         this.act = act;
@@ -53,6 +55,7 @@ public class AzureBlobUploader extends AzureBlobLoader {
 
         try {
             //-----BLOB CONTAINER----//
+
             InputStream in = new FileInputStream(imageFile);
             int size = in.available();
             byte[] buffer = new byte[size];
@@ -62,6 +65,7 @@ public class AzureBlobUploader extends AzureBlobLoader {
             FileOutputStream fos = new FileOutputStream(imageFile);
             fos.write(buffer);
             fos.close();
+
 
             // Define the path to a local file.
             final String filePath = imageFile.getPath();
@@ -76,12 +80,13 @@ public class AzureBlobUploader extends AzureBlobLoader {
 
             System.out.println("Container Name: " + containerName);
 
-            CloudBlockBlob blob = this.getContainer().getBlockBlobReference(containerName);
-            System.out.println("Properties"  + blob.getProperties());
+            CloudBlockBlob blob= this.getContainer().getBlockBlobReference(containerName);
+
 
             //UPLOAD!
             blob.upload(new FileInputStream(imageFile), imageFile.length());
 
+            
             //-----DATABASE-----//
             //create client
             this.setDBClient(
@@ -150,6 +155,7 @@ public class AzureBlobUploader extends AzureBlobLoader {
         //change to  if(toBeRemoved !=-1 && successfullyUploaded)
 
         if(toBeRemoved !=-1) {
+            Toast.makeText(this.act, this.img.getImgPath() + " finished uploading", Toast.LENGTH_SHORT).show();
 
             taggedImageObjectsList.remove(toBeRemoved);
 
@@ -173,7 +179,6 @@ public class AzureBlobUploader extends AzureBlobLoader {
             photosToBeUploaded.setText(imagesAdapter.getCount() + " image(s) waiting to upload");
 
             //refresh history fragment
-            Toast.makeText(this.act, this.img.getImgPath() + " finished uploading", Toast.LENGTH_SHORT).show();
             FragmentManager fm = histFragment.getActivity().getSupportFragmentManager();
 
             fm.beginTransaction().detach(histFragment).attach(histFragment).commitAllowingStateLoss();

@@ -117,8 +117,6 @@ public class TabFragment1 extends Fragment {
 
                         Log.d("connectionStatus", "now connected");
 
-                        //resume uploading
-
                     }
 
                     if(netInfo.getState() == NetworkInfo.State.DISCONNECTED){
@@ -127,8 +125,6 @@ public class TabFragment1 extends Fragment {
                         permissionsStatus.setTextColor(Color.RED);
 
                         Log.d("connectionStatus", "lost wifi connection");
-
-                        //pause uploading
 
                     }
 
@@ -149,7 +145,7 @@ public class TabFragment1 extends Fragment {
         }
         else{
             Log.d("connectionStatus", "connected to wifi");
-            //start uploading
+
         }
 
 
