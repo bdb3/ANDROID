@@ -35,7 +35,7 @@
         <activity
             android:name=".Activities.TagsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activities.ActivityEditDeleteTags"
             android:configChanges="orientation|keyboardHidden|screenSize" />
@@ -54,6 +54,12 @@
             android:name=".Activities.ViewTags"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".Activities.ViewInfo" />
+        <activity
+            android:name=".Activities.HistoryViewTags"
+            android:label="@string/title_activity_history_view_tags"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
 </manifest>

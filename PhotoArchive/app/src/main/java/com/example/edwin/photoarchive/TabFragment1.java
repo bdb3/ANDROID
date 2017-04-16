@@ -1,5 +1,6 @@
 package com.example.edwin.photoarchive;
 
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -59,6 +61,7 @@ public class TabFragment1 extends Fragment {
     private Menu menu;
     private TextView photosToBeUploaded;
     private TextView permissionsStatus;
+
     private  TextView tagsStatus;
     private GPSTracker gps;
     private BroadcastReceiver receiver;
@@ -75,7 +78,9 @@ public class TabFragment1 extends Fragment {
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
 
          permissionsStatus = (TextView) view.findViewById(R.id.textView6);
+
          tagsStatus = (TextView) view.findViewById(R.id.textView5);
+
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
         //show enable gps alert
@@ -112,8 +117,6 @@ public class TabFragment1 extends Fragment {
 
                         Log.d("connectionStatus", "now connected");
 
-                        //resume uploading
-
                     }
 
                     if(netInfo.getState() == NetworkInfo.State.DISCONNECTED){
@@ -122,8 +125,6 @@ public class TabFragment1 extends Fragment {
                         permissionsStatus.setTextColor(Color.RED);
 
                         Log.d("connectionStatus", "lost wifi connection");
-
-                        //pause uploading
 
                     }
 
@@ -134,7 +135,6 @@ public class TabFragment1 extends Fragment {
         };
 
         IntentFilter intentFilter = new IntentFilter();
-        //intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         getActivity().registerReceiver(receiver, intentFilter);
 
@@ -145,13 +145,14 @@ public class TabFragment1 extends Fragment {
         }
         else{
             Log.d("connectionStatus", "connected to wifi");
-            //start uploading
+
         }
 
 
         imageGrid = (GridView) view.findViewById(R.id.gridview);
         photosToBeUploaded = (TextView) view.findViewById(R.id.textView20);
         imgPathList = new ArrayList<String>();
+        Fragment histFragment = getFragmentManager().getFragments().get(3);
 
         if(sharedPreferences.contains("listOfImagesWithTags")) {
             String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
@@ -162,7 +163,7 @@ public class TabFragment1 extends Fragment {
                 imgPathList.add(t.getImgPath());
 
                 Log.d("Azure", "Trying to upload image: " + t.getUser() + ", " + t.getImgPath());
-                new AzureBlobUploader(this.getActivity(), t.getUser(), t).execute();
+                new AzureBlobUploader(histFragment,this.getActivity(), t.getUser(), t).execute();
             }
         }
         photosToBeUploaded.invalidate();
@@ -263,7 +264,6 @@ public class TabFragment1 extends Fragment {
 
                 Intent i= new Intent(getActivity(), ViewTags.class);
                 i.putExtra("imagePath", imgPathList.get(info.position));
-               // i.putExtra("selectedImages", imgPathSet);
 
                 startActivity(i);
 

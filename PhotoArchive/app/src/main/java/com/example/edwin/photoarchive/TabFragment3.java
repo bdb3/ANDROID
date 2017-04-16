@@ -238,11 +238,15 @@ public class TabFragment3 extends Fragment {
                     //grab ContextsAndAttributes from extras
                     HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
 
-                    i.putExtra("azure", caa);
-                    i.putExtra("cameraTab", 1);
-                    i.putExtra("cameraImages", imgPathSet);
-
-                    startActivity(i);
+                    if(caa != null) {
+                        i.putExtra("azure", caa);
+                        i.putExtra("cameraTab", 1);
+                        i.putExtra("cameraImages", imgPathSet);
+                        startActivity(i);
+                    }
+                    else{
+                        Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
+                    }
                 }catch(NullPointerException e){
                     Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
 

@@ -10,6 +10,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.edwin.photoarchive.Activities.HistoryViewTags;
 import com.example.edwin.photoarchive.Activities.ImagePreview;
 
 import java.util.ArrayList;
@@ -54,15 +55,31 @@ public class ImageAdapterHistory extends BaseAdapter  {
             @Override
             public void onClick(View v) {
                 ImageView iv = (ImageView) v;
-
                 Intent i = new Intent(context, ImagePreview.class);
                 i.putExtra("imagePath", imgPathList.get(position));
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(i);
 
             }
         });
 
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent i = new Intent(context, HistoryViewTags.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(i);
+
+
+                return true;
+            }
+        });
+
+
+
         return imageView;
     }
+
+
 
 }

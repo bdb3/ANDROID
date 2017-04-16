@@ -11,5 +11,5 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageViewPreview"
         android:layout_centerVertical="true"
-         />
+        />
 </RelativeLayout>

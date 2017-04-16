@@ -1,11 +1,18 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
 import android.app.Activity;
+
+
 import android.content.*;
-import android.nfc.Tag;
+
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
@@ -13,6 +20,7 @@ import com.example.edwin.photoarchive.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
+import com.microsoft.azure.storage.blob.CopyState;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
 import java.io.File;
@@ -29,12 +37,15 @@ public class AzureBlobUploader extends AzureBlobLoader {
     private Activity act;
     private String userName;
     private TaggedImageObject img;
+    private Fragment histFragment;
 
-    public AzureBlobUploader(Activity act, String userName, TaggedImageObject img) {
+
+    public AzureBlobUploader(Fragment f, Activity act, String userName, TaggedImageObject img) {
         super();
         this.act = act;
         this.userName = userName;
         this.img = img;
+        this.histFragment = f;
     }
 
 
@@ -44,6 +55,7 @@ public class AzureBlobUploader extends AzureBlobLoader {
 
         try {
             //-----BLOB CONTAINER----//
+
             InputStream in = new FileInputStream(imageFile);
             int size = in.available();
             byte[] buffer = new byte[size];
@@ -53,6 +65,7 @@ public class AzureBlobUploader extends AzureBlobLoader {
             FileOutputStream fos = new FileOutputStream(imageFile);
             fos.write(buffer);
             fos.close();
+
 
             // Define the path to a local file.
             final String filePath = imageFile.getPath();
@@ -67,12 +80,13 @@ public class AzureBlobUploader extends AzureBlobLoader {
 
             System.out.println("Container Name: " + containerName);
 
-            CloudBlockBlob blob = this.getContainer().getBlockBlobReference(containerName);
-            System.out.println("Properties"  + blob.getProperties());
+            CloudBlockBlob blob= this.getContainer().getBlockBlobReference(containerName);
+
 
             //UPLOAD!
             blob.upload(new FileInputStream(imageFile), imageFile.length());
 
+            
             //-----DATABASE-----//
             //create client
             this.setDBClient(
@@ -136,25 +150,42 @@ public class AzureBlobUploader extends AzureBlobLoader {
         }
 
         //remove the index
-        taggedImageObjectsList.remove(toBeRemoved);
 
-        //resave it
-        String taggedImageslistAsString = new Gson().toJson(taggedImageObjectsList);
-        editor.remove("listOfImagesWithTags");
-        editor.apply();
-        editor.putString("listOfImagesWithTags", taggedImageslistAsString);
-        editor.apply();
+        //check if it successfully uploaded before removing
+        //change to  if(toBeRemoved !=-1 && successfullyUploaded)
 
-        //grab the GridView and update it!
-        GridView imageGrid = (GridView)this.act.findViewById(R.id.gridview);
-        ImageAdapterDashboard imagesAdapter = (ImageAdapterDashboard)imageGrid.getAdapter();
-        imagesAdapter.removePath(this.img.getImgPath());
+        if(toBeRemoved !=-1) {
+            Toast.makeText(this.act, this.img.getImgPath() + " finished uploading", Toast.LENGTH_SHORT).show();
 
-        //refresh
-        imagesAdapter.notifyDataSetChanged();
+            taggedImageObjectsList.remove(toBeRemoved);
 
-        TextView photosToBeUploaded = (TextView)this.act.findViewById(R.id.textView20);
-        photosToBeUploaded.invalidate();
-        photosToBeUploaded.setText(imagesAdapter.getCount() + " image(s) waiting to upload");
+            //resave it
+            String taggedImageslistAsString = new Gson().toJson(taggedImageObjectsList);
+            editor.remove("listOfImagesWithTags");
+            editor.apply();
+            editor.putString("listOfImagesWithTags", taggedImageslistAsString);
+            editor.apply();
+
+            //grab the GridView and update it!
+            GridView imageGrid = (GridView) this.act.findViewById(R.id.gridview);
+            ImageAdapterDashboard imagesAdapter = (ImageAdapterDashboard) imageGrid.getAdapter();
+            imagesAdapter.removePath(this.img.getImgPath());
+
+            //refresh
+            imagesAdapter.notifyDataSetChanged();
+
+            TextView photosToBeUploaded = (TextView) this.act.findViewById(R.id.textView20);
+            photosToBeUploaded.invalidate();
+            photosToBeUploaded.setText(imagesAdapter.getCount() + " image(s) waiting to upload");
+
+            //refresh history fragment
+            FragmentManager fm = histFragment.getActivity().getSupportFragmentManager();
+
+            fm.beginTransaction().detach(histFragment).attach(histFragment).commitAllowingStateLoss();
+
+
+        }
+
+
     }
 }

@@ -287,10 +287,16 @@ public class TabFragment2 extends Fragment {
                    Intent i = new Intent(getActivity(), TagsActivity.class);
                    HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
 
-                   i.putExtra("selectedImages", imgPathSet);
-                   i.putExtra("azure", caa);
+                   if(caa != null) {
+                       i.putExtra("selectedImages", imgPathSet);
+                       i.putExtra("azure", caa);
 
-                   startActivity(i);
+                       startActivity(i);
+                   }
+                   else{
+                       Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
+
+                   }
                }catch(NullPointerException e){
 
                    Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
