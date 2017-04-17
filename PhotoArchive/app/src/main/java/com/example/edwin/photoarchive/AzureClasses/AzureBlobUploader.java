@@ -31,6 +31,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class AzureBlobUploader extends AzureBlobLoader {
@@ -38,7 +40,6 @@ public class AzureBlobUploader extends AzureBlobLoader {
     private String userName;
     private TaggedImageObject img;
     private Fragment histFragment;
-
 
     public AzureBlobUploader(Fragment f, Activity act, String userName, TaggedImageObject img) {
         super();
@@ -51,10 +52,13 @@ public class AzureBlobUploader extends AzureBlobLoader {
 
     @Override
     protected Object doInBackground(Object[] params) {
+
         File imageFile = new File(this.img.getImgPath());
 
         try {
             //-----BLOB CONTAINER----//
+
+            /*
 
             InputStream in = new FileInputStream(imageFile);
             int size = in.available();
@@ -65,6 +69,7 @@ public class AzureBlobUploader extends AzureBlobLoader {
             FileOutputStream fos = new FileOutputStream(imageFile);
             fos.write(buffer);
             fos.close();
+            */
 
 
             // Define the path to a local file.
@@ -84,9 +89,11 @@ public class AzureBlobUploader extends AzureBlobLoader {
 
 
             //UPLOAD!
-            blob.upload(new FileInputStream(imageFile), imageFile.length());
+           blob.upload(new FileInputStream(imageFile), imageFile.length());
 
-            
+            //publishProgress(1);
+
+
             //-----DATABASE-----//
             //create client
             this.setDBClient(
@@ -130,6 +137,14 @@ public class AzureBlobUploader extends AzureBlobLoader {
         return null;
     }
 
+
+
+    @Override
+    protected void onProgressUpdate(Object... object) {
+        super.onProgressUpdate(object);
+        Log.d("progressUpdate", "progress: "+((Integer)object[0] * 2) + "%");
+    }
+
     @Override
     protected void onPostExecute(Object o) {
         //access shared preferences and remove the path
@@ -148,6 +163,7 @@ public class AzureBlobUploader extends AzureBlobLoader {
                 toBeRemoved = taggedImageObjectsList.indexOf(t);
             }
         }
+
 
         //remove the index
 

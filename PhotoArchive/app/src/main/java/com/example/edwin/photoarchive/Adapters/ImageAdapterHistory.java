@@ -14,6 +14,7 @@ import com.example.edwin.photoarchive.Activities.HistoryViewTags;
 import com.example.edwin.photoarchive.Activities.ImagePreview;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ImageAdapterHistory extends BaseAdapter  {
 
@@ -23,6 +24,7 @@ public class ImageAdapterHistory extends BaseAdapter  {
     public ImageAdapterHistory(Context context, ArrayList<String> imgPathList) {
         this.context = context;
         this.imgPathList = imgPathList;
+        //Collections.reverse(this.imgPathList);
     }
 
     public int getCount() {

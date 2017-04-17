@@ -53,9 +53,12 @@ public class AzureBlobDownloader extends AzureBlobLoader{
             String prefix = "https://boephotostore.blob.core.windows.net/photocontainer/";
 
             //Grab the final reference to the blob url
+
             for(Image img : dbImages){
                 azurePaths.add(prefix + img.getId().replaceFirst("_", "/") + getSas());
             }
+
+
         } catch (Exception e) {
             Log.d("Azure", e.toString());
         }

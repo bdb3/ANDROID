@@ -38,6 +38,7 @@ import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.AzureBlobUploader;
 import com.example.edwin.photoarchive.AzureClasses.Context_Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
+import com.example.edwin.photoarchive.Helpers.DeleteAfterXDays;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -67,14 +68,12 @@ public class TabFragment1 extends Fragment {
     private BroadcastReceiver receiver;
 
     private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new HashMap<>();
-    private SharedPreferences appSharedPrefs;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context= this.getContext();
         setHasOptionsMenu(true);
-        appSharedPrefs = context.getSharedPreferences("AzureDB", Context.MODE_PRIVATE);
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
 
          permissionsStatus = (TextView) view.findViewById(R.id.textView6);
@@ -98,6 +97,10 @@ public class TabFragment1 extends Fragment {
             }
 
         }
+        Fragment histFragment = getFragmentManager().getFragments().get(3);
+
+        //delete app images after x days, replace 2 with value from sharedprefs
+        new DeleteAfterXDays(2, getActivity(), histFragment);
 
         //IMPORTANT! PULL INFORMATION FROM THE DB
         pullContextsAndAttributes();
@@ -128,7 +131,6 @@ public class TabFragment1 extends Fragment {
 
                     }
 
-
                 }
 
             }
@@ -152,7 +154,6 @@ public class TabFragment1 extends Fragment {
         imageGrid = (GridView) view.findViewById(R.id.gridview);
         photosToBeUploaded = (TextView) view.findViewById(R.id.textView20);
         imgPathList = new ArrayList<String>();
-        Fragment histFragment = getFragmentManager().getFragments().get(3);
 
         if(sharedPreferences.contains("listOfImagesWithTags")) {
             String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
@@ -174,6 +175,7 @@ public class TabFragment1 extends Fragment {
 
         registerForContextMenu(imageGrid);
         imageGrid.setOnCreateContextMenuListener(this);
+
 
         return view;
     }
@@ -290,7 +292,6 @@ public class TabFragment1 extends Fragment {
             if (info.getType() == ConnectivityManager.TYPE_WIFI)
                 return true;
         }
-
 
 
         return false;
