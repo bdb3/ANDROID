@@ -10,7 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.View;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +40,21 @@ public class AzureBlobUploader extends AzureBlobLoader  {
     private Fragment histFragment;
     private long fileLength;
     private long totalBytes;
+    ProgressBar pb;
     private final CustomInputStream.ReadListener readListener = new CustomInputStream.ReadListener() {
+        
         @Override
         public void onRead(long bytes) {
-            totalBytes += bytes;
+            if(pb.getVisibility() == View.INVISIBLE){
+                pb.setVisibility(View.VISIBLE);
 
-            System.out.println("progress: "+((totalBytes * 1D/fileLength)) *100);
+            }
+            totalBytes += bytes;
+            int percentage = (int)((totalBytes * 1D/fileLength) *100);
+
+            pb.setProgress((percentage >= 90) ? 90 : percentage);
+
+            System.out.println("progress: "+percentage);
         }
     };
 
@@ -53,11 +64,14 @@ public class AzureBlobUploader extends AzureBlobLoader  {
         this.userName = userName;
         this.img = img;
         this.histFragment = f;
+
+
     }
 
 
     @Override
     protected Object doInBackground(Object[] params) {
+        pb =(ProgressBar) this.act.findViewById(R.id.progressBar);
 
         File imageFile = new File(this.img.getImgPath());
 
@@ -71,11 +85,11 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             String[] imagePathArray = filePath.split("/");
             String imageName = imagePathArray[imagePathArray.length-1];
 
-            System.out.println("Image Name: " + imageName);
+            //System.out.println("Image Name: " + imageName);
 
             String containerName = userName + "/" + imageName;
 
-            System.out.println("Container Name: " + containerName);
+            //System.out.println("Container Name: " + containerName);
 
             CloudBlockBlob blob= this.getContainer().getBlockBlobReference(containerName);
 
@@ -137,15 +151,16 @@ public class AzureBlobUploader extends AzureBlobLoader  {
     }
 
 
-
     @Override
     protected void onProgressUpdate(Object... object) {
         super.onProgressUpdate(object);
         //Log.d("progressUpdate", "progress: "+((Integer)object[0] * 2) + "%");
     }
 
+
     @Override
     protected void onPostExecute(Object o) {
+        pb.setProgress(100);
         //access shared preferences and remove the path
         SharedPreferences sp = this.act.getSharedPreferences(TagsActivity.MyTagsPREFERENCES, android.content.Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -198,6 +213,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
             fm.beginTransaction().detach(histFragment).attach(histFragment).commitAllowingStateLoss();
 
+            pb.setVisibility(View.INVISIBLE);
 
         }
 

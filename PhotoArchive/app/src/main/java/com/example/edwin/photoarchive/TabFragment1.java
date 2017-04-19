@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +68,7 @@ public class TabFragment1 extends Fragment {
     private  TextView tagsStatus;
     private GPSTracker gps;
     private BroadcastReceiver receiver;
+    ProgressBar pb;
 
     private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new HashMap<>();
 
@@ -81,6 +84,9 @@ public class TabFragment1 extends Fragment {
          tagsStatus = (TextView) view.findViewById(R.id.textView5);
 
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+        pb = (ProgressBar)view.findViewById(R.id.progressBar);
+        pb.getProgressDrawable().setColorFilter(Color.rgb(37,126,11), PorterDuff.Mode.SRC_IN);
+        pb.setScaleY(3f);
 
         //show enable gps alert
 
@@ -163,7 +169,7 @@ public class TabFragment1 extends Fragment {
             for(TaggedImageObject t: taggedImageObjectsList){
                 imgPathList.add(t.getImgPath());
 
-                Log.d("Azure", "Trying to upload image: " + t.getUser() + ", " + t.getImgPath());
+                //Log.d("Azure", "Trying to upload image: " + t.getUser() + ", " + t.getImgPath());
                 new AzureBlobUploader(histFragment,this.getActivity(), t.getUser(), t).execute();
             }
         }

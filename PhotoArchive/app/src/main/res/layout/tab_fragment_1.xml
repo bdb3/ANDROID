@@ -34,7 +34,7 @@
             android:textSize="18dp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/textView6"
+            android:layout_below="@+id/progressBar"
             android:layout_alignParentStart="true"
             android:textColor="#000000" />
 
@@ -52,6 +52,18 @@
             android:layout_below="@+id/textView20"
             />
 
+    <ProgressBar
+        android:layout_width="250dp"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="15dip"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/progressBar"
+        android:layout_below="@+id/textView6"
+        android:max="100"
+        android:progress="0"/>
 
-    </RelativeLayout>
+
+
+</RelativeLayout>
 
