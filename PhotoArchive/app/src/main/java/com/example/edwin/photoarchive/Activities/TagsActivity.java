@@ -192,7 +192,7 @@ public class TagsActivity extends AppCompatActivity {
                     View view = attrList.getChildAt(i);
                     View view2 = attrList.getChildAt(i+1);
 
-                    attributesMap.put(((TextView) view).getText().toString(), ((EditText) view2).getText().toString() );
+                    attributesMap.put(((TextView) view).getTag().toString(), ((EditText) view2).getText().toString() );
 
                 }
 
@@ -338,6 +338,7 @@ public class TagsActivity extends AppCompatActivity {
         for(Attribute s: attList){
             TextView textView = new TextView(getApplicationContext());
             textView.setText(s.getQuestion());
+            textView.setTag(s.getId());
             textView.setTextColor(Color.BLACK);
             attrList.addView(textView);
             final EditText editText = new EditText(getApplicationContext());

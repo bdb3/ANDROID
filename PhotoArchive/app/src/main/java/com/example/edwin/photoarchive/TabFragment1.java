@@ -100,7 +100,7 @@ public class TabFragment1 extends Fragment {
         Fragment histFragment = getFragmentManager().getFragments().get(3);
 
         //delete app images after x days, replace 2 with value from sharedprefs
-        new DeleteAfterXDays(2, getActivity(), histFragment);
+        new DeleteAfterXDays(90, getActivity(), histFragment);
 
         //IMPORTANT! PULL INFORMATION FROM THE DB
         pullContextsAndAttributes();

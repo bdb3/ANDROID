@@ -20,26 +20,32 @@ import com.example.edwin.photoarchive.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import com.microsoft.azure.storage.blob.CopyState;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
-public class AzureBlobUploader extends AzureBlobLoader {
+
+public class AzureBlobUploader extends AzureBlobLoader  {
     private Activity act;
     private String userName;
     private TaggedImageObject img;
     private Fragment histFragment;
+    private long fileLength;
+    private long totalBytes;
+    private final CustomInputStream.ReadListener readListener = new CustomInputStream.ReadListener() {
+        @Override
+        public void onRead(long bytes) {
+            totalBytes += bytes;
+
+            System.out.println("progress: "+((totalBytes * 1D/fileLength)) *100);
+        }
+    };
 
     public AzureBlobUploader(Fragment f, Activity act, String userName, TaggedImageObject img) {
         super();
@@ -58,20 +64,6 @@ public class AzureBlobUploader extends AzureBlobLoader {
         try {
             //-----BLOB CONTAINER----//
 
-            /*
-
-            InputStream in = new FileInputStream(imageFile);
-            int size = in.available();
-            byte[] buffer = new byte[size];
-            in.read(buffer);
-            in.close();
-
-            FileOutputStream fos = new FileOutputStream(imageFile);
-            fos.write(buffer);
-            fos.close();
-            */
-
-
             // Define the path to a local file.
             final String filePath = imageFile.getPath();
 
@@ -89,9 +81,16 @@ public class AzureBlobUploader extends AzureBlobLoader {
 
 
             //UPLOAD!
-           blob.upload(new FileInputStream(imageFile), imageFile.length());
 
-            //publishProgress(1);
+            fileLength = imageFile.length();
+            Log.d("FILESIZE", "FILELENGTH: "+fileLength);
+          // blob.upload(new FileInputStream(imageFile), imageFile.length());
+
+
+            FileInputStream fis = new FileInputStream(imageFile);
+
+            CustomInputStream cis = new CustomInputStream(fis, readListener, 2000, fileLength);
+            blob.upload(cis, fileLength);
 
 
             //-----DATABASE-----//
@@ -142,7 +141,7 @@ public class AzureBlobUploader extends AzureBlobLoader {
     @Override
     protected void onProgressUpdate(Object... object) {
         super.onProgressUpdate(object);
-        Log.d("progressUpdate", "progress: "+((Integer)object[0] * 2) + "%");
+        //Log.d("progressUpdate", "progress: "+((Integer)object[0] * 2) + "%");
     }
 
     @Override
@@ -204,4 +203,5 @@ public class AzureBlobUploader extends AzureBlobLoader {
 
 
     }
+
 }
