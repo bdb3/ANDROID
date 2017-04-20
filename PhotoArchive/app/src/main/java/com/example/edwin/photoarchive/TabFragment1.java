@@ -166,7 +166,12 @@ public class TabFragment1 extends Fragment {
             Type listType = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
             List<TaggedImageObject> taggedImageObjectsList = new Gson().fromJson(savedArraylist, listType);
 
+
             for(TaggedImageObject t: taggedImageObjectsList){
+                if(pb.getVisibility() == View.INVISIBLE){
+                    pb.setVisibility(View.VISIBLE);
+
+                }
                 imgPathList.add(t.getImgPath());
 
                 //Log.d("Azure", "Trying to upload image: " + t.getUser() + ", " + t.getImgPath());

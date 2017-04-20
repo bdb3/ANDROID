@@ -61,6 +61,7 @@
         android:id="@+id/progressBar"
         android:layout_below="@+id/textView6"
         android:max="100"
+        android:visibility="invisible"
         android:progress="0"/>
 
 

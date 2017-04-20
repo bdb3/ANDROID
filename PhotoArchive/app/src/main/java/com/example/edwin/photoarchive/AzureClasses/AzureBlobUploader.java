@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.*;
 
 
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -30,7 +31,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class AzureBlobUploader extends AzureBlobLoader  {
@@ -54,7 +56,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
             pb.setProgress((percentage >= 90) ? 90 : percentage);
 
-            System.out.println("progress: "+percentage);
+           // System.out.println("progress: "+percentage);
         }
     };
 
@@ -152,13 +154,6 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
 
     @Override
-    protected void onProgressUpdate(Object... object) {
-        super.onProgressUpdate(object);
-        //Log.d("progressUpdate", "progress: "+((Integer)object[0] * 2) + "%");
-    }
-
-
-    @Override
     protected void onPostExecute(Object o) {
         pb.setProgress(100);
         //access shared preferences and remove the path
@@ -213,7 +208,34 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
             fm.beginTransaction().detach(histFragment).attach(histFragment).commitAllowingStateLoss();
 
-            pb.setVisibility(View.INVISIBLE);
+            Timer t = new Timer( );
+            t.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                   //
+                    new AsyncTask<Void, Void, Void>() {
+
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+
+                            act.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pb.setProgress(0);
+                                    pb.setVisibility(View.INVISIBLE);
+
+                                }
+                            });
+
+                            return null;
+                        }
+                    }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+                    //
+                }
+            }, 500);
+
+
 
         }
 
