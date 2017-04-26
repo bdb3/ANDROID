@@ -42,6 +42,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
     private Fragment histFragment;
     private long fileLength;
     private long totalBytes;
+    private boolean uploaded = true;
     ProgressBar pb;
     private final CustomInputStream.ReadListener readListener = new CustomInputStream.ReadListener() {
         
@@ -147,6 +148,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             }
         } catch (Exception e) {
             System.out.println(e.toString());
+            uploaded = false;
         }
 
         return null;
@@ -155,7 +157,13 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
     @Override
     protected void onPostExecute(Object o) {
-        pb.setProgress(100);
+        System.out.println("THE SIZE IS: " + fileLength);
+        System.out.println("Total BYTES READ: " + totalBytes);
+
+        if(!uploaded){
+            pb.setProgress(0);
+        }
+
         //access shared preferences and remove the path
         SharedPreferences sp = this.act.getSharedPreferences(TagsActivity.MyTagsPREFERENCES, android.content.Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -173,13 +181,11 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             }
         }
 
-
         //remove the index
 
-        //check if it successfully uploaded before removing
-        //change to  if(toBeRemoved !=-1 && successfullyUploaded)
+        if(toBeRemoved !=-1 && uploaded) {
+            pb.setProgress(100);
 
-        if(toBeRemoved !=-1) {
             Toast.makeText(this.act, this.img.getImgPath() + " finished uploading", Toast.LENGTH_SHORT).show();
 
             taggedImageObjectsList.remove(toBeRemoved);
