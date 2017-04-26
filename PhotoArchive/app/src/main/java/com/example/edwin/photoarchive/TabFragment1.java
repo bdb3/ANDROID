@@ -46,6 +46,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -396,9 +398,11 @@ public class TabFragment1 extends Fragment {
                                         }
                                     }
 
+                                    Collections.sort(currentAttributes);
                                     //push the data into the map
                                     contextsAndAttributes.put(current, currentAttributes);
                                 }
+
 
                                 tagsStatus.setTextColor(Color.GREEN);
                                 tagsStatus.setText("Tags status: up to date!");

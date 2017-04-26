@@ -2,7 +2,7 @@ package com.example.edwin.photoarchive.AzureClasses;
 
 import java.io.Serializable;
 
-public class Attribute implements Serializable {
+public class Attribute implements Serializable, Comparable {
     private String id;
 
     private String question;
@@ -32,5 +32,11 @@ public class Attribute implements Serializable {
 
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Attribute attr = (Attribute)o;
+        return this.getQuestion().compareTo(attr.getQuestion()) ;
     }
 }
