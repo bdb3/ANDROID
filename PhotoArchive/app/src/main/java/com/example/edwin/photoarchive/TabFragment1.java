@@ -47,6 +47,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import java.net.MalformedURLException;
@@ -70,7 +71,7 @@ public class TabFragment1 extends Fragment {
     private BroadcastReceiver receiver;
     ProgressBar pb;
 
-    private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new HashMap<>();
+    private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new LinkedHashMap<>();
 
 
     @Override

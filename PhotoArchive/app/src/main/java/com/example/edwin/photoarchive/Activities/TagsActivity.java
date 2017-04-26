@@ -51,7 +51,7 @@ public class TagsActivity extends AppCompatActivity {
     private String referrer = "";
     private String prefsKey = "";
 
-    private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new HashMap<>();
+    private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new LinkedHashMap<>();
 
 
     @Override
@@ -61,6 +61,7 @@ public class TagsActivity extends AppCompatActivity {
 
 
         Bundle azureDB = getIntent().getExtras();
+
         contextsAndAttributes = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>)azureDB.get("azure");
 
         linearLayoutContextContainer = (LinearLayout) findViewById(R.id.linearLayoutContextContainer);
@@ -253,10 +254,10 @@ public class TagsActivity extends AppCompatActivity {
 
                 }
 
-                attrList.setVisibility(View.INVISIBLE);
-                ok.setVisibility(View.INVISIBLE);
+                attrList.setVisibility(View.GONE);
+                ok.setVisibility(View.GONE);
                 ok.setEnabled(false);
-                cancelBtn.setVisibility(View.INVISIBLE);
+                cancelBtn.setVisibility(View.GONE);
 
                 if(((LinearLayout) attrList).getChildCount() > 0)
                     ((LinearLayout) attrList).removeAllViews();
@@ -327,8 +328,8 @@ public class TagsActivity extends AppCompatActivity {
     public void showForm(com.example.edwin.photoarchive.AzureClasses.Context choice){
 
         tv9.setText(choice.getId());
-        linearLayoutContextContainer.setVisibility(View.INVISIBLE);
-        done.setVisibility(View.INVISIBLE);
+        linearLayoutContextContainer.setVisibility(View.GONE);
+        done.setVisibility(View.GONE);
         attrList.setVisibility(View.VISIBLE);
         ok.setVisibility(View.VISIBLE);
         cancelBtn.setVisibility(View.VISIBLE);

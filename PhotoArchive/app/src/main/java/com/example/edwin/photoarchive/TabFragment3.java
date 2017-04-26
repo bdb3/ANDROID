@@ -236,7 +236,7 @@ public class TabFragment3 extends Fragment {
 
                     Bundle azureDB = getActivity().getIntent().getExtras();
                     //grab ContextsAndAttributes from extras
-                    HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
+                    HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (LinkedHashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
 
                     if(caa != null) {
                         i.putExtra("azure", caa);

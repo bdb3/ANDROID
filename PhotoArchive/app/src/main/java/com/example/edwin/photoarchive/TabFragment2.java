@@ -285,7 +285,7 @@ public class TabFragment2 extends Fragment {
 
                try {
                    Intent i = new Intent(getActivity(), TagsActivity.class);
-                   HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
+                   HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (LinkedHashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
 
                    if(caa != null) {
                        i.putExtra("selectedImages", imgPathSet);
