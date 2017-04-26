@@ -1,8 +1,9 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
+import java.io.InterruptedIOException;
 import java.io.Serializable;
 
-public class Context implements Serializable {
+public class Context implements Serializable, Comparable {
     private String id;
 
     private String descriptor;
@@ -28,5 +29,12 @@ public class Context implements Serializable {
 
     public void setDescriptor(String descriptor) {
         this.descriptor = descriptor;
+    }
+
+    @Override
+    public int compareTo( Object o) {
+       Context ctx = (Context)o;
+
+        return this.getId().compareTo(ctx.getId());
     }
 }

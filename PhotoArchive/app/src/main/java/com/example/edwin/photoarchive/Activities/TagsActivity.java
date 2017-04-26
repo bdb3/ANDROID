@@ -35,7 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-
+import java.util.TreeMap;
 
 
 public class TagsActivity extends AppCompatActivity {
@@ -51,7 +51,7 @@ public class TagsActivity extends AppCompatActivity {
     private String referrer = "";
     private String prefsKey = "";
 
-    private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new LinkedHashMap<>();
+    private TreeMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes;
 
 
     @Override
@@ -62,7 +62,9 @@ public class TagsActivity extends AppCompatActivity {
 
         Bundle azureDB = getIntent().getExtras();
 
-        contextsAndAttributes = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>)azureDB.get("azure");
+        contextsAndAttributes =
+        new TreeMap<>((HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure"));
+
 
         linearLayoutContextContainer = (LinearLayout) findViewById(R.id.linearLayoutContextContainer);
 
