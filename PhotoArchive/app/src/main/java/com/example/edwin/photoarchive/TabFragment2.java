@@ -50,6 +50,7 @@ public class TabFragment2 extends Fragment {
     private Map<String, Map<String, Map<String, String>>> imagesTagsMap = new LinkedHashMap<String, Map<String, Map<String, String>>>();
     private SharedPreferences sharedPreferences;
     private ArrayList<TaggedImageObject> taggedImagesList = new ArrayList<TaggedImageObject>();
+    private String username;
 
 
 
@@ -62,6 +63,11 @@ public class TabFragment2 extends Fragment {
 
         uploadBtn = (Button) view.findViewById(R.id.button5);
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+
+        if(sharedPreferences.contains("loggedInUser")) {
+            username = sharedPreferences.getString("loggedInUser",null);
+
+        }
 
         ///////////////////////////////////// SEND TO QUEUE CODE/////////////////////////////////////
 
@@ -107,7 +113,7 @@ public class TabFragment2 extends Fragment {
                        // imagesTagsMap.put(s, outputMap);
 
                         ExtractLatLong ell = new ExtractLatLong(s);
-                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), "user",outputMap);
+                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), username,outputMap);
                         taggedImagesList.add(tagImgObj);
 
                     }
@@ -139,7 +145,7 @@ public class TabFragment2 extends Fragment {
 
                     for(String s: imgPathSet){
                         ExtractLatLong ell = new ExtractLatLong(s);
-                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), "user",outputMap);
+                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), username,outputMap);
                         taggedImageObjectsList.add(tagImgObj);
 
                     }

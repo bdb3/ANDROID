@@ -8,6 +8,10 @@
         <item name="colorPrimaryDark">#07096D</item>
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="colorAccent">#FF4081</item>
+
+        <item name="actionButtonStyle">@style/CustomActionButtonStyle</item>
+
+
     </style>
 
     <style name="CustomTextStyle" parent="@android:style/TextAppearance.Widget.TabWidget">
@@ -19,6 +23,17 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="CustomActionButtonStyle" parent="Widget.AppCompat.ActionButton">
+        <item name="android:paddingStart">0dip</item>
+        <item name="android:paddingEnd">5dip</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
+    <bool name="abc_config_actionMenuItemAllCaps">false</bool>
+
+
 
 
 </resources>

@@ -58,6 +58,7 @@ public class TabFragment3 extends Fragment {
     private LinearLayout tagsContainer;
     private Button clearTags;
     private ArrayList<TaggedImageObject> taggedImagesList = new ArrayList<TaggedImageObject>();
+    private String username;
 
 
     @Override
@@ -66,6 +67,11 @@ public class TabFragment3 extends Fragment {
         View view = inflater.inflate(R.layout.tab_fragment_3, container, false);
         context= this.getContext();
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+
+        if(sharedPreferences.contains("loggedInUser")) {
+            username = sharedPreferences.getString("loggedInUser",null);
+
+        }
 
         //camera btn
         button = (Button) view.findViewById(R.id.button);
@@ -128,7 +134,7 @@ public class TabFragment3 extends Fragment {
                 for(String s: imgPathSet){
 
                     ExtractLatLong ell = new ExtractLatLong(s);
-                    TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), "user",outputMap);
+                    TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), username,outputMap);
                     taggedImagesList.add(tagImgObj);
 
                 }
@@ -163,7 +169,7 @@ public class TabFragment3 extends Fragment {
 
                     for(String s: imgPathSet){
                         ExtractLatLong ell = new ExtractLatLong(s);
-                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), "user",outputMap);
+                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), username,outputMap);
                         taggedImageObjectsList.add(tagImgObj);
 
                     }
@@ -398,7 +404,7 @@ public class TabFragment3 extends Fragment {
     File createImageFile() throws IOException{
         String timeStamp= new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime());
         String imageFileName = "IMAGES_"+ timeStamp+ "_";
-        File dir = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
+        File dir = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images/"+username);
         if(!dir.exists()){
             dir.mkdirs();
             File output = new File(dir, ".nomedia");
@@ -453,37 +459,5 @@ public class TabFragment3 extends Fragment {
     }
 
 
-
-
-        /*
-    private Bitmap rotateImage(Bitmap bitmap){
-        ExifInterface exif = null;
-
-        try{
-            exif= new ExifInterface(imageFileLocation);
-
-        }catch(IOException e){
-            e.printStackTrace();
-
-        }
-
-        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-        Matrix matrix= new Matrix();
-        switch(orientation){
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                matrix.setRotate(90);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                matrix.setRotate(180);
-                break;
-            default:
-        }
-
-
-        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true );
-        return rotatedBitmap;
-    }
-
-*/
 
 }

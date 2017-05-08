@@ -177,7 +177,7 @@ public class TabFragment1 extends Fragment {
                 }
                 imgPathList.add(t.getImgPath());
 
-                //Log.d("Azure", "Trying to upload image: " + t.getUser() + ", " + t.getImgPath());
+
                 new AzureBlobUploader(histFragment,this.getActivity(), t.getUser(), t).execute();
             }
         }

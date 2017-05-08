@@ -86,7 +86,7 @@ public class GalleryViewAllActivity extends AppCompatActivity {
         menu.add(Menu.NONE, 0, Menu.NONE, "Cancel")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        menu.add(Menu.NONE, 1, Menu.NONE, "DONE")
+        menu.add(Menu.NONE, 1, Menu.NONE, "Done")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
 

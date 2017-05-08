@@ -157,11 +157,11 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
     @Override
     protected void onPostExecute(Object o) {
-        System.out.println("THE SIZE IS: " + fileLength);
-        System.out.println("Total BYTES READ: " + totalBytes);
+
 
         if(!uploaded){
             pb.setProgress(0);
+            Toast.makeText(this.act, "An error occurred, please check your internet connection.", Toast.LENGTH_SHORT).show();
         }
 
         //access shared preferences and remove the path

@@ -1,7 +1,11 @@
 package com.example.edwin.photoarchive;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -9,6 +13,9 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -19,11 +26,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.edwin.photoarchive.Activities.Activity2;
 import com.example.edwin.photoarchive.Activities.MainActivity;
+import com.example.edwin.photoarchive.Activities.TagsActivity;
 
 
 public class TabFragment5 extends Fragment {
     private GPSTracker gps;
+    private Menu menu;
+    private String username;
+    private SharedPreferences sharedPreferences;
 
     public String getDays(Intent i){
         String str;
@@ -38,19 +50,19 @@ public class TabFragment5 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        setHasOptionsMenu(true);
         final View view = inflater.inflate(R.layout.tab_fragment_5, container, false);
-
-
-
-
         Button logOutButton = (Button)view.findViewById(R.id.button7);
-
         TextView deleteDays = (TextView)view.findViewById(R.id.textView8);
         deleteDays.setText("Delete after " + getDays(getActivity().getIntent()) + " " + "days");
 
+        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
+        if(sharedPreferences.contains("loggedInUser")) {
+            username = sharedPreferences.getString("loggedInUser",null);
 
-
+        }
 
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +73,11 @@ public class TabFragment5 extends Fragment {
                         .setNegativeButton(android.R.string.cancel, null)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override public void onClick(DialogInterface dialog, int which) {
+
+
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.remove("loggedInUser");
+                                editor.apply();
 
                                 Intent i= new Intent(getActivity(), MainActivity.class);
                                 startActivity(i);
@@ -130,5 +147,26 @@ public class TabFragment5 extends Fragment {
         }
 
         return  view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        this.menu = menu;
+
+        menu.add(Menu.NONE, 0, Menu.NONE, "")
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        menu.findItem(0).setIcon(R.drawable.ic_user).setEnabled(false);
+        menu.findItem(0).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+
+        menu.add(Menu.NONE, 1, Menu.NONE, username + "   ")
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(1).setEnabled(false);
+
+
+
+
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

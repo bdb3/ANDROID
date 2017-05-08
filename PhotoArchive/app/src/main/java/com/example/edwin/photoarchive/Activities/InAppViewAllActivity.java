@@ -1,7 +1,9 @@
 package com.example.edwin.photoarchive.Activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -35,6 +37,8 @@ public class InAppViewAllActivity extends AppCompatActivity {
     private HashSet<ImageView> imageViewSet = new HashSet<ImageView>();
     private Button selectButton;
     private Button deleteButton;
+    private String username;
+    private SharedPreferences sharedPreferences;
 
 
     @Override
@@ -44,11 +48,18 @@ public class InAppViewAllActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        sharedPreferences = getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+
+        if(sharedPreferences.contains("loggedInUser")) {
+            username = sharedPreferences.getString("loggedInUser",null);
+
+        }
+
 
         imageGrid = (GridView) findViewById(R.id.gridView3);
         imgPathList = new ArrayList<String>();
 
-        File path2 = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
+        File path2 = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images/"+username);
         String[] fileNames2 = null;
 
         if (path2.exists()) {
@@ -66,9 +77,7 @@ public class InAppViewAllActivity extends AppCompatActivity {
         setTitle("In App ("+ imgPathList.size()+")");
         imageGrid.setAdapter(new ImageAdapterForAppImages(InAppViewAllActivity.this, imgPathList, this));
 
-
-
-
+        
         selectButton = (Button)findViewById(R.id.button15);
         deleteButton = (Button)findViewById(R.id.buttonDelete);
 
@@ -122,10 +131,10 @@ public class InAppViewAllActivity extends AppCompatActivity {
         menu.add(Menu.NONE, 0, Menu.NONE, "Cancel")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        menu.add(Menu.NONE, 1, Menu.NONE, "DONE")
+        menu.add(Menu.NONE, 1, Menu.NONE, "Done")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        menu.add(Menu.NONE, 2, Menu.NONE, "SELECT ALL")
+        menu.add(Menu.NONE, 2, Menu.NONE, "Select All")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
         menu.add(Menu.NONE, 3, Menu.NONE, "")

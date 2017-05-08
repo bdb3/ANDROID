@@ -93,7 +93,7 @@ public class Activity2 extends AppCompatActivity {
                         setTitle("History");
 
                     } else {
-                        setTitle("Settings");
+                        setTitle("");
 
                     }
 

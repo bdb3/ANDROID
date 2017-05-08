@@ -1,7 +1,9 @@
 package com.example.edwin.photoarchive.Helpers;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.TypedValue;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.edwin.photoarchive.Activities.ImagePreview;
+import com.example.edwin.photoarchive.Activities.TagsActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,10 +25,19 @@ import java.util.ArrayList;
 public class PopulateAppImages {
 
     private ArrayList<String> imgPathList2;
+    private String username;
+    private SharedPreferences sharedPreferences;
 
     public PopulateAppImages(LinearLayout picContainer, android.content.Context context, final Activity activity){
 
-        File inAppImagesPath = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images");
+        sharedPreferences = activity.getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+
+        if(sharedPreferences.contains("loggedInUser")) {
+            username = sharedPreferences.getString("loggedInUser",null);
+
+        }
+
+        File inAppImagesPath = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images/"+username);
         imgPathList2 = new ArrayList<String>();
         String[] inAppImgList = null;
 
