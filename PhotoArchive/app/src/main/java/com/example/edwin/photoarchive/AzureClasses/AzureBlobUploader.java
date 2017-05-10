@@ -37,6 +37,7 @@ import java.util.TimerTask;
 
 public class AzureBlobUploader extends AzureBlobLoader  {
     private Activity act;
+    private String urlPath = "https://boephotoarchive-dev.azurewebsites.net";
     private String userName;
     private TaggedImageObject img;
     private Fragment histFragment;
@@ -114,7 +115,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             //create client
             this.setDBClient(
                     new MobileServiceClient(
-                            "https://boephotoarchive-dev.azurewebsites.net",
+                            urlPath,
                             this.act.getApplicationContext()
                     )
             );

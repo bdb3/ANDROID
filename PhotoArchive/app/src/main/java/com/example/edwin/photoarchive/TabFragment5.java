@@ -48,6 +48,18 @@ public class TabFragment5 extends Fragment {
         }
     }
 
+    public String getDays(){
+        String str;
+        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+        if(!sharedPreferences.contains("numDays")){
+            return str = "90";
+        }
+        else{
+
+            return str = Integer.toString(sharedPreferences.getInt("numDays", 90));
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -55,7 +67,7 @@ public class TabFragment5 extends Fragment {
         final View view = inflater.inflate(R.layout.tab_fragment_5, container, false);
         Button logOutButton = (Button)view.findViewById(R.id.button7);
         TextView deleteDays = (TextView)view.findViewById(R.id.textView8);
-        deleteDays.setText("Delete after " + getDays(getActivity().getIntent()) + " " + "days");
+        deleteDays.setText("Delete after " + getDays() + " " + "days");
 
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
@@ -114,11 +126,22 @@ public class TabFragment5 extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
-                                getActivity().getIntent().putExtra("numDays", Integer.toString(picker.getValue()));
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                                System.out.println(getDays(getActivity().getIntent()));
+                                if (!sharedPreferences.contains("numDays")) {
+                                    editor.putInt("numDays", picker.getValue());
+                                    editor.commit();
+
+                                }
+                                else{
+                                    editor.remove("numDays");
+                                    editor.apply();
+                                    editor.putInt("numDays", picker.getValue());
+                                    editor.apply();
+
+                                }
+
                                 getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(4)).attach(getFragmentManager().getFragments().get(4)).commitAllowingStateLoss();
-
                             }
                         })
                         .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){

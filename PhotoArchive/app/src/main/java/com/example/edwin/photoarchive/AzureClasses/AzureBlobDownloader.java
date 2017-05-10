@@ -19,6 +19,7 @@ import java.util.List;
 public class AzureBlobDownloader extends AzureBlobLoader{
     private Activity act;
     private String userName;
+    private String urlPath = "https://boephotoarchive-dev.azurewebsites.net";
 
     public AzureBlobDownloader(Activity act, String userName){
         super();
@@ -36,7 +37,7 @@ public class AzureBlobDownloader extends AzureBlobLoader{
             //get the database paths
             this.setDBClient(
                     new MobileServiceClient(
-                            "https://boephotoarchive-dev.azurewebsites.net",
+                            urlPath,
                             this.act.getApplicationContext()
                     )
             );
