@@ -124,8 +124,9 @@ public class TabFragment1 extends Fragment {
                     if(netInfo.getState() == NetworkInfo.State.CONNECTED) {
 
                         permissionsStatus.invalidate();
-                        permissionsStatus.setText("Required Permissions: all granted");
-                        permissionsStatus.setTextColor(Color.GREEN);
+                        permissionsStatus.setText("Required Permissions: all granted \nRepair Task ID:"+sharedPreferences.getString("repairTaskID",null));
+
+                        permissionsStatus.setTextColor(Color.BLACK);
 
                         Log.d("connectionStatus", "now connected");
 
@@ -133,6 +134,7 @@ public class TabFragment1 extends Fragment {
 
                     if(netInfo.getState() == NetworkInfo.State.DISCONNECTED){
                         permissionsStatus.invalidate();
+
                         permissionsStatus.setText("No wifi connection");
                         permissionsStatus.setTextColor(Color.RED);
 
@@ -346,8 +348,9 @@ public class TabFragment1 extends Fragment {
     private void pullContextsAndAttributes(){
         try {
             //initialize client connection
+            //TODO Contexts are loaded here
             MobileServiceClient mClient = new MobileServiceClient(
-                    "https://boephotoarchive-dev.azurewebsites.net",
+                    "http://boephotoarchive-dev.azurewebsites.net",
                     context);
 
             //create table references

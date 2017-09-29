@@ -15,7 +15,8 @@ public abstract class AzureBlobLoader extends AsyncTask {
     //All instances will have the SAS token
     //The SAS token is valid for download/upload
     //It's valid (using KEY1) from 2-24-2017:12.00.00 AM to 2-24-2027:12.00.00AM just in case!!!
-    private final String sas = "?sv=2016-05-31&ss=b&srt=o&sp=rw&se=2027-02-24T00:00:00Z&st=2017-02-24T00:00:00Z&spr=https&sig=kChTx0B8faa43g%2F%2F2G5LIWBCOKMxq1eIgqOUn9Ds9s4%3D";
+    // TODO SAS Key
+    private final String sas = "?sv=2017-04-17&ss=bfqt&srt=sco&sp=rwdlacup&se=2018-11-10T03:26:58Z&st=2017-09-27T19:26:58Z&spr=https&sig=YKozpcGRTl3LZSMUJgBCmmmLNSteOSeAZPX8dNsARLA%3D";
     private StorageCredentials accountSAS;
     private CloudStorageAccount account;
     private CloudBlobClient blobClient;
@@ -33,6 +34,7 @@ public abstract class AzureBlobLoader extends AsyncTask {
 
             // Setup the cloud storage account.
             //Params: sas, use-http, url-endpoint, storage account name
+            //TODO Blob Storage Account
             this.account = new CloudStorageAccount(accountSAS, true, null, "boephotostore");
 
             // Create a blob service client

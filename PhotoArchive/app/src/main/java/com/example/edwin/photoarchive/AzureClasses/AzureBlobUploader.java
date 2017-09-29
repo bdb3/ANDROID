@@ -37,7 +37,8 @@ import java.util.TimerTask;
 
 public class AzureBlobUploader extends AzureBlobLoader  {
     private Activity act;
-    private String urlPath = "https://boephotoarchive-dev.azurewebsites.net";
+    //TODO SQL website
+    private String urlPath = "http://boephotoarchive-dev.azurewebsites.net";
     private String userName;
     private TaggedImageObject img;
     private Fragment histFragment;

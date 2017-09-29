@@ -19,7 +19,8 @@ import java.util.List;
 public class AzureBlobDownloader extends AzureBlobLoader{
     private Activity act;
     private String userName;
-    private String urlPath = "https://boephotoarchive-dev.azurewebsites.net";
+    //TODO SQL server path
+    private String urlPath = "http://boephotoarchive-dev.azurewebsites.net";
 
     public AzureBlobDownloader(Activity act, String userName){
         super();
@@ -51,17 +52,21 @@ public class AzureBlobDownloader extends AzureBlobLoader{
             final List<Image> dbImages = this.getImageTable().execute().get();
 
             //add prefix for https and blob storage navigation
+            //TODO Blob Storage Full path
             String prefix = "https://boephotostore.blob.core.windows.net/photocontainer/";
 
             //Grab the final reference to the blob url
+            //for(Image img : dbImages){
+            Log.d("Azure",""+dbImages.size());
 
             for(Image img : dbImages){
+                Log.d("Images Loading",prefix + img.getId().replaceFirst("_", "/") +getSas());
                 azurePaths.add(prefix + img.getId().replaceFirst("_", "/") + getSas());
             }
 
 
         } catch (Exception e) {
-            Log.d("Azure", e.toString());
+            Log.d("Azure", e.toString()); e.printStackTrace();
         }
 
         return azurePaths;
