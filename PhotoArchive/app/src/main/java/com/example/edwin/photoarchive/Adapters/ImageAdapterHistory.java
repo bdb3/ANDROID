@@ -15,15 +15,19 @@ import com.example.edwin.photoarchive.Activities.ImagePreview;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class ImageAdapterHistory extends BaseAdapter  {
 
     private Context context;
     private ArrayList<String> imgPathList;
+    private HashMap<String,ArrayList<String>> icavObjects;
 
     public ImageAdapterHistory(Context context, ArrayList<String> imgPathList) {
         this.context = context;
         this.imgPathList = imgPathList;
+//      (ArrayList<String>)results[0];
+//        this.icavObjects=(HashMap<String,ArrayList<String>>)results[1];
         //Collections.reverse(this.imgPathList);
     }
 
@@ -50,7 +54,7 @@ public class ImageAdapterHistory extends BaseAdapter  {
         } else {
             imageView = (ImageView) convertView;
         }
-
+        // TODO Thumbnailed Histories
         Glide.with(this.context).load(this.imgPathList.get(position)).into(imageView);
 
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -69,9 +73,9 @@ public class ImageAdapterHistory extends BaseAdapter  {
             @Override
             public boolean onLongClick(View v) {
                 Intent i = new Intent(context, HistoryViewTags.class);
+                i.putExtra("imagePath",imgPathList.get(position));
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(i);
-
 
                 return true;
             }
