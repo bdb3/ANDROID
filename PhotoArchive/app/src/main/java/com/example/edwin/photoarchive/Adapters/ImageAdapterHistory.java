@@ -14,7 +14,6 @@ import com.example.edwin.photoarchive.Activities.HistoryViewTags;
 import com.example.edwin.photoarchive.Activities.ImagePreview;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class ImageAdapterHistory extends BaseAdapter  {

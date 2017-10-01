@@ -1,6 +1,5 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.microsoft.azure.storage.CloudStorageAccount;

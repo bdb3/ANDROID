@@ -9,10 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.edwin.photoarchive.GPSTracker;
 import com.example.edwin.photoarchive.R;
 
 import java.util.List;
@@ -25,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         sharedPreferences = getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
+        // CODE TO READ URLS WITH PARAMETERS ////////////////////////////
         // URI Intent With Parameters
         try {
             Uri data = getIntent().getData();
@@ -44,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         }
         catch(Exception e){}
+        // CODE TO READ URLS WITH PARAMETERS ////////////////////////////
+
         if(sharedPreferences.contains("loggedInUser")) {
             Intent i= new Intent(MainActivity.this, Activity2.class);
             startActivity(i);

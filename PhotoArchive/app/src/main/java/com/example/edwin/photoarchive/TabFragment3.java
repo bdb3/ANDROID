@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.edwin.photoarchive.Activities.ActivityEditDeleteTags;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;

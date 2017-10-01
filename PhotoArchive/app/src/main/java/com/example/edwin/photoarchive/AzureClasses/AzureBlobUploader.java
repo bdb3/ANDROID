@@ -1,15 +1,10 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
 import android.app.Activity;
-
-
-import android.content.*;
-
-
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
