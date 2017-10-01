@@ -24,7 +24,6 @@ public class AzureBlobDownloader extends AzureBlobLoader{
     }
     @Override
     protected Object doInBackground(Object[] params) {
-        ArrayList<String> databasePaths = new ArrayList<>();
 
         //We create an array list to store the final paths
         ArrayList<String> azurePaths = new ArrayList<>();

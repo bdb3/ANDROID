@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.edwin.photoarchive.R;
 
 
@@ -23,7 +24,7 @@ public class ImagePreview extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String imagePath = extras.getString("imagePath");
-            Glide.with(this).load(imagePath).into(img);
+            Glide.with(this).load(imagePath).diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
 
         }
 

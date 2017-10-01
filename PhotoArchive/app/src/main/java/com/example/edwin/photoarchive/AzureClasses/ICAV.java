@@ -1,12 +1,12 @@
 package com.example.edwin.photoarchive.AzureClasses;
-
+// TODO Added CreatedAt Getter/Setter
 public class ICAV {
     private String id;
     private String imageID;
     private String contextID;
     private String attributeID;
     private String value;
-
+    private String createdAt;
     public ICAV(){}
 
     public ICAV(String id, String imageID, String contextID, String attributeID, String value){
@@ -17,6 +17,8 @@ public class ICAV {
         this.value = value;
     }
 
+    public String getCreatedAt(){return createdAt;}
+    public void setCreatedAt(String createdAt){this.createdAt=createdAt;}
     public String getId() {
         return id;
     }
