@@ -12,4 +12,12 @@
         android:id="@+id/imageViewPreview"
         android:layout_centerVertical="true"
         />
+
+    <ProgressBar
+        android:id="@+id/image_preview_ProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:visibility="visible"
+        android:layout_margin="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>

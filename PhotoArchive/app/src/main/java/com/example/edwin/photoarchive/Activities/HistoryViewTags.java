@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.edwin.photoarchive.AzureClasses.ICAV;
+import com.example.edwin.photoarchive.AzureClasses.Image;
 import com.example.edwin.photoarchive.Helpers.AsyncTaskLoaderEx;
 import com.microsoft.windowsazure.mobileservices.*;
 import com.example.edwin.photoarchive.R;
@@ -25,6 +26,7 @@ import java.util.List;
 public class HistoryViewTags extends AppCompatActivity {
     private MobileServiceClient mClient;
     private List<ICAV> icavList;
+    private List<Image> imageList;
     private String key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class HistoryViewTags extends AppCompatActivity {
                 }
 
                 MobileServiceTable<ICAV> icavMobileServiceTable = mClient.getTable(ICAV.class);
+                MobileServiceTable<Image> imageMobileServiceTable=mClient.getTable(Image.class);
                 try {
                     icavList = icavMobileServiceTable.where().startsWith("ImageID",key).execute().get();
                     return icavList;
@@ -94,12 +97,12 @@ public class HistoryViewTags extends AppCompatActivity {
 
                     TextView q = new TextView(context);
                     q.setTextColor(Color.BLACK);
-                    q.setText("Attribute: \n"+icav.getAttributeID());
+                    q.setText(icav.getAttributeID());
                     linearLayoutTags.addView(q);
 
                     EditText a = new EditText(context);
                     a.setTextColor(Color.BLACK);
-                    a.setText("Value: \n"+icav.getValue());
+                    a.setText(icav.getValue());
                     a.setEnabled(false);
                     linearLayoutTags.addView(a);
                 }

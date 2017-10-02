@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.GridView;
 
+import com.bumptech.glide.Glide;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterHistory;
 import com.example.edwin.photoarchive.R;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;

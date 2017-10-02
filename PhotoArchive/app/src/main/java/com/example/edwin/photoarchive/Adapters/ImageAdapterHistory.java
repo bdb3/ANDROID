@@ -10,8 +10,10 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.edwin.photoarchive.Activities.HistoryViewTags;
 import com.example.edwin.photoarchive.Activities.ImagePreview;
+import com.example.edwin.photoarchive.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +56,7 @@ public class ImageAdapterHistory extends BaseAdapter  {
             imageView = (ImageView) convertView;
         }
         // TODO Thumbnailed Histories
-        Glide.with(this.context).load(this.imgPathList.get(position)).into(imageView);
+        Glide.with(this.context).load(this.imgPathList.get(position)).placeholder(R.drawable.ic_camera).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imageView);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
