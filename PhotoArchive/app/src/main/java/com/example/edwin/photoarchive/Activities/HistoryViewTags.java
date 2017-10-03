@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.AzureClasses.ICAV;
 import com.example.edwin.photoarchive.AzureClasses.Image;
 import com.example.edwin.photoarchive.Helpers.AsyncTaskLoaderEx;
@@ -56,10 +57,7 @@ public class HistoryViewTags extends AppCompatActivity {
                 Log.d("Key", key);
                 // Start MobileServiceClient
                 try {
-                    mClient = new MobileServiceClient(
-                            "https://boephotoarchive-dev.azurewebsites.net",
-                            this.getContext()
-                    );
+                    mClient = AzureServiceAdapter.getInstance().getClient();
                 } catch (Exception e) {
                     Log.d("HistoryViewTags", "Mobile Service Client Failure");
                 }
@@ -67,7 +65,7 @@ public class HistoryViewTags extends AppCompatActivity {
                 MobileServiceTable<ICAV> icavMobileServiceTable = mClient.getTable(ICAV.class);
                 MobileServiceTable<Image> imageMobileServiceTable=mClient.getTable(Image.class);
                 try {
-                    icavList = icavMobileServiceTable.where().startsWith("ImageID",key).execute().get();
+                    icavList = mClient.getTable(ICAV.class).where().startsWith("ImageID",key).execute().get();
                     return icavList;
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.R;
 
 import java.util.List;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         sharedPreferences = getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
+        // TODO INITIALIZE AZURE SERVICES
+        AzureServiceAdapter.Initialize(this);
         // CODE TO READ URLS WITH PARAMETERS ////////////////////////////
         // URI Intent With Parameters
         try {

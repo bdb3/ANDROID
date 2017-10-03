@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.GridView;
 
 import com.bumptech.glide.Glide;
+import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterHistory;
 import com.example.edwin.photoarchive.R;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
@@ -30,11 +31,7 @@ public class AzureBlobDownloader extends AzureBlobLoader{
         ArrayList<String> azurePaths = new ArrayList<>();
         try {
             //get the database paths
-            this.setDBClient(
-                    new MobileServiceClient(
-                            urlPath,
-                            this.act.getApplicationContext()
-                    )
+            this.setDBClient(AzureServiceAdapter.getInstance().getClient()
             );
 
             this.setImageTable(this.getDBClient().getTable(Image.class));

@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.Activities.ViewInfo;
 import com.example.edwin.photoarchive.Activities.ViewTags;
+import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.AzureBlobUploader;
@@ -343,83 +344,77 @@ public class TabFragment1 extends Fragment {
 
     //PULL DATA FROM DB
     private void pullContextsAndAttributes(){
-        try {
-            //initialize client connection
-            //TODO Contexts are loaded here
-            MobileServiceClient mClient = new MobileServiceClient(
-                    "http://boephotoarchive-dev.azurewebsites.net",
-                    context);
+        //initialize client connection
+        //TODO Contexts are loaded here
+        MobileServiceClient mClient = AzureServiceAdapter.getInstance().getClient();
 
-            //create table references
-            final MobileServiceTable<com.example.edwin.photoarchive.AzureClasses.Context> contextTable = mClient.getTable(com.example.edwin.photoarchive.AzureClasses.Context.class);
-            final MobileServiceTable<Attribute> attributeTable = mClient.getTable(Attribute.class);
-            final MobileServiceTable<Context_Attribute> caTable = mClient.getTable(Context_Attribute.class);
+        //create table references
+        final MobileServiceTable<com.example.edwin.photoarchive.AzureClasses.Context> contextTable = mClient.getTable(com.example.edwin.photoarchive.AzureClasses.Context.class);
+        final MobileServiceTable<Attribute> attributeTable = mClient.getTable(Attribute.class);
+        final MobileServiceTable<Context_Attribute> caTable = mClient.getTable(Context_Attribute.class);
 
-            new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Void>() {
 
-                @Override
-                protected Void doInBackground(Void... voids) {
-                    try {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
 
-                        //pull data into lists
-                        final List<com.example.edwin.photoarchive.AzureClasses.Context> contexts = contextTable.execute().get();
-                        final List<Attribute> attributes = attributeTable.execute().get();
-                        final List<Context_Attribute> context_attributes = caTable.execute().get();
+                    //pull data into lists
+                    final List<com.example.edwin.photoarchive.AzureClasses.Context> contexts = contextTable.execute().get();
+                    final List<Attribute> attributes = attributeTable.execute().get();
+                    final List<Context_Attribute> context_attributes = caTable.execute().get();
 
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                for(com.example.edwin.photoarchive.AzureClasses.Context current : contexts){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for(com.example.edwin.photoarchive.AzureClasses.Context current : contexts){
 
-                                    //make a new list of possible attributes
-                                    ArrayList<Attribute> currentAttributes = new ArrayList<>();
+                                //make a new list of possible attributes
+                                ArrayList<Attribute> currentAttributes = new ArrayList<>();
 
-                                    if(!contextsAndAttributes.containsKey(current)){
+                                if(!contextsAndAttributes.containsKey(current)){
 
-                                        //generate a list of all of its attributes
-                                        for(Context_Attribute ca : context_attributes){
+                                    //generate a list of all of its attributes
+                                    for(Context_Attribute ca : context_attributes){
 
 
-                                            if(ca.getContextID().equals(current.getId())){
+                                        if(ca.getContextID().equals(current.getId())){
 
-                                                //get attribute
-                                                String attributeID = ca.getAttributeID();
+                                            //get attribute
+                                            String attributeID = ca.getAttributeID();
 
-                                                for(Attribute a : attributes){
+                                            for(Attribute a : attributes){
 
-                                                    if(a.getId().equals(attributeID)){
+                                                if(a.getId().equals(attributeID)){
 
-                                                        currentAttributes.add(a);
+                                                    currentAttributes.add(a);
 
-                                                        break;
-                                                    }
+                                                    break;
                                                 }
                                             }
                                         }
                                     }
-
-                                    Collections.sort(currentAttributes);
-                                    //push the data into the map
-                                    contextsAndAttributes.put(current, currentAttributes);
                                 }
 
-
-                                tagsStatus.setTextColor(Color.GREEN);
-                                tagsStatus.setText("Tags status: up to date!");
-
-                                //store contextsAndAttributes into extras
-                                getActivity().getIntent().putExtra("azure", contextsAndAttributes);
+                                Collections.sort(currentAttributes);
+                                //push the data into the map
+                                contextsAndAttributes.put(current, currentAttributes);
                             }
-                        });
-                    } catch (Exception exception) {
-                        Log.d("Azure", "Attribute error!");
-                    }
-                    return null;
+
+
+                            tagsStatus.setTextColor(Color.GREEN);
+                            tagsStatus.setText("Tags status: up to date!");
+
+                            //store contextsAndAttributes into extras
+                            getActivity().getIntent().putExtra("azure", contextsAndAttributes);
+                        }
+                    });
+                } catch (Exception exception) {
+                    Log.d("Azure", "Attribute error!");
                 }
-            }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-        }catch (MalformedURLException m) {
-            Log.d("Azure", "Error! Invalid URL");
-        }
+                return null;
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
 
 

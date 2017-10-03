@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.edwin.photoarchive.Activities.TagsActivity;
+import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
 import com.example.edwin.photoarchive.R;
 import com.google.gson.Gson;
@@ -110,10 +111,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             //-----DATABASE-----//
             //create client
             this.setDBClient(
-                    new MobileServiceClient(
-                            urlPath,
-                            this.act.getApplicationContext()
-                    )
+                    AzureServiceAdapter.getInstance().getClient()
             );
 
             this.setImageTable(this.getDBClient().getTable(Image.class));
