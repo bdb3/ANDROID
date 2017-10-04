@@ -30,7 +30,7 @@ public class AzureServiceAdapter {
         if (mInstance == null) {
             mInstance = new AzureServiceAdapter(context);
         } else {
-            throw new IllegalStateException("AzureServiceAdapter is already initialized");
+            //throw new IllegalStateException("AzureServiceAdapter is already initialized");
         }
     }
 

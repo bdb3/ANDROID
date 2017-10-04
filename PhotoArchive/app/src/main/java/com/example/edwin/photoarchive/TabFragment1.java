@@ -99,7 +99,7 @@ public class TabFragment1 extends Fragment {
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("locationAlertShown", true);
-                editor.commit();
+                editor.apply();
 
             }
 

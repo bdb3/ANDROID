@@ -126,7 +126,7 @@ public class TabFragment5 extends Fragment {
 
                                 if (!sharedPreferences.contains("numDays")) {
                                     editor.putInt("numDays", picker.getValue());
-                                    editor.commit();
+                                    editor.apply();
 
                                 }
                                 else{

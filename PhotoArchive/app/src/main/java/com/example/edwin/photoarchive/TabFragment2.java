@@ -129,7 +129,7 @@ public class TabFragment2 extends Fragment {
 
                     String taggedImageslistAsString = gson.toJson(taggedImagesList);
                     editor.putString("listOfImagesWithTags", taggedImageslistAsString);
-                    editor.commit();
+                    editor.apply();
                     clearTagsAndSelectedImages();
                     Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
 

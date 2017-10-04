@@ -149,7 +149,7 @@ public class TabFragment3 extends Fragment {
 
                     String taggedImageslistAsString = gson.toJson(taggedImagesList);
                     editor.putString("listOfImagesWithTags", taggedImageslistAsString);
-                    editor.commit();
+                    editor.apply();
                     clearTaken.performClick();
                     clearTags2();
                     refreshDash();

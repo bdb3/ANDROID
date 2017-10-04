@@ -203,7 +203,7 @@ public class TagsActivity extends AppCompatActivity {
                     String tagListMapAsJSONString   = tagListMapAsJSON.toString();
 
                     editor.putString(prefsKey, tagListMapAsJSONString);
-                    editor.commit();
+                    editor.apply();
 
 
                 }
@@ -341,6 +341,8 @@ public class TagsActivity extends AppCompatActivity {
             attrList.addView(textView);
             final EditText editText = new EditText(getApplicationContext());
 
+
+            //TODO STicky forms based on filled info
             //EditText event listener, all fields are required before btn is enabled
 
             editText.addTextChangedListener(new TextWatcher() {

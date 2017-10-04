@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor =sharedPreferences.edit();
             editor.putString("loggedInUser",user.trim());
             editor.putString("repairTaskID",repairTaskID);
-            editor.commit();
+            editor.apply();
 
             String misc=params.get(2);
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("loggedInUser",username.getText().toString().trim());
-                    editor.commit();
+                    editor.apply();
 
                 System.out.println(sharedPreferences.getString("loggedInUser",null));
                 Intent i= new Intent(MainActivity.this, Activity2.class);
