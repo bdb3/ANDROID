@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -340,8 +341,10 @@ public class TagsActivity extends AppCompatActivity {
             textView.setTextColor(Color.BLACK);
             attrList.addView(textView);
             final EditText editText = new EditText(getApplicationContext());
-
-
+            Log.d("Attribute",s.getId());
+            if(s.getId().equals("Repair Task ID")&&sharedPreferences.contains("repairTaskID")){
+                editText.setText(sharedPreferences.getString("repairTaskID",null));
+            }
             //TODO STicky forms based on filled info
             //EditText event listener, all fields are required before btn is enabled
 

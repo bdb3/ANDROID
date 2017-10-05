@@ -34,12 +34,16 @@ public class MainActivity extends AppCompatActivity {
             for(String s:params) {
                 Log.d("URI Passing", s);
             }
-            String user = params.get(0);
-            String repairTaskID=params.get(1);
-            // TODO Potential Security Risk
             SharedPreferences.Editor editor =sharedPreferences.edit();
-            editor.putString("loggedInUser",user.trim());
-            editor.putString("repairTaskID",repairTaskID);
+
+            String username=params.get(0).trim();
+            String repairID=params.get(2);
+            if(params.get(1).equals("repairtask")){
+                editor.putString("repairTaskID",repairID);
+            }
+            // TODO Potential Security Risk
+
+            editor.putString("loggedInUser",username);
             editor.apply();
 
             String misc=params.get(2);

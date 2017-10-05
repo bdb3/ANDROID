@@ -11,6 +11,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.edwin.photoarchive.Activities.GalleryViewAllActivity;
 import com.example.edwin.photoarchive.Activities.ImagePreview;
 
@@ -70,7 +71,7 @@ public class ImageAdapterForGallery extends BaseAdapter  {
         }
 
 
-        Glide.with(callerActivity).load(this.imgPathList.get(position)).into(imageView);
+        Glide.with(callerActivity).load(this.imgPathList.get(position)).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imageView);
 
 
         imageView.setOnClickListener(new View.OnClickListener() {

@@ -56,7 +56,7 @@ public class ImageAdapterHistory extends BaseAdapter  {
             imageView = (ImageView) convertView;
         }
         // TODO Thumbnailed Histories
-        Glide.with(this.context).load(this.imgPathList.get(position)).placeholder(R.drawable.ic_camera).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imageView);
+        Glide.with(this.context).load(this.imgPathList.get(position)).placeholder(R.drawable.ic_camera).into(imageView);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

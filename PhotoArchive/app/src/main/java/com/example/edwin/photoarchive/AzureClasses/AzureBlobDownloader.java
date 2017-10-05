@@ -16,13 +16,15 @@ import java.util.List;
 public class AzureBlobDownloader extends AzureBlobLoader{
     private Activity act;
     private String userName;
+    private String filter;
     //TODO SQL server path
     private String urlPath = "http://boephotoarchive-dev.azurewebsites.net";
 
-    public AzureBlobDownloader(Activity act, String userName){
+    public AzureBlobDownloader(Activity act, String userName,String filter){
         super();
         this.act = act;
         this.userName = userName;
+        this.filter=filter;
     }
     @Override
     protected Object doInBackground(Object[] params) {
@@ -40,7 +42,12 @@ public class AzureBlobDownloader extends AzureBlobLoader{
             Log.d("Azure", "About to execute query");
 
             //THIS IS THE PROBLEM RIGHT HERE :/
-            final List<Image> dbImages = this.getImageTable().execute().get();
+
+            List<ICAV> dbImages = this.getIcavTable().where().field("contextID").eq(filter).execute().get();
+            if(filter.equals(" All")){
+                dbImages = this.getIcavTable().execute().get();
+            }
+
 
             //add prefix for https and blob storage navigation
             //TODO Blob Storage Full path
@@ -49,10 +56,10 @@ public class AzureBlobDownloader extends AzureBlobLoader{
             //Grab the final reference to the blob url
             Log.d("Azure",""+dbImages.size());
 
-            for(Image img : dbImages){
+            for(ICAV img : dbImages){
 
-                Log.d("Images Loading",prefix + img.getId().replaceFirst("_", "/") +getSas());
-                azurePaths.add(prefix + img.getId().replaceFirst("_", "/") + getSas());
+                Log.d("Images Loading",prefix + img.getImageID().replaceFirst("_", "/") +getSas());
+                azurePaths.add(prefix + img.getImageID().replaceFirst("_", "/") + getSas());
             }
 
 
@@ -74,7 +81,9 @@ public class AzureBlobDownloader extends AzureBlobLoader{
         GridView imageGrid = (GridView) this.act.findViewById(R.id.gridView4);
 
         try {
-            imageGrid.setAdapter(new ImageAdapterHistory(this.act.getApplicationContext(), results));
+            ImageAdapterHistory imageAdapter=new ImageAdapterHistory(this.act.getApplicationContext(), results);
+            imageGrid.setAdapter(imageAdapter);
+            imageAdapter.notifyDataSetChanged();
         }catch(NullPointerException e){
             e.printStackTrace();
 

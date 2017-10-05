@@ -26,8 +26,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,7 @@ import com.example.edwin.photoarchive.Activities.ViewInfo;
 import com.example.edwin.photoarchive.Activities.ViewTags;
 import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
+import com.example.edwin.photoarchive.Adapters.PagerAdapter;
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.AzureBlobUploader;
 import com.example.edwin.photoarchive.AzureClasses.Context_Attribute;
@@ -45,6 +48,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
@@ -65,6 +71,7 @@ public class TabFragment1 extends Fragment {
     private Menu menu;
     private TextView photosToBeUploaded;
     private TextView permissionsStatus;
+
 
     private  TextView tagsStatus;
     private GPSTracker gps;
@@ -190,7 +197,6 @@ public class TabFragment1 extends Fragment {
         registerForContextMenu(imageGrid);
         imageGrid.setOnCreateContextMenuListener(this);
 
-
         return view;
     }
 
@@ -313,6 +319,7 @@ public class TabFragment1 extends Fragment {
 
  private void deleteImage(String s){
 
+
      if(sharedPreferences.contains("listOfImagesWithTags")) {
          String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
          Type listType = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
@@ -363,12 +370,13 @@ public class TabFragment1 extends Fragment {
                     final List<com.example.edwin.photoarchive.AzureClasses.Context> contexts = contextTable.execute().get();
                     final List<Attribute> attributes = attributeTable.execute().get();
                     final List<Context_Attribute> context_attributes = caTable.execute().get();
-
+                    final ArrayList<String> listOfContexts=new ArrayList<String>();
+                    listOfContexts.add(" All");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             for(com.example.edwin.photoarchive.AzureClasses.Context current : contexts){
-
+                                listOfContexts.add(current.getId());
                                 //make a new list of possible attributes
                                 ArrayList<Attribute> currentAttributes = new ArrayList<>();
 
@@ -400,13 +408,35 @@ public class TabFragment1 extends Fragment {
                                 //push the data into the map
                                 contextsAndAttributes.put(current, currentAttributes);
                             }
+                            Collections.sort(listOfContexts);
+                            Gson gson=new Gson();
+                            SharedPreferences.Editor editor=sharedPreferences.edit();
 
+                            if(sharedPreferences.contains("contexts")){
+                                editor.remove("contexts");
+                                editor.apply();
+                            }
+                            editor.putString("contexts",gson.toJson(listOfContexts.toArray(new String[listOfContexts.size()])));
+                            editor.apply();
 
                             tagsStatus.setTextColor(Color.GREEN);
                             tagsStatus.setText("Tags status: up to date!");
 
                             //store contextsAndAttributes into extras
                             getActivity().getIntent().putExtra("azure", contextsAndAttributes);
+                            Fragment tabFrag4=null;
+                            for(Fragment frag:getFragmentManager().getFragments()){
+                                if(frag instanceof TabFragment4){
+                                    tabFrag4=frag;
+                                }
+                            }
+                            try {
+                                tabFrag4.getFragmentManager().beginTransaction().detach(tabFrag4).attach(tabFrag4).commit();
+                            }
+                            catch(Exception e){
+
+                            }
+
                         }
                     });
                 } catch (Exception exception) {

@@ -7,7 +7,13 @@ package com.example.edwin.photoarchive.Adapters;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.edwin.photoarchive.AzureClasses.Attribute;
+import com.example.edwin.photoarchive.AzureClasses.ICAV;
+import com.example.edwin.photoarchive.AzureClasses.Image;
 import com.microsoft.windowsazure.mobileservices.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AzureServiceAdapter {
@@ -44,6 +50,7 @@ public class AzureServiceAdapter {
     public MobileServiceClient getClient() {
         return mClient;
     }
+
 
     // Place any public methods that operate on mClient here.
 }

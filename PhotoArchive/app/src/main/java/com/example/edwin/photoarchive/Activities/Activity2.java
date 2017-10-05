@@ -7,12 +7,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
+import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.Adapters.PagerAdapter;
 import com.example.edwin.photoarchive.R;
 
 public class Activity2 extends AppCompatActivity {
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +22,8 @@ public class Activity2 extends AppCompatActivity {
         setContentView(R.layout.activity_2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        
+        Spinner categorySpinner=(Spinner)findViewById(R.id.categorySpinner);
+
 
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
