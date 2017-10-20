@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="3dp"
-    android:paddingLeft="3dp"
-    android:paddingRight="3dp"
-    android:paddingTop="1dp">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/textView"
@@ -13,9 +9,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="Upload history"
+        android:text="Search"
+        android:padding="20dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
+
+    <!-- Text view Divider 0 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_below="@+id/textView"
+        android:background="@android:color/darker_gray"/>
 
     <GridView
         android:id="@+id/gridView4"

@@ -9,9 +9,7 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/relativeLayout3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/textViewTag"
@@ -21,8 +19,16 @@
             android:layout_centerHorizontal="true"
             android:text="Select images to upload"
             android:textColor="#000000"
-            android:textSize="17dp"
+            android:padding="20dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
+
+        <!-- Text view Divider 0 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@+id/textViewTag"
+            android:background="@android:color/darker_gray"/>
 
 
         <TextView

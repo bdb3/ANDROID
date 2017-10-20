@@ -18,26 +18,31 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="Application settings"
+            android:padding="20dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 
         <Switch
             android:id="@+id/switch1"
             style="@style/Base.TextAppearance.AppCompat.Widget.Switch"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/textView"
-            android:layout_marginTop="15dp"
-            android:text="" />
+            android:layout_below="@id/textView"
+            android:padding="20dp"
+            android:textSize="20dp"
+            android:text="@string/text_view_five_title" />
 
         <Switch
             android:id="@+id/switch2"
-            android:layout_width="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Widget.Switch"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/switch1"
-            android:text="" />
+            android:layout_below="@id/switch1"
+            android:padding="20dp"
+            android:textSize="20dp"
+            android:text="@string/text_view_six_title" />
 
         <Button
             android:id="@+id/button7"
@@ -55,40 +60,70 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/switch2"
-            android:layout_marginRight="5dp"
+            android:padding="23dp"
             android:text="Edit" />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textView"
-            android:layout_marginTop="15dp"
-            android:text="Upload only via Wi-Fi"
-            android:textSize="15dp" />
+            android:layout_marginTop="0dp"
+            android:padding="20dp"
+            android:text="@string/text_view_five_title"
+            android:textSize="20dp" />-->
 
-        <TextView
+        <!-- Text view Divider 0 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@+id/textView"
+            android:background="@android:color/darker_gray"/>
+
+        <!-- Text view Divider 1 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/switch1"
+            android:background="@android:color/darker_gray"/>
+
+        <!--<TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textView5"
-            android:paddingTop="7dp"
-            android:text="Location"
-            android:textSize="15dp" />
+            android:padding="20dp"
+            android:text="@string/text_view_six_title"
+            android:textSize="20dp" />-->
 
+        <!-- Text view Divider 2 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/switch2"
+            android:background="@android:color/darker_gray" />
+
+        <!-- style="@style/Base.TextAppearance.AppCompat.Widget.Switch" to make text look the same -->
         <TextView
+            style="@style/Base.TextAppearance.AppCompat.Widget.Switch"
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/textView6"
-            android:layout_marginTop="16dp"
-            android:paddingBottom="70dp"
+            android:layout_below="@+id/switch2"
+            android:layout_marginTop="0dp"
+            android:padding="20dp"
             android:text="Delete after 90 days"
-            android:textSize="15dp" />
+            android:textSize="20dp" />
 
+        <!-- Text view Divider 3 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/textView8"
+            android:background="@android:color/darker_gray" />
 
     </RelativeLayout>
 </ScrollView>

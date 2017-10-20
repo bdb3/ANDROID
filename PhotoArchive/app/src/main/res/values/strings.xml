@@ -5,5 +5,7 @@
     <string name="title_activity_gallery_view_all">GalleryViewAllActivity</string>
     <string name="title_activity_in_app_view_all">InAppViewAllActivity</string>
     <string name="title_activity_history_view_tags">HistoryViewTags</string>
+    <string name="text_view_six_title">Save Image GPS Location</string>
+    <string name="text_view_five_title">Upload Photos Via Wi-Fi</string>
 
 </resources>
