@@ -1,134 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollViewF3"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:fillViewport="true">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativeLayoutF3"
         android:layout_width="match_parent"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayoutF3">
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp">
 
         <TextView
             android:id="@+id/textViewTaken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:text="Taken: 0"
             android:textColor="#000000"
             android:textSize="17dp"
-            android:textStyle="bold"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            />
+            android:textStyle="bold" />
 
 
         <Button
+            android:id="@+id/clearTaken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clear"
-            android:enabled="false"
-            android:id="@+id/clearTaken"
-            android:textStyle="bold"
-            android:layout_marginEnd="7dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-             />
+            android:layout_marginEnd="7dp"
+            android:enabled="false"
+            android:text="Clear"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textViewTags"
             android:layout_width="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewTaken"
+            android:layout_marginTop="10dp"
             android:text="Tags:"
             android:textColor="#000000"
             android:textSize="17dp"
-            android:textStyle="bold"
-            android:layout_below="@+id/textViewTaken"
-            />
+            android:textStyle="bold" />
 
 
         <HorizontalScrollView
+            android:id="@+id/horizontalScrollViewT3"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_below="@+id/textViewTags"
-            android:layout_marginTop="10dp"
-            android:id="@+id/horizontalScrollViewT3" >
+            android:layout_marginTop="10dp">
 
             <LinearLayout
                 android:id="@+id/tagContainerT3"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
-                />
+                android:orientation="horizontal" />
 
         </HorizontalScrollView>
 
         <TextView
             android:id="@+id/textViewDivider"
             android:layout_width="10dp"
-            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
-            android:text=""
             android:layout_below="@id/horizontalScrollViewT3"
             android:layout_centerHorizontal="true"
-            />
+            android:layout_marginTop="10dp"
+            android:text="" />
 
         <Button
+            android:id="@+id/buttonClearTags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clear tags"
-            android:id="@+id/buttonClearTags"
-            android:textStyle="bold"
-            android:enabled="false"
+            android:layout_below="@id/horizontalScrollViewT3"
             android:layout_marginTop="10dp"
             android:layout_toStartOf="@id/textViewDivider"
-            android:layout_below="@id/horizontalScrollViewT3"
+            android:enabled="false"
+            android:text="Clear tags"
+            android:textStyle="bold"
 
 
             />
 
         <Button
+            android:id="@+id/buttonAddTags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add tags"
-            android:id="@+id/buttonAddTags"
-            android:textStyle="bold"
+            android:layout_below="@id/horizontalScrollViewT3"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@id/textViewDivider"
-            android:layout_below="@id/horizontalScrollViewT3"
+            android:text="Add tags"
+            android:textStyle="bold"
 
 
             />
 
 
         <Button
+            android:id="@+id/buttonUpload"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Upload"
-            android:id="@+id/buttonUpload"
-            android:textStyle="bold"
-            android:layout_marginEnd="7dp"
             android:layout_below="@+id/buttonClearTags"
+            android:layout_marginEnd="7dp"
             android:layout_marginTop="10dp"
+            android:background="#069504"
             android:enabled="false"
-            android:background="#069504" />
+            android:text="Upload"
+            android:textStyle="bold" />
 
 
         <Button
-            android:layout_width="match_parent"
-            android:text="Take Picture"
-            android:layout_height="50dp"
             android:id="@+id/button"
-            android:textStyle="bold"
-            android:layout_marginEnd="7dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:layout_below="@id/buttonUpload"
+            android:layout_marginEnd="7dp"
             android:layout_marginTop="15dp"
+            android:background="#c3c3c3"
+            android:text="Take Picture"
 
-            android:background="#c3c3c3" />
+            android:textStyle="bold" />
 
 
     </RelativeLayout>

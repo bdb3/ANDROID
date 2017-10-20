@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:isScrollContainer="false"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:fillViewport="true">
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".Activities.ViewTags">
+    android:fillViewport="true"
+    android:isScrollContainer="false">
 
-    <Button
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tags"
-        android:id="@+id/textViewContextName"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:clickable="false"
-        android:background="#303F9F"
-        android:textColor="#ffffff" />
+        tools:context=".Activities.ViewTags">
 
-    <LinearLayout
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:id="@+id/linearLayoutTags"
-        android:layout_below="@+id/textViewContextName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="60dp"
+        <Button
+            android:id="@+id/textViewContextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="#303F9F"
+            android:clickable="false"
+            android:text="Tags"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
 
-        />
+        <LinearLayout
+            android:id="@+id/linearLayoutTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewContextName"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:paddingBottom="60dp"
 
-</RelativeLayout>
-    </ScrollView>
+            />
+
+    </RelativeLayout>
+</ScrollView>

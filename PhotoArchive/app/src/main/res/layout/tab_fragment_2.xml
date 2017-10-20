@@ -1,157 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView3"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:fillViewport="true">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_marginStart="4dp"
-    android:layout_marginEnd="4dp"
-    android:layout_height="wrap_content"
-    android:id="@+id/relativeLayout3">
-
-    <TextView
-        android:id="@+id/textViewTag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select images to upload"
-        android:textColor="#000000"
-        android:textSize="17dp"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-         />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Recent In-app Images"
-        android:layout_marginTop="8dp"
-        android:id="@+id/textView7"
-        android:layout_below="@+id/textViewTag"
-        android:layout_alignParentStart="true"
-        android:textStyle="bold"
-        android:textSize="16dp" />
-
-    <HorizontalScrollView
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativeLayout3"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:layout_below="@+id/textView7"
-        android:layout_marginTop="10dp"
-        android:id="@+id/horizontalScrollView" >
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp">
 
-        <LinearLayout
-            android:id="@+id/picContainer"
-            android:orientation="horizontal"
+        <TextView
+            android:id="@+id/textViewTag"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="Select images to upload"
+            android:textColor="#000000"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textViewTag"
+            android:layout_marginTop="8dp"
+            android:text="Recent In-app Images"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="match_parent"
             android:layout_height="110dp"
-            />
+            android:layout_below="@+id/textView7"
+            android:layout_marginTop="10dp">
 
-    </HorizontalScrollView>
+            <LinearLayout
+                android:id="@+id/picContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="110dp"
+                android:orientation="horizontal" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select from app"
-        android:id="@+id/button2"
-        android:textStyle="bold"
-        android:layout_below="@+id/horizontalScrollView"
-         />
+        </HorizontalScrollView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@+id/button2"
-        android:text="Recent gallery Images"
-        android:layout_marginTop="5dp"
-        android:id="@+id/textView3"
-        android:layout_alignParentStart="true"
-        android:textStyle="bold"
-        android:textSize="16dp"/>
+        <Button
+            android:id="@+id/button2"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/horizontalScrollView"
+            android:text="Select from app"
+            android:textStyle="bold" />
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:layout_below="@+id/textView3"
-        android:layout_marginTop="10dp"
-        android:id="@+id/horizontalScrollView2" >
-
-        <LinearLayout
-            android:id="@+id/picContainer2"
-            android:orientation="horizontal"
+        <TextView
+            android:id="@+id/textView3"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/button2"
+            android:layout_marginTop="5dp"
+            android:text="Recent gallery Images"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView2"
+            android:layout_width="match_parent"
             android:layout_height="110dp"
-           />
+            android:layout_below="@+id/textView3"
+            android:layout_marginTop="10dp">
 
-    </HorizontalScrollView>
+            <LinearLayout
+                android:id="@+id/picContainer2"
+                android:layout_width="wrap_content"
+                android:layout_height="110dp"
+                android:orientation="horizontal" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select from gallery"
-        android:textStyle="bold"
-        android:id="@+id/button3"
-        android:layout_below="@+id/horizontalScrollView2"
-         />
+        </HorizontalScrollView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Tags:"
-        android:id="@+id/textView8"
-        android:layout_below="@+id/button3"
-        android:layout_alignParentStart="true"
-        android:textStyle="bold"
-        android:layout_marginTop="5dp"
-        android:textSize="16dp"/>
+        <Button
+            android:id="@+id/button3"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/horizontalScrollView2"
+            android:text="Select from gallery"
+            android:textStyle="bold" />
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_below="@+id/textView8"
-        android:layout_marginTop="7dp"
-        android:id="@+id/horizontalScrollView3" >
-
-        <LinearLayout
-            android:id="@+id/tagsContainer"
-            android:orientation="horizontal"
+        <TextView
+            android:id="@+id/textView8"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/button3"
+            android:layout_marginTop="5dp"
+            android:text="Tags:"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView3"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            />
+            android:layout_below="@+id/textView8"
+            android:layout_marginTop="7dp">
 
-    </HorizontalScrollView>
+            <LinearLayout
+                android:id="@+id/tagsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:orientation="horizontal" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add tags"
-        android:textStyle="bold"
-        android:layout_below="@+id/horizontalScrollView3"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/button4"
-        android:onClick="tagsActivity"/>
-    <Button
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Upload"
-        android:enabled="false"
-        android:id="@+id/button5"
-        android:textStyle="bold"
-        android:layout_below="@+id/button4"
-        android:background="#11a21d" />
+        </HorizontalScrollView>
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/button4"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/horizontalScrollView3"
+            android:layout_centerHorizontal="true"
+            android:onClick="tagsActivity"
+            android:text="Add tags"
+            android:textStyle="bold" />
 
-    </ScrollView>
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/button4"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="20dp"
+            android:background="#11a21d"
+            android:enabled="false"
+            android:text="Upload"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+</ScrollView>

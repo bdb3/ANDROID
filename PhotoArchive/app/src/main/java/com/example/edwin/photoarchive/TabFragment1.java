@@ -73,7 +73,7 @@ public class TabFragment1 extends Fragment {
     private TextView permissionsStatus;
 
 
-    private  TextView tagsStatus;
+    private TextView tagsStatus;
     private GPSTracker gps;
     private BroadcastReceiver receiver;
     ProgressBar pb;
@@ -83,22 +83,22 @@ public class TabFragment1 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        context= this.getContext();
+        context = this.getContext();
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
 
-         permissionsStatus = (TextView) view.findViewById(R.id.textView6);
+        permissionsStatus = (TextView) view.findViewById(R.id.textView6);
 
-         tagsStatus = (TextView) view.findViewById(R.id.textView5);
+        tagsStatus = (TextView) view.findViewById(R.id.textView5);
 
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
-        pb = (ProgressBar)view.findViewById(R.id.progressBar);
-        pb.getProgressDrawable().setColorFilter(Color.rgb(37,126,11), PorterDuff.Mode.SRC_IN);
+        pb = (ProgressBar) view.findViewById(R.id.progressBar);
+        pb.getProgressDrawable().setColorFilter(Color.rgb(37, 126, 11), PorterDuff.Mode.SRC_IN);
         pb.setScaleY(3f);
 
         //show enable gps alert
 
-        if(!sharedPreferences.contains("locationAlertShown")) {
+        if (!sharedPreferences.contains("locationAlertShown")) {
             gps = new GPSTracker(context);
 
             if (!gps.isGPSEnabled) {
@@ -122,14 +122,14 @@ public class TabFragment1 extends Fragment {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(android.content.Context context, Intent intent) {
-                if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
+                if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
                     NetworkInfo netInfo = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
 
 
-                    if(netInfo.getState() == NetworkInfo.State.CONNECTED) {
+                    if (netInfo.getState() == NetworkInfo.State.CONNECTED) {
 
                         permissionsStatus.invalidate();
-                        permissionsStatus.setText("Required Permissions: all granted \nRepair Task ID:"+sharedPreferences.getString("repairTaskID",null));
+                        permissionsStatus.setText("Required Permissions: all granted \nRepair Task ID:" + sharedPreferences.getString("repairTaskID", null));
 
                         permissionsStatus.setTextColor(Color.BLACK);
 
@@ -137,7 +137,7 @@ public class TabFragment1 extends Fragment {
 
                     }
 
-                    if(netInfo.getState() == NetworkInfo.State.DISCONNECTED){
+                    if (netInfo.getState() == NetworkInfo.State.DISCONNECTED) {
                         permissionsStatus.invalidate();
 
                         permissionsStatus.setText("No wifi connection");
@@ -156,12 +156,11 @@ public class TabFragment1 extends Fragment {
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         getActivity().registerReceiver(receiver, intentFilter);
 
-        if(!isConnectedViaWifi()) {
+        if (!isConnectedViaWifi()) {
             permissionsStatus.invalidate();
             permissionsStatus.setText("No wifi connection");
             permissionsStatus.setTextColor(Color.RED);
-        }
-        else{
+        } else {
             Log.d("connectionStatus", "connected to wifi");
 
         }
@@ -171,21 +170,22 @@ public class TabFragment1 extends Fragment {
         photosToBeUploaded = (TextView) view.findViewById(R.id.textView20);
         imgPathList = new ArrayList<String>();
 
-        if(sharedPreferences.contains("listOfImagesWithTags")) {
-            String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
-            Type listType = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
+        if (sharedPreferences.contains("listOfImagesWithTags")) {
+            String savedArraylist = sharedPreferences.getString("listOfImagesWithTags", null);
+            Type listType = new TypeToken<ArrayList<TaggedImageObject>>() {
+            }.getType();
             List<TaggedImageObject> taggedImageObjectsList = new Gson().fromJson(savedArraylist, listType);
 
 
-            for(TaggedImageObject t: taggedImageObjectsList){
-                if(pb.getVisibility() == View.INVISIBLE){
+            for (TaggedImageObject t : taggedImageObjectsList) {
+                if (pb.getVisibility() == View.INVISIBLE) {
                     pb.setVisibility(View.VISIBLE);
 
                 }
                 imgPathList.add(t.getImgPath());
 
 
-                new AzureBlobUploader(histFragment,this.getActivity(), t.getUser(), t).execute();
+                new AzureBlobUploader(histFragment, this.getActivity(), t.getUser(), t).execute();
             }
         }
         photosToBeUploaded.invalidate();
@@ -203,7 +203,7 @@ public class TabFragment1 extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()==R.id.gridview) {
+        if (v.getId() == R.id.gridview) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.menu_list, menu);
         }
@@ -225,7 +225,8 @@ public class TabFragment1 extends Fragment {
                         .setMessage("Are you sure you want to clear the upload queue?")
                         .setNegativeButton(android.R.string.cancel, null)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override public void onClick(DialogInterface dialog, int which) {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.remove("listOfImagesWithTags");
@@ -245,13 +246,12 @@ public class TabFragment1 extends Fragment {
                         .show();
 
 
-
                 return true;
-            }});
+            }
+        });
 
 
-
-        if(imgPathList.size() == 0){
+        if (imgPathList.size() == 0) {
             hideOption(0);
 
 
@@ -281,10 +281,10 @@ public class TabFragment1 extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.viewTags:
 
-                Intent i= new Intent(getActivity(), ViewTags.class);
+                Intent i = new Intent(getActivity(), ViewTags.class);
                 i.putExtra("imagePath", imgPathList.get(info.position));
 
                 startActivity(i);
@@ -296,7 +296,7 @@ public class TabFragment1 extends Fragment {
                 return true;
 
             case R.id.viewInfo:
-                Intent j= new Intent(getActivity(), ViewInfo.class);
+                Intent j = new Intent(getActivity(), ViewInfo.class);
                 j.putExtra("imagePath", imgPathList.get(info.position));
                 startActivity(j);
                 return true;
@@ -308,7 +308,7 @@ public class TabFragment1 extends Fragment {
     private boolean isConnectedViaWifi() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        if(info != null) {
+        if (info != null) {
             if (info.getType() == ConnectivityManager.TYPE_WIFI)
                 return true;
         }
@@ -317,40 +317,40 @@ public class TabFragment1 extends Fragment {
         return false;
     }
 
- private void deleteImage(String s){
+    private void deleteImage(String s) {
 
 
-     if(sharedPreferences.contains("listOfImagesWithTags")) {
-         String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
-         Type listType = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
-         List<TaggedImageObject> taggedImageObjectsList = new Gson().fromJson(savedArraylist, listType);
+        if (sharedPreferences.contains("listOfImagesWithTags")) {
+            String savedArraylist = sharedPreferences.getString("listOfImagesWithTags", null);
+            Type listType = new TypeToken<ArrayList<TaggedImageObject>>() {
+            }.getType();
+            List<TaggedImageObject> taggedImageObjectsList = new Gson().fromJson(savedArraylist, listType);
 
-         for(TaggedImageObject t: taggedImageObjectsList){
-             if (t.getImgPath().equals(s)){
-                 taggedImageObjectsList.remove(t);
-                 break;
-             }
+            for (TaggedImageObject t : taggedImageObjectsList) {
+                if (t.getImgPath().equals(s)) {
+                    taggedImageObjectsList.remove(t);
+                    break;
+                }
 
-         }
+            }
 
-             SharedPreferences.Editor editor = sharedPreferences.edit();
-             editor.remove("listOfImagesWithTags");
-             editor.apply();
-             editor.putString("listOfImagesWithTags", new Gson().toJson(taggedImageObjectsList));
-             editor.apply();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("listOfImagesWithTags");
+            editor.apply();
+            editor.putString("listOfImagesWithTags", new Gson().toJson(taggedImageObjectsList));
+            editor.apply();
 
 
+            getActivity().recreate();
+            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+            viewPager.setCurrentItem(0);
 
-         getActivity().recreate();
-         ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
-         viewPager.setCurrentItem(0);
+        }
 
-     }
-
- }
+    }
 
     //PULL DATA FROM DB
-    private void pullContextsAndAttributes(){
+    private void pullContextsAndAttributes() {
         //initialize client connection
         //TODO Contexts are loaded here
         MobileServiceClient mClient = AzureServiceAdapter.getInstance().getClient();
@@ -370,30 +370,30 @@ public class TabFragment1 extends Fragment {
                     final List<com.example.edwin.photoarchive.AzureClasses.Context> contexts = contextTable.execute().get();
                     final List<Attribute> attributes = attributeTable.execute().get();
                     final List<Context_Attribute> context_attributes = caTable.execute().get();
-                    final ArrayList<String> listOfContexts=new ArrayList<String>();
+                    final ArrayList<String> listOfContexts = new ArrayList<String>();
                     listOfContexts.add(" All");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            for(com.example.edwin.photoarchive.AzureClasses.Context current : contexts){
+                            for (com.example.edwin.photoarchive.AzureClasses.Context current : contexts) {
                                 listOfContexts.add(current.getId());
                                 //make a new list of possible attributes
                                 ArrayList<Attribute> currentAttributes = new ArrayList<>();
 
-                                if(!contextsAndAttributes.containsKey(current)){
+                                if (!contextsAndAttributes.containsKey(current)) {
 
                                     //generate a list of all of its attributes
-                                    for(Context_Attribute ca : context_attributes){
+                                    for (Context_Attribute ca : context_attributes) {
 
 
-                                        if(ca.getContextID().equals(current.getId())){
+                                        if (ca.getContextID().equals(current.getId())) {
 
                                             //get attribute
                                             String attributeID = ca.getAttributeID();
 
-                                            for(Attribute a : attributes){
+                                            for (Attribute a : attributes) {
 
-                                                if(a.getId().equals(attributeID)){
+                                                if (a.getId().equals(attributeID)) {
 
                                                     currentAttributes.add(a);
 
@@ -409,14 +409,14 @@ public class TabFragment1 extends Fragment {
                                 contextsAndAttributes.put(current, currentAttributes);
                             }
                             Collections.sort(listOfContexts);
-                            Gson gson=new Gson();
-                            SharedPreferences.Editor editor=sharedPreferences.edit();
+                            Gson gson = new Gson();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                            if(sharedPreferences.contains("contexts")){
+                            if (sharedPreferences.contains("contexts")) {
                                 editor.remove("contexts");
                                 editor.apply();
                             }
-                            editor.putString("contexts",gson.toJson(listOfContexts.toArray(new String[listOfContexts.size()])));
+                            editor.putString("contexts", gson.toJson(listOfContexts.toArray(new String[listOfContexts.size()])));
                             editor.apply();
 
                             tagsStatus.setTextColor(Color.GREEN);
@@ -424,16 +424,15 @@ public class TabFragment1 extends Fragment {
 
                             //store contextsAndAttributes into extras
                             getActivity().getIntent().putExtra("azure", contextsAndAttributes);
-                            Fragment tabFrag4=null;
-                            for(Fragment frag:getFragmentManager().getFragments()){
-                                if(frag instanceof TabFragment4){
-                                    tabFrag4=frag;
+                            Fragment tabFrag4 = null;
+                            for (Fragment frag : getFragmentManager().getFragments()) {
+                                if (frag instanceof TabFragment4) {
+                                    tabFrag4 = frag;
                                 }
                             }
                             try {
                                 tabFrag4.getFragmentManager().beginTransaction().detach(tabFrag4).attach(tabFrag4).commit();
-                            }
-                            catch(Exception e){
+                            } catch (Exception e) {
 
                             }
 
@@ -446,8 +445,6 @@ public class TabFragment1 extends Fragment {
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
-
-
 
 
 }

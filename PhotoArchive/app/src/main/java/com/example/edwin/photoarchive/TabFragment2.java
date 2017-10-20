@@ -53,7 +53,6 @@ public class TabFragment2 extends Fragment {
     private String username;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -64,8 +63,8 @@ public class TabFragment2 extends Fragment {
         uploadBtn = (Button) view.findViewById(R.id.button5);
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
-        if(sharedPreferences.contains("loggedInUser")) {
-            username = sharedPreferences.getString("loggedInUser",null);
+        if (sharedPreferences.contains("loggedInUser")) {
+            username = sharedPreferences.getString("loggedInUser", null);
 
         }
 
@@ -77,46 +76,47 @@ public class TabFragment2 extends Fragment {
 
                 //get tags from shared preferences
 
-                    uploadBtn.setEnabled(false);
+                uploadBtn.setEnabled(false);
 
-                    String mapString  = sharedPreferences.getString("listOfTags", null);
+                String mapString = sharedPreferences.getString("listOfTags", null);
 
-                    Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
-                    try {
-                        JSONObject jsonObject2 = new JSONObject(mapString);
-                        Iterator<String> keysItr = jsonObject2.keys();
+                Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
+                try {
+                    JSONObject jsonObject2 = new JSONObject(mapString);
+                    Iterator<String> keysItr = jsonObject2.keys();
 
-                        while(keysItr.hasNext()) {
-                            String key = keysItr.next();
+                    while (keysItr.hasNext()) {
+                        String key = keysItr.next();
 
-                            Map<String, String> valueMap = new LinkedHashMap<String, String>();
-                            Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
+                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
+                        Iterator<String> keysItr2 = ((JSONObject) jsonObject2.get(key)).keys();
 
-                            while(keysItr2.hasNext()) {
-                                String key2 = keysItr2.next();
-                                String value = (String)((JSONObject)jsonObject2.get(key)).get(key2);
+                        while (keysItr2.hasNext()) {
+                            String key2 = keysItr2.next();
+                            String value = (String) ((JSONObject) jsonObject2.get(key)).get(key2);
 
-                                valueMap.put(key2, value);
-                            }
-
-                            outputMap.put(key, valueMap);
+                            valueMap.put(key2, value);
                         }
 
-
-                    }catch(Exception e){
-                        e.printStackTrace();
-
-                    };
-
-                    for(String s: imgPathSet){
-
-                       // imagesTagsMap.put(s, outputMap);
-
-                        ExtractLatLong ell = new ExtractLatLong(s);
-                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), username,outputMap);
-                        taggedImagesList.add(tagImgObj);
-
+                        outputMap.put(key, valueMap);
                     }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+                ;
+
+                for (String s : imgPathSet) {
+
+                    // imagesTagsMap.put(s, outputMap);
+
+                    ExtractLatLong ell = new ExtractLatLong(s);
+                    TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username, outputMap);
+                    taggedImagesList.add(tagImgObj);
+
+                }
 
 
                 // put imagesTagsMap in shared preferences
@@ -125,7 +125,7 @@ public class TabFragment2 extends Fragment {
 
                 Gson gson = new Gson();
 
-                if(!sharedPreferences.contains("listOfImagesWithTags")) {
+                if (!sharedPreferences.contains("listOfImagesWithTags")) {
 
                     String taggedImageslistAsString = gson.toJson(taggedImagesList);
                     editor.putString("listOfImagesWithTags", taggedImageslistAsString);
@@ -135,17 +135,16 @@ public class TabFragment2 extends Fragment {
 
                     //Start Upload
 
-                }
-
-                else{
-                    String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
-                    Type type = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
+                } else {
+                    String savedArraylist = sharedPreferences.getString("listOfImagesWithTags", null);
+                    Type type = new TypeToken<ArrayList<TaggedImageObject>>() {
+                    }.getType();
                     ArrayList<TaggedImageObject> taggedImageObjectsList = gson.fromJson(savedArraylist, type);
 
 
-                    for(String s: imgPathSet){
+                    for (String s : imgPathSet) {
                         ExtractLatLong ell = new ExtractLatLong(s);
-                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), username,outputMap);
+                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username, outputMap);
                         taggedImageObjectsList.add(tagImgObj);
 
                     }
@@ -165,56 +164,56 @@ public class TabFragment2 extends Fragment {
         /////////////////////////////////////END OF SEND TO QUEUE CODE//////////////////////////////////
 
         Bundle extras = getActivity().getIntent().getExtras();
-        if(extras != null) {
-           if( extras.containsKey("selectedImagesFromGallery")){
+        if (extras != null) {
+            if (extras.containsKey("selectedImagesFromGallery")) {
 
-               HashSet<String> galleryPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
+                HashSet<String> galleryPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
 
-               for(String s: galleryPathSet){
-                   imgPathSet.add(s);
+                for (String s : galleryPathSet) {
+                    imgPathSet.add(s);
 
-               }
+                }
 
             }
-            if( extras.containsKey("selectedImagesFromApp")){
+            if (extras.containsKey("selectedImagesFromApp")) {
 
                 HashSet<String> appPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromApp"));
 
-                for(String s: appPathSet){
+                for (String s : appPathSet) {
                     imgPathSet.add(s);
 
                 }
 
             }
 
-            if(imgPathSet.size()>0)
+            if (imgPathSet.size() > 0)
                 getActivity().setTitle("Selected: " + imgPathSet.size());
-                getActivity().getIntent().putExtra("totalSelected", imgPathSet.size());
+            getActivity().getIntent().putExtra("totalSelected", imgPathSet.size());
 
         }
 
         // POPULATE RECENT IN-APP IMAGES GRIDVIEW
 
-         picContainer = (LinearLayout) view.findViewById(R.id.picContainer);
+        picContainer = (LinearLayout) view.findViewById(R.id.picContainer);
         new PopulateAppImages(picContainer, context, getActivity());
 
 
-        Button viewAllInAppImages  = (Button) view.findViewById(R.id.button2);
+        Button viewAllInAppImages = (Button) view.findViewById(R.id.button2);
         viewAllInAppImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent(getActivity(), InAppViewAllActivity.class);
+                Intent i = new Intent(getActivity(), InAppViewAllActivity.class);
                 i.putExtra("selectedImages", imgPathSet);
                 startActivity(i);
 
             }
         });
 
-        Button viewAllGalleryImages  = (Button) view.findViewById(R.id.button3);
+        Button viewAllGalleryImages = (Button) view.findViewById(R.id.button3);
         viewAllGalleryImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent(getActivity(), GalleryViewAllActivity.class);
+                Intent i = new Intent(getActivity(), GalleryViewAllActivity.class);
                 i.putExtra("selectedImages", imgPathSet);
                 startActivity(i);
 
@@ -230,34 +229,35 @@ public class TabFragment2 extends Fragment {
 
         final LinearLayout tagsContainer = (LinearLayout) view.findViewById(R.id.tagsContainer);
 
-        ArrayList<String> tagNames =  new ArrayList<String>();
+        ArrayList<String> tagNames = new ArrayList<String>();
 
-        if(sharedPreferences.contains("listOfTags")) {
+        if (sharedPreferences.contains("listOfTags")) {
             String mapString = sharedPreferences.getString("listOfTags", null);
 
             try {
                 JSONObject jsonObject2 = new JSONObject(mapString);
                 Iterator<String> keysItr = jsonObject2.keys();
 
-                while(keysItr.hasNext()) {
+                while (keysItr.hasNext()) {
 
                     tagNames.add(keysItr.next());
                 }
 
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
 
-            };
+            }
+            ;
 
         }
 
-        if(tagNames.size()>0 && imgPathSet.size()>0){
+        if (tagNames.size() > 0 && imgPathSet.size() > 0) {
             uploadBtn.setEnabled(true);
 
         }
 
-        for(String s: tagNames) {
+        for (String s : tagNames) {
             final Button tag1 = new Button(context);
             tag1.setText(s);
             tagsContainer.addView(tag1);
@@ -267,7 +267,7 @@ public class TabFragment2 extends Fragment {
             tag1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i= new Intent(getActivity(), ActivityEditDeleteTags.class);
+                    Intent i = new Intent(getActivity(), ActivityEditDeleteTags.class);
                     i.putExtra("tag_name", tag1.getText());
                     i.putExtra("selectedImages", imgPathSet);
 
@@ -289,36 +289,30 @@ public class TabFragment2 extends Fragment {
                 //grab ContextsAndAttributes from extras
 
 
-               try {
-                   Intent i = new Intent(getActivity(), TagsActivity.class);
-                   HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (LinkedHashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
+                try {
+                    Intent i = new Intent(getActivity(), TagsActivity.class);
+                    HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (LinkedHashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
 
-                   if(caa != null) {
-                       i.putExtra("selectedImages", imgPathSet);
-                       i.putExtra("azure", caa);
+                    if (caa != null) {
+                        i.putExtra("selectedImages", imgPathSet);
+                        i.putExtra("azure", caa);
 
-                       startActivity(i);
-                   }
-                   else{
-                       Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
+                        startActivity(i);
+                    } else {
+                        Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
 
-                   }
-               }catch(NullPointerException e){
+                    }
+                } catch (NullPointerException e) {
 
-                   Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
-               }
-
-
-
-
-
+                    Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
+                }
 
 
             }
         });
 
 
-            return view;
+        return view;
 
     }
 
@@ -340,15 +334,15 @@ public class TabFragment2 extends Fragment {
                 uploadBtn.setEnabled(false);
 
                 return true;
-            }});
+            }
+        });
 
 
-        if(imgPathSet.size()<1) {
+        if (imgPathSet.size() < 1) {
             hideOption(0);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
-
 
 
     private void showOption(int id) {
@@ -361,7 +355,7 @@ public class TabFragment2 extends Fragment {
         item.setVisible(false);
     }
 
-    private void clearTagsAndSelectedImages(){
+    private void clearTagsAndSelectedImages() {
         imgPathSet.clear();
         getActivity().setTitle("Photo Archive");
 

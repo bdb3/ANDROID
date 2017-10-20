@@ -11,31 +11,31 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload history"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:text="Upload history"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
 
     <GridView
         android:id="@+id/gridView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/categorySpinner"
+        android:columnWidth="100dp"
+        android:gravity="center_horizontal"
         android:horizontalSpacing="0dp"
-        android:verticalSpacing="5dp"
         android:numColumns="auto_fit"
         android:stretchMode="spacingWidthUniform"
-        android:gravity="center_horizontal"
-        android:columnWidth="100dp"
-        android:layout_below="@+id/categorySpinner"
-        android:layout_alignParentStart="true" />
+        android:verticalSpacing="5dp" />
 
     <Spinner
         android:id="@+id/categorySpinner"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView" />
 
 
 </RelativeLayout>

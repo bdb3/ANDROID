@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:isScrollContainer="false"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:fillViewport="true">
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Activities.ViewInfo">
+    android:fillViewport="true"
+    android:isScrollContainer="false">
 
-    <Button
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="EXIF Data"
-        android:id="@+id/textViewExif"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:clickable="false"
-        android:background="#303F9F"
-        android:textColor="#ffffff" />
+        android:layout_height="match_parent"
+        tools:context=".Activities.ViewInfo">
 
-    <LinearLayout
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:id="@+id/linearLayoutInfo"
-        android:layout_below="@+id/textViewExif"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="60dp"
+        <Button
+            android:id="@+id/textViewExif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="#303F9F"
+            android:clickable="false"
+            android:text="EXIF Data"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
 
-        />
+        <LinearLayout
+            android:id="@+id/linearLayoutInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewExif"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:paddingBottom="60dp"
 
-</RelativeLayout>
-    </ScrollView>
+            />
+
+    </RelativeLayout>
+</ScrollView>

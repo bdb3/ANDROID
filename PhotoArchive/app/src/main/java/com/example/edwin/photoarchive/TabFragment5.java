@@ -33,24 +33,22 @@ public class TabFragment5 extends Fragment {
     private String username;
     private SharedPreferences sharedPreferences;
 
-    public String getDays(Intent i){
+    public String getDays(Intent i) {
         String str;
-        if(i.getExtras() == null){
+        if (i.getExtras() == null) {
             return str = "90";
-        }
-        else{
+        } else {
 
             return str = i.getExtras().getString("numDays");
         }
     }
 
-    public String getDays(){
+    public String getDays() {
         String str;
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
-        if(!sharedPreferences.contains("numDays")){
+        if (!sharedPreferences.contains("numDays")) {
             return str = "90";
-        }
-        else{
+        } else {
 
             return str = Integer.toString(sharedPreferences.getInt("numDays", 90));
         }
@@ -61,14 +59,14 @@ public class TabFragment5 extends Fragment {
 
         setHasOptionsMenu(true);
         final View view = inflater.inflate(R.layout.tab_fragment_5, container, false);
-        Button logOutButton = (Button)view.findViewById(R.id.button7);
-        TextView deleteDays = (TextView)view.findViewById(R.id.textView8);
+        Button logOutButton = (Button) view.findViewById(R.id.button7);
+        TextView deleteDays = (TextView) view.findViewById(R.id.textView8);
         deleteDays.setText("Delete after " + getDays() + " " + "days");
 
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
-        if(sharedPreferences.contains("loggedInUser")) {
-            username = sharedPreferences.getString("loggedInUser",null);
+        if (sharedPreferences.contains("loggedInUser")) {
+            username = sharedPreferences.getString("loggedInUser", null);
 
         }
 
@@ -80,14 +78,15 @@ public class TabFragment5 extends Fragment {
                         .setMessage("Are you sure you want to log out?")
                         .setNegativeButton(android.R.string.cancel, null)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override public void onClick(DialogInterface dialog, int which) {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
 
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.remove("loggedInUser");
                                 editor.apply();
 
-                                Intent i= new Intent(getActivity(), MainActivity.class);
+                                Intent i = new Intent(getActivity(), MainActivity.class);
                                 startActivity(i);
 
                                 Toast.makeText(getContext(), "You have been logged out", Toast.LENGTH_SHORT).show();
@@ -100,7 +99,7 @@ public class TabFragment5 extends Fragment {
             }
         });
 
-        Button editDays = (Button)view.findViewById(R.id.button8);
+        Button editDays = (Button) view.findViewById(R.id.button8);
 
 
         editDays.setOnClickListener(new View.OnClickListener() {
@@ -128,8 +127,7 @@ public class TabFragment5 extends Fragment {
                                     editor.putInt("numDays", picker.getValue());
                                     editor.apply();
 
-                                }
-                                else{
+                                } else {
                                     editor.remove("numDays");
                                     editor.apply();
                                     editor.putInt("numDays", picker.getValue());
@@ -140,7 +138,7 @@ public class TabFragment5 extends Fragment {
                                 getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(4)).attach(getFragmentManager().getFragments().get(4)).commitAllowingStateLoss();
                             }
                         })
-                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -154,18 +152,17 @@ public class TabFragment5 extends Fragment {
 
         Switch swLocation = (Switch) view.findViewById(R.id.switch2);
 
-        gps= new GPSTracker(getContext());
+        gps = new GPSTracker(getContext());
 
 
-        if(gps.isGPSEnabled){
+        if (gps.isGPSEnabled) {
             swLocation.setChecked(true);
-        }
-        else{
+        } else {
             swLocation.setChecked(false);
 
         }
 
-        return  view;
+        return view;
     }
 
     @Override
@@ -181,9 +178,6 @@ public class TabFragment5 extends Fragment {
         menu.add(Menu.NONE, 1, Menu.NONE, username + "   ")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menu.findItem(1).setEnabled(false);
-
-
-
 
 
         super.onCreateOptionsMenu(menu, inflater);

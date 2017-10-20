@@ -1,75 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:isScrollContainer="false"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:fillViewport="true">
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="5dp"
-    android:paddingStart="4dp"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".Activities.ActivityEditDeleteTags"
-    android:paddingEnd="4dp">
+    android:fillViewport="true"
+    android:isScrollContainer="false">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text=""
-        android:id="@+id/textView10"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <LinearLayout
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:id="@+id/linearLayoutEditTags"
-        android:layout_below="@+id/textView10"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="60dp"
+        android:paddingBottom="5dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".Activities.ActivityEditDeleteTags">
 
-        />
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:textStyle="bold"
-        android:id="@+id/button8"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:onClick="backToTab2" />
+        <LinearLayout
+            android:id="@+id/linearLayoutEditTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView10"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:paddingBottom="60dp"
 
-    <ImageButton
-        android:background="@null"
-        android:scaleType="fitXY"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:id="@+id/button12"
-        android:src="@drawable/edit"
-        android:layout_marginEnd="15dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_alignParentEnd="true" />
+            />
 
-    <ImageButton
-        android:layout_marginBottom="10dp"
-        android:scaleType="fitXY"
-        android:background="@null"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="15dp"
-        android:id="@+id/button13"
-        android:src="@drawable/delete_icon"
-        android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/button12"
-         />
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:onClick="backToTab2"
+            android:text="Back"
+            android:textStyle="bold" />
 
-</RelativeLayout>
+        <ImageButton
+            android:id="@+id/button12"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="15dp"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/edit" />
+
+        <ImageButton
+            android:id="@+id/button13"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_toStartOf="@+id/button12"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/delete_icon" />
+
+    </RelativeLayout>
 </ScrollView>

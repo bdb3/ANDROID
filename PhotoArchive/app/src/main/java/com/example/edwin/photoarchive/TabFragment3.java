@@ -47,11 +47,11 @@ import java.util.Map;
 
 
 public class TabFragment3 extends Fragment {
-    private String imageFileLocation="";
+    private String imageFileLocation = "";
     private static final int ACTIVITY_START_CAMERA_APP = 1;
     private Context context = null;
     GPSTracker gps;
-    private  Button button = null;
+    private Button button = null;
     private HashSet<String> imgPathSet = new LinkedHashSet<String>();
     private SharedPreferences sharedPreferences;
     private LinearLayout tagsContainer;
@@ -64,11 +64,11 @@ public class TabFragment3 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.tab_fragment_3, container, false);
-        context= this.getContext();
+        context = this.getContext();
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
-        if(sharedPreferences.contains("loggedInUser")) {
-            username = sharedPreferences.getString("loggedInUser",null);
+        if (sharedPreferences.contains("loggedInUser")) {
+            username = sharedPreferences.getString("loggedInUser", null);
 
         }
 
@@ -77,16 +77,16 @@ public class TabFragment3 extends Fragment {
 
         final TextView taken = (TextView) view.findViewById(R.id.textViewTaken);
 
-        final Button clearTaken  = (Button)  view.findViewById(R.id.clearTaken);
-        Button addTags = (Button)  view.findViewById(R.id.buttonAddTags);
-         clearTags = (Button)  view.findViewById(R.id.buttonClearTags);
-        final Button uploadBtn = (Button)view.findViewById(R.id.buttonUpload);
+        final Button clearTaken = (Button) view.findViewById(R.id.clearTaken);
+        Button addTags = (Button) view.findViewById(R.id.buttonAddTags);
+        clearTags = (Button) view.findViewById(R.id.buttonClearTags);
+        final Button uploadBtn = (Button) view.findViewById(R.id.buttonUpload);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (hasCamera() ) {
+                if (hasCamera()) {
                     launchCamera(null);
                 }
 
@@ -101,22 +101,22 @@ public class TabFragment3 extends Fragment {
 
                 uploadBtn.setEnabled(false);
 
-                String mapString  = sharedPreferences.getString("cameraTags", null);
+                String mapString = sharedPreferences.getString("cameraTags", null);
 
                 Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
                 try {
                     JSONObject jsonObject2 = new JSONObject(mapString);
                     Iterator<String> keysItr = jsonObject2.keys();
 
-                    while(keysItr.hasNext()) {
+                    while (keysItr.hasNext()) {
                         String key = keysItr.next();
 
                         Map<String, String> valueMap = new LinkedHashMap<String, String>();
-                        Iterator<String> keysItr2 = ((JSONObject)jsonObject2.get(key)).keys();
+                        Iterator<String> keysItr2 = ((JSONObject) jsonObject2.get(key)).keys();
 
-                        while(keysItr2.hasNext()) {
+                        while (keysItr2.hasNext()) {
                             String key2 = keysItr2.next();
-                            String value = (String)((JSONObject)jsonObject2.get(key)).get(key2);
+                            String value = (String) ((JSONObject) jsonObject2.get(key)).get(key2);
 
                             valueMap.put(key2, value);
                         }
@@ -125,15 +125,16 @@ public class TabFragment3 extends Fragment {
                     }
 
 
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
 
-                };
+                }
+                ;
 
-                for(String s: imgPathSet){
+                for (String s : imgPathSet) {
 
                     ExtractLatLong ell = new ExtractLatLong(s);
-                    TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), username,outputMap);
+                    TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username, outputMap);
                     taggedImagesList.add(tagImgObj);
 
                 }
@@ -145,7 +146,7 @@ public class TabFragment3 extends Fragment {
 
                 Gson gson = new Gson();
 
-                if(!sharedPreferences.contains("listOfImagesWithTags")) {
+                if (!sharedPreferences.contains("listOfImagesWithTags")) {
 
                     String taggedImageslistAsString = gson.toJson(taggedImagesList);
                     editor.putString("listOfImagesWithTags", taggedImageslistAsString);
@@ -155,20 +156,16 @@ public class TabFragment3 extends Fragment {
                     refreshDash();
                     Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
 
-                }
-
-
-
-                else{
-                    String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
-                    Type type = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
+                } else {
+                    String savedArraylist = sharedPreferences.getString("listOfImagesWithTags", null);
+                    Type type = new TypeToken<ArrayList<TaggedImageObject>>() {
+                    }.getType();
                     ArrayList<TaggedImageObject> taggedImageObjectsList = gson.fromJson(savedArraylist, type);
 
 
-
-                    for(String s: imgPathSet){
+                    for (String s : imgPathSet) {
                         ExtractLatLong ell = new ExtractLatLong(s);
-                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(),ell.getLon(), username,outputMap);
+                        TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username, outputMap);
                         taggedImageObjectsList.add(tagImgObj);
 
                     }
@@ -186,7 +183,6 @@ public class TabFragment3 extends Fragment {
                 }
 
 
-
                 //END OF UPLOAD CODE
             }
         });
@@ -196,7 +192,7 @@ public class TabFragment3 extends Fragment {
             public void onClick(View v) {
 
                 uploadBtn.setEnabled(false);
-               clearTags();
+                clearTags();
 
             }
         });
@@ -215,7 +211,7 @@ public class TabFragment3 extends Fragment {
         });
 
         Bundle extras = getActivity().getIntent().getExtras();
-        if(extras != null) {
+        if (extras != null) {
             if (extras.containsKey("cameraImages")) {
 
                 HashSet<String> cameraPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("cameraImages"));
@@ -243,16 +239,15 @@ public class TabFragment3 extends Fragment {
                     //grab ContextsAndAttributes from extras
                     HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> caa = (LinkedHashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure");
 
-                    if(caa != null) {
+                    if (caa != null) {
                         i.putExtra("azure", caa);
                         i.putExtra("cameraTab", 1);
                         i.putExtra("cameraImages", imgPathSet);
                         startActivity(i);
-                    }
-                    else{
+                    } else {
                         Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
                     }
-                }catch(NullPointerException e){
+                } catch (NullPointerException e) {
                     Toast.makeText(context, "Please wait until contexts finish syncing", Toast.LENGTH_LONG).show();
 
                 }
@@ -260,48 +255,49 @@ public class TabFragment3 extends Fragment {
             }
         });
 
-        ArrayList<String> tagNames =  new ArrayList<String>();
+        ArrayList<String> tagNames = new ArrayList<String>();
 
-        if(sharedPreferences.contains("cameraTags")) {
+        if (sharedPreferences.contains("cameraTags")) {
             String mapString = sharedPreferences.getString("cameraTags", null);
 
             try {
                 JSONObject jsonObject2 = new JSONObject(mapString);
                 Iterator<String> keysItr = jsonObject2.keys();
 
-                while(keysItr.hasNext()) {
+                while (keysItr.hasNext()) {
 
                     tagNames.add(keysItr.next());
                 }
 
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
 
-            };
+            }
+            ;
 
         }
 
 
-        if(tagNames.size()>0 && imgPathSet.size()>0){
+        if (tagNames.size() > 0 && imgPathSet.size() > 0) {
             uploadBtn.setEnabled(true);
 
         }
 
-        if(tagNames.size()>0){
+        if (tagNames.size() > 0) {
             clearTags.setEnabled(true);
 
         }
 
-        if(imgPathSet.size()>0){
+        if (imgPathSet.size() > 0) {
             clearTaken.setEnabled(true);
             button.setText("Take another");
 
         }
 
-         tagsContainer = (LinearLayout) view.findViewById(R.id.tagContainerT3);
+        tagsContainer = (LinearLayout) view.findViewById(R.id.tagContainerT3);
 
-        for(String s: tagNames) {
+        for (String s : tagNames) {
             final Button tag1 = new Button(context);
             tag1.setText(s);
             tagsContainer.addView(tag1);
@@ -310,7 +306,6 @@ public class TabFragment3 extends Fragment {
 
 
         }
-
 
 
         return view;
@@ -324,28 +319,28 @@ public class TabFragment3 extends Fragment {
 
     public void launchCamera(View v) {
         gps = new GPSTracker(context);
-            Intent i = new Intent();
-            i.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent i = new Intent();
+        i.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 
 
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
 
-            } catch (IOException e) {
-                e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
 
-            }
+        }
 
-           i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-            startActivityForResult(i, ACTIVITY_START_CAMERA_APP);
+        i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+        startActivityForResult(i, ACTIVITY_START_CAMERA_APP);
 
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_OK ) {
+        if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_OK) {
             Toast.makeText(context, "Photo saved in In-app images", Toast.LENGTH_LONG).show();
 
 
@@ -382,14 +377,12 @@ public class TabFragment3 extends Fragment {
             getActivity().getIntent().putExtra("cameraImages", imgPathSet);
             getActivity().recreate();
 
-        }
-        else if(requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_CANCELED) {
+        } else if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_CANCELED) {
             File file = new File(imageFileLocation);
             file.delete();
 
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(imageFileLocation))));
-        }
-        else{
+        } else {
             File file = new File(imageFileLocation);
             file.delete();
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(imageFileLocation))));
@@ -397,32 +390,33 @@ public class TabFragment3 extends Fragment {
         }
 
 
-        }
+    }
 
 
-    File createImageFile() throws IOException{
-        String timeStamp= new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime());
-        String imageFileName = "IMAGES_"+ timeStamp+ "_";
-        File dir = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images/"+username);
-        if(!dir.exists()){
+    File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime());
+        String imageFileName = "IMAGES_" + timeStamp + "_";
+        File dir = new File(Environment.getExternalStorageDirectory(), "PhotoArchive Images/" + username);
+        if (!dir.exists()) {
             dir.mkdirs();
             File output = new File(dir, ".nomedia");
             boolean fileCreated = output.createNewFile();
         }
-        File image= File.createTempFile(imageFileName, ".jpg", dir);
+        File image = File.createTempFile(imageFileName, ".jpg", dir);
         imageFileLocation = image.getAbsolutePath();
 
         return image;
     }
 
-    private void clearTags(){
+    private void clearTags() {
 
         new AlertDialog.Builder(context)
                 .setTitle("Clear confirmation")
                 .setMessage("Are you sure you want to clear all the tags?")
                 .setNegativeButton(android.R.string.cancel, null)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
                         clearTags2();
                         Toast.makeText(context, "All tags cleared", Toast.LENGTH_SHORT).show();
@@ -433,11 +427,9 @@ public class TabFragment3 extends Fragment {
                 .show();
 
 
-
-
     }
 
-    private void clearTags2(){
+    private void clearTags2() {
         tagsContainer.removeAllViews();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("cameraTags");
@@ -445,7 +437,7 @@ public class TabFragment3 extends Fragment {
         clearTags.setEnabled(false);
     }
 
-    private void refreshDash(){
+    private void refreshDash() {
         getActivity().getIntent().replaceExtras(new Bundle());
         getActivity().getIntent().setAction("");
         getActivity().getIntent().setData(null);
@@ -456,7 +448,6 @@ public class TabFragment3 extends Fragment {
         getActivity().recreate();
 
     }
-
 
 
 }
