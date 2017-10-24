@@ -360,6 +360,8 @@ public class TabFragment1 extends Fragment {
         final MobileServiceTable<Attribute> attributeTable = mClient.getTable(Attribute.class);
         final MobileServiceTable<Context_Attribute> caTable = mClient.getTable(Context_Attribute.class);
 
+
+
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -370,6 +372,8 @@ public class TabFragment1 extends Fragment {
                     final List<com.example.edwin.photoarchive.AzureClasses.Context> contexts = contextTable.execute().get();
                     final List<Attribute> attributes = attributeTable.execute().get();
                     final List<Context_Attribute> context_attributes = caTable.execute().get();
+
+                    // This is the list of contexts stored in SharedPrefs
                     final ArrayList<String> listOfContexts=new ArrayList<String>();
                     listOfContexts.add(" All");
                     getActivity().runOnUiThread(new Runnable() {
