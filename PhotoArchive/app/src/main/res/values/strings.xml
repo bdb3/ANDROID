@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Photo Archive</string>
     <string name="title_activity_main2">Main2Activity</string>
@@ -7,5 +8,12 @@
     <string name="title_activity_history_view_tags">HistoryViewTags</string>
     <string name="text_view_six_title">Save Image GPS Location</string>
     <string name="text_view_five_title">Upload Photos Via Wi-Fi</string>
-
+    <string-array name="del_img_day_array">
+        <item>Never</item>
+        <item>7 Days</item>
+        <item>14 Days</item>
+        <item>30 Days</item>
+        <item>60 Days</item>
+        <item>90 Days</item>
+    </string-array>
 </resources>

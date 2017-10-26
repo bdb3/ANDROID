@@ -16,9 +16,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +51,6 @@ public class TabFragment5 extends Fragment {
         if (!sharedPreferences.contains("numDays")) {
             return str = "90";
         } else {
-
             return str = Integer.toString(sharedPreferences.getInt("numDays", 90));
         }
     }
@@ -60,8 +61,13 @@ public class TabFragment5 extends Fragment {
         setHasOptionsMenu(true);
         final View view = inflater.inflate(R.layout.tab_fragment_5, container, false);
         Button logOutButton = (Button) view.findViewById(R.id.button7);
-        TextView deleteDays = (TextView) view.findViewById(R.id.textView8);
-        deleteDays.setText("Delete after " + getDays() + " " + "days");
+
+        // DELETE DAYS SPINNER defined here -ph
+        Spinner delDaySpinner = (Spinner) view.findViewById(R.id.del_img_day_count);
+
+        // Textview for old edit, irrelevant code now -ph
+        // TextView deleteDays = (TextView) view.findViewById(R.id.textView8);
+        // deleteDays.setText("Delete after " + getDays() + " " + "days");
 
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
 
@@ -99,9 +105,15 @@ public class TabFragment5 extends Fragment {
             }
         });
 
-        Button editDays = (Button) view.findViewById(R.id.button8);
+        // String Resource Array to create Simple Spinner -ph
+        ArrayAdapter<CharSequence> delDayAdapter = ArrayAdapter.createFromResource(this.getContext(), R.array.del_img_day_array, android.R.layout.simple_spinner_item);
+        delDayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        delDaySpinner.setAdapter(delDayAdapter);
 
+        // TODO: ADD SPINNER LOGIC TO SET DAYS IN SHARED PREFERENCES -ph
 
+        /*  Remove old edit button and methods -ph
+        // Button editDays = (Button) view.findViewById(R.id.button8);
         editDays.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +160,7 @@ public class TabFragment5 extends Fragment {
                         .show();
 
             }
-        });
+        }); */
 
         Switch swLocation = (Switch) view.findViewById(R.id.switch2);
 

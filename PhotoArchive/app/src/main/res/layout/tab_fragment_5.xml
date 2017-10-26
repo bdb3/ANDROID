@@ -53,7 +53,16 @@
             android:layout_centerHorizontal="true"
             android:text="Log out" />
 
-        <Button
+        <!-- for deciding how many days keep images, replacing EDIT button -->
+        <Spinner
+            android:id="@+id/del_img_day_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/switch2"
+            android:layout_marginTop="8dp"
+            android:padding="15dp"/>
+        <!--<Button
             android:id="@+id/button8"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
@@ -61,7 +70,7 @@
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/switch2"
             android:padding="23dp"
-            android:text="Edit" />
+            android:text="Edit" />-->
 
         <!--<TextView
             android:id="@+id/textView5"
@@ -115,7 +124,7 @@
             android:layout_below="@+id/switch2"
             android:layout_marginTop="0dp"
             android:padding="20dp"
-            android:text="Delete after 90 days"
+            android:text="Auto delete Images"
             android:textSize="20dp" />
 
         <!-- Text view Divider 3 -->
