@@ -177,6 +177,8 @@ public class TabFragment5 extends Fragment {
         return view;
     }
 
+    /* User Menu will become superfluous or can be re-added to `APP SETTINGS` fragment
+       at a later date. -ph
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         this.menu = menu;
@@ -194,4 +196,5 @@ public class TabFragment5 extends Fragment {
 
         super.onCreateOptionsMenu(menu, inflater);
     }
+    */
 }

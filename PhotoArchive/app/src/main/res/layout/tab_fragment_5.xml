@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
+        <!-- Remove title and use Fragment Header instead! -ph -->
+        <!--<TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,6 +22,7 @@
             android:padding="20dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
+            -->
 
         <Switch
             android:id="@+id/switch1"
@@ -28,7 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@id/textView"
             android:padding="20dp"
             android:textSize="20dp"
             android:text="@string/text_view_five_title" />
@@ -84,11 +85,12 @@
             android:textSize="20dp" />-->
 
         <!-- Text view Divider 0 -->
-        <View
+        <!--<View
             android:layout_width="match_parent"
             android:layout_height="3dp"
             android:layout_below="@+id/textView"
             android:background="@android:color/darker_gray"/>
+            -->
 
         <!-- Text view Divider 1 -->
         <View

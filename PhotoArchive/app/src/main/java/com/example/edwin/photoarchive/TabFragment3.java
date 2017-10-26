@@ -54,8 +54,11 @@ public class TabFragment3 extends Fragment {
     private Button button = null;
     private HashSet<String> imgPathSet = new LinkedHashSet<String>();
     private SharedPreferences sharedPreferences;
-    private LinearLayout tagsContainer;
-    private Button clearTags;
+
+    //remove for now -ph [tags]
+//    private LinearLayout tagsContainer;
+//    private Button clearTags;
+
     private ArrayList<TaggedImageObject> taggedImagesList = new ArrayList<TaggedImageObject>();
     private String username;
 
@@ -66,6 +69,11 @@ public class TabFragment3 extends Fragment {
         View view = inflater.inflate(R.layout.tab_fragment_3, container, false);
         context = this.getContext();
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+
+
+        // TODO: ORGANIZE CODE CAUSE IT'S A MESS. GROUP STUFF TOGETHER AS MUCH AS POSSIBLE -PH
+        // TODO: GET IMAGES SCROLLER WORKING AND REMOVE ALL TAG FUNCTIONS -PH
+        // TODO: ADD TAG CHECK TO xml -PH
 
         if (sharedPreferences.contains("loggedInUser")) {
             username = sharedPreferences.getString("loggedInUser", null);
@@ -78,8 +86,12 @@ public class TabFragment3 extends Fragment {
         final TextView taken = (TextView) view.findViewById(R.id.textViewTaken);
 
         final Button clearTaken = (Button) view.findViewById(R.id.clearTaken);
-        Button addTags = (Button) view.findViewById(R.id.buttonAddTags);
-        clearTags = (Button) view.findViewById(R.id.buttonClearTags);
+
+        // remove this for now -ph  [tags]
+        //Button addTags = (Button) view.findViewById(R.id.buttonAddTags);
+        //clearTags = (Button) view.findViewById(R.id.buttonClearTags);
+
+
         final Button uploadBtn = (Button) view.findViewById(R.id.buttonUpload);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -187,6 +199,7 @@ public class TabFragment3 extends Fragment {
             }
         });
 
+        /* remove for now -ph [tags]
         clearTags.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,6 +209,7 @@ public class TabFragment3 extends Fragment {
 
             }
         });
+        */
 
         clearTaken.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,6 +242,7 @@ public class TabFragment3 extends Fragment {
 
         taken.setText("Taken: " + imgPathSet.size());
 
+        /* Remove this for now -ph [tags]
         addTags.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -253,7 +268,8 @@ public class TabFragment3 extends Fragment {
                 }
 
             }
-        });
+        })
+        */
 
         ArrayList<String> tagNames = new ArrayList<String>();
 
@@ -284,10 +300,11 @@ public class TabFragment3 extends Fragment {
 
         }
 
+        /* remove for now -ph [tags]
         if (tagNames.size() > 0) {
             clearTags.setEnabled(true);
 
-        }
+        }*/
 
         if (imgPathSet.size() > 0) {
             clearTaken.setEnabled(true);
@@ -295,6 +312,7 @@ public class TabFragment3 extends Fragment {
 
         }
 
+        /* remove this for now -ph  [tags]
         tagsContainer = (LinearLayout) view.findViewById(R.id.tagContainerT3);
 
         for (String s : tagNames) {
@@ -306,6 +324,7 @@ public class TabFragment3 extends Fragment {
 
 
         }
+        */
 
 
         return view;
@@ -429,13 +448,16 @@ public class TabFragment3 extends Fragment {
 
     }
 
+
     private void clearTags2() {
-        tagsContainer.removeAllViews();
+        // [tags]
+        // tagsContainer.removeAllViews();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("cameraTags");
         editor.apply();
-        clearTags.setEnabled(false);
+        // clearTags.setEnabled(false);
     }
+
 
     private void refreshDash() {
         getActivity().getIntent().replaceExtras(new Bundle());

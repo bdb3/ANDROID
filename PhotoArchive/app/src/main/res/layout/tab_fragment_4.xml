@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Use Fragment Header as Title -ph
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -13,13 +14,12 @@
         android:padding="20dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
-
-    <!-- Text view Divider 0 -->
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:layout_below="@+id/textView"
         android:background="@android:color/darker_gray"/>
+    -->
 
     <GridView
         android:id="@+id/gridView4"

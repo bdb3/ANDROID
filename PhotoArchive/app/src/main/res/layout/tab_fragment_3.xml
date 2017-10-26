@@ -10,32 +10,62 @@
         android:id="@+id/relativeLayoutF3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp">
+        >
 
         <TextView
             android:id="@+id/textViewTaken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:text="Taken: 0"
             android:textColor="#000000"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:padding="14dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
 
 
         <Button
             android:id="@+id/clearTaken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="7dp"
+            android:padding="10dp"
+            android:layout_marginTop="2dp"
             android:enabled="false"
             android:text="Clear"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
 
+        <!-- Image Scroll View for INAPP images -ph 220dp -->
+        <HorizontalScrollView
+            android:id="@+id/horiz_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_below="@+id/textViewTaken"
+            android:layout_marginTop="6dp">
+
+            <LinearLayout
+                android:id="@+id/picContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="110dp"
+                android:orientation="horizontal" />
+
+        </HorizontalScrollView>
+
+        <Button
+            android:id="@+id/gallery_button"
+            style="?android:attr/buttonStyleSmall"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gallery_button_text"
+            android:layout_marginTop="10dp"
+            android:textStyle=""
+            android:layout_below="@+id/horiz_image_view"
+            android:layout_centerHorizontal="true" />
+
+        <!-- Removing the tag view function from this tab -ph
         <TextView
             android:id="@+id/textViewTags"
             android:layout_width="wrap_content"
@@ -46,8 +76,6 @@
             android:textColor="#000000"
             android:textSize="17dp"
             android:textStyle="bold" />
-
-
         <HorizontalScrollView
             android:id="@+id/horizontalScrollViewT3"
             android:layout_width="match_parent"
@@ -62,16 +90,9 @@
                 android:orientation="horizontal" />
 
         </HorizontalScrollView>
+        -->
 
-        <TextView
-            android:id="@+id/textViewDivider"
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/horizontalScrollViewT3"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="" />
-
+        <!-- Removing redundancy -ph
         <Button
             android:id="@+id/buttonClearTags"
             android:layout_width="wrap_content"
@@ -82,10 +103,7 @@
             android:enabled="false"
             android:text="Clear tags"
             android:textStyle="bold"
-
-
             />
-
         <Button
             android:id="@+id/buttonAddTags"
             android:layout_width="wrap_content"
@@ -95,33 +113,34 @@
             android:layout_toEndOf="@id/textViewDivider"
             android:text="Add tags"
             android:textStyle="bold"
-
-
             />
-
+         -->
 
         <Button
             android:id="@+id/buttonUpload"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@+id/buttonClearTags"
-            android:layout_marginEnd="7dp"
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
             android:background="#069504"
             android:enabled="false"
             android:text="Upload"
-            android:textStyle="bold" />
+            android:layout_marginRight="10dp"
+            android:textStyle="bold"
+            android:layout_below="@+id/button"
+            android:layout_alignParentStart="true" />
 
 
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@id/buttonUpload"
-            android:layout_marginEnd="7dp"
-            android:layout_marginTop="15dp"
+            android:layout_below="@id/gallery_button"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:background="#c3c3c3"
-            android:text="Take Picture"
+            android:text="Camera"
 
             android:textStyle="bold" />
 

@@ -77,7 +77,10 @@ public class Activity2 extends AppCompatActivity {
                         setTitle("Dashboard");
                     }
                     else if(tab.getPosition() == 1){
+                        setTitle("Categories");
+                        /*  Preserve Logic -ph
                         Bundle extras = getIntent().getExtras();
+
                         if(extras != null) {
                              if(extras.getInt("totalSelected") != 0)
                                  setTitle("Selected: " + extras.getInt("totalSelected"));
@@ -87,16 +90,17 @@ public class Activity2 extends AppCompatActivity {
                         }
                         else
                             setTitle("Photo Archive");
+                        */
 
                     }
                     else if (tab.getPosition() == 2) {
-                        setTitle("Camera");
+                        setTitle("Images");
 
                     } else if (tab.getPosition() == 3) {
-                        setTitle("History");
+                        setTitle("Photo Search");
 
                     } else {
-                        setTitle("");
+                        setTitle("Application Settings");
 
                     }
 

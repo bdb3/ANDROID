@@ -8,6 +8,7 @@
     <string name="title_activity_history_view_tags">HistoryViewTags</string>
     <string name="text_view_six_title">Save Image GPS Location</string>
     <string name="text_view_five_title">Upload Photos Via Wi-Fi</string>
+    <string name="gallery_button_text">Android Photo Gallery</string>
     <string-array name="del_img_day_array">
         <item>Never</item>
         <item>7 Days</item>
