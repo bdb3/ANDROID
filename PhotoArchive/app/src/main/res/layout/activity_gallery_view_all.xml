@@ -23,5 +23,4 @@
 
     <include layout="@layout/content_gallery_view_all" />
 
-
 </android.support.design.widget.CoordinatorLayout>

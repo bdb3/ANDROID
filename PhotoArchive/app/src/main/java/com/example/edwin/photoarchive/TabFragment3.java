@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.edwin.photoarchive.Activities.GalleryViewAllActivity;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
@@ -74,6 +75,18 @@ public class TabFragment3 extends Fragment {
         // TODO: ORGANIZE CODE CAUSE IT'S A MESS. GROUP STUFF TOGETHER AS MUCH AS POSSIBLE -PH
         // TODO: GET IMAGES SCROLLER WORKING AND REMOVE ALL TAG FUNCTIONS -PH
         // TODO: ADD TAG CHECK TO xml -PH
+
+        // Copied old function from Tab2 and modified
+        // This opens Android Gallery in a new Activity
+        Button androidGalleryButton = (Button) view.findViewById(R.id.gallery_button);
+        androidGalleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), GalleryViewAllActivity.class);
+                i.putExtra("selectedImages", imgPathSet);
+                startActivity(i);
+            }
+        });
 
         if (sharedPreferences.contains("loggedInUser")) {
             username = sharedPreferences.getString("loggedInUser", null);

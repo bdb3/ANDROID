@@ -10,21 +10,65 @@
     android:paddingTop="1dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Activities.GalleryViewAllActivity"
-    tools:showIn="@layout/activity_gallery_view_all">
+    tools:showIn="@layout/activity_gallery_view_all"
+    >
+    <!--tools:context=".Activities.GalleryViewAllActivity"
+    tools:showIn="@layout/activity_gallery_view_all" -->
+
+    <TextView
+        android:id="@+id/gallery_inst_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Long Press to Select\nTap to Preview"
+        android:textColor="#000000"
+        android:padding="14dp"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
 
     <Button
+        android:id="@+id/android_gallery_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginTop="6dp"
+        android:enabled="false"
+        android:textColor="#000000"
+        android:text="Done"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        />
+
+    <Button
+        android:id="@+id/android_gallery_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="90dp"
+        android:enabled="false"
+        android:textColor="#000000"
+        android:text="Clear"
+        android:textStyle="bold"
+        android:layout_alignRight="@id/android_gallery_done"
+        />
+
+    <!--<Button
         android:id="@+id/button14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:text="Select" />
+        -->
 
     <GridView
         android:id="@+id/gridView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button14"
+        android:layout_below="@+id/gallery_inst_txt"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="3dp"
         android:columnWidth="100dp"

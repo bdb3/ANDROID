@@ -59,10 +59,13 @@ public class TabFragment2 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-
         context = this.getContext();
         View view = inflater.inflate(R.layout.tab_fragment_2, container, false);
+
+        /*
+        setHasOptionsMenu(true);
+
+
 
         uploadBtn = (Button) view.findViewById(R.id.button5);
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
@@ -315,7 +318,7 @@ public class TabFragment2 extends Fragment {
             }
         });
 
-
+    */
         return view;
 
     }
