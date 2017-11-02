@@ -52,6 +52,10 @@ public class TabFragment2 extends Fragment {
     private ArrayList<TaggedImageObject> taggedImagesList = new ArrayList<TaggedImageObject>();
     private String username;
 
+    // TODO https://mobikul.com/how-to-get-data-from-dynamically-created-views-android/
+    // Make it when the data is updated, the tag information is saved.
+    // TODO Make categories persist
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Photo Archive</string>
+    <string name="app_name">PhotoArchive</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_gallery_view_all">GalleryViewAllActivity</string>
@@ -9,6 +9,7 @@
     <string name="text_view_six_title">Save Image GPS Location</string>
     <string name="text_view_five_title">Upload Photos Via Wi-Fi</string>
     <string name="gallery_button_text">Android Photo Gallery</string>
+    <string name="category_spinner_text">Category</string>
     <string-array name="del_img_day_array">
         <item>Never</item>
         <item>7 Days</item>
