@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.example.edwin.photoarchive"
@@ -18,26 +18,26 @@ android {
         }
     }
 }
+repositories{ jcenter ()}
+
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     // Junit Test Required
     testCompile 'junit:junit:4.12'
     // Mockito Framework for Android Tests
-    testCompile "org.mockito:mockito-core:2.+"
+    testCompile 'org.mockito:mockito-core:2.11.0'
     //Roboelectric for Fragment Tests
-    testCompile "org.robolectric:robolectric:3.5"
+    testCompile 'org.robolectric:robolectric:3.5'
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:gridlayout-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.android.support:support-v4:24.1.0'
+    compile 'com.android.support:support-v4:24.2.1'
     compile 'com.microsoft.azure:azure-mobile-android:3.1.0'
     compile 'com.microsoft.azure.android:azure-storage-android:1.0.0@aar'
     compile 'com.squareup.picasso:picasso:2.5.2'
-
-
-    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'com.google.android.gms:play-services-appindexing:9.8.0'
 }
 
 configurations.all {
