@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     public void signIn(View v){
         EditText username = (EditText) findViewById(R.id.editText);
 
-        if(username.getText().toString().trim().length()>3){
+        if(username.getText().toString().trim().length() > 3){
             if(!sharedPreferences.contains("loggedInUser")) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("loggedInUser",username.getText().toString().trim());

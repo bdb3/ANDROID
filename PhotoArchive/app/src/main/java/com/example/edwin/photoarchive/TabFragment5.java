@@ -4,56 +4,36 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.edwin.photoarchive.Activities.MainActivity;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 
-
 public class TabFragment5 extends Fragment {
     private GPSTracker gps;
-    private Menu menu;
     private String username;
     private SharedPreferences sharedPreferences;
     private String android_id;
 
     public String getDays(Intent i) {
-        String str;
-        if (i.getExtras() == null) {
-            return str = "90";
-        } else {
-
-            return str = i.getExtras().getString("numDays");
-        }
+        return i.getExtras().getString("numDays", "90");
     }
 
     public String getDays() {
-        String str;
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
-        if (!sharedPreferences.contains("numDays")) {
-            return str = "90";
-        } else {
-            return str = Integer.toString(sharedPreferences.getInt("numDays", 90));
-        }
+        return Integer.toString(sharedPreferences.getInt("numDays", 90));
     }
 
     @Override
@@ -94,9 +74,22 @@ public class TabFragment5 extends Fragment {
         androidUserView.setText(username);
 
         // Delete Days Spinner
+        //     String Resource Array to create Simple Spinner -ph
         ArrayAdapter<CharSequence> delDayAdapter = ArrayAdapter.createFromResource(this.getContext(), R.array.del_img_day_array, android.R.layout.simple_spinner_item);
         delDayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         delDaySpinner.setAdapter(delDayAdapter);
+        //     Check previous value in numDays
+        int daysNum = sharedPreferences.getInt("numDays",90);
+        if(daysNum < 0) {
+            delDaySpinner.setSelection(0);
+        } else {
+            // Find it programmatically
+            int delDayIndex = 1;
+            for(int i = 1; i < delDaySpinner.getCount(); i++)
+                if(delDaySpinner.getItemAtPosition(i).equals("" + daysNum + " days"))
+                    delDayIndex = i;
+            delDaySpinner.setSelection(delDayIndex);
+        }
 
         // GPS Switch state
         gps = new GPSTracker(getContext());
@@ -108,18 +101,17 @@ public class TabFragment5 extends Fragment {
 
         /** BEG EVENTLISTENERS */
 
+        // Username Change Button FORMALLY Logout Button
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             new AlertDialog.Builder(getActivity())
-                .setTitle("Log out confirmation")
-                .setMessage("Are you sure you want to log out?")
+                .setTitle("Username Change Confirmation")
+                .setMessage("Are you sure you want to change your username?")
                 .setNegativeButton(android.R.string.cancel, null)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.remove("loggedInUser");
                         editor.apply();
@@ -127,8 +119,7 @@ public class TabFragment5 extends Fragment {
                         Intent i = new Intent(getActivity(), MainActivity.class);
                         startActivity(i);
 
-                        Toast.makeText(getContext(), "You have been logged out", Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(getContext(), "Your username has been reset.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .create()
@@ -136,84 +127,53 @@ public class TabFragment5 extends Fragment {
             }
         });
 
-        // String Resource Array to create Simple Spinner -ph
-
-        // TODO: ADD SPINNER LOGIC TO SET DAYS IN SHARED PREFERENCES -ph
-
-        /*  Remove old edit button and methods -ph
-        // Button editDays = (Button) view.findViewById(R.id.button8);
-        editDays.setOnClickListener(new View.OnClickListener() {
+        // DONE: ADD SPINNER LOGIC TO SET DAYS IN SHARED PREFERENCES -ph
+        // Number of Days before auto-deleting inApp images Spinner
+        delDaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                final NumberPicker picker = new NumberPicker(getActivity());
-                picker.setMinValue(1);
-                picker.setMaxValue(90);
-                FrameLayout layout = new FrameLayout(getActivity());
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                String daysStr = adapterView.getItemAtPosition(pos).toString();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                layout.addView(picker, new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.WRAP_CONTENT,
-                        FrameLayout.LayoutParams.WRAP_CONTENT,
-                        Gravity.CENTER));
+                // Using string parsing so that String literals in string.xml
+                // define the days and they are NOT hardcoded by position
 
-                new AlertDialog.Builder(getActivity())
-                        .setView(layout)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                Log.d("numDays",daysStr);
 
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if(daysStr.equalsIgnoreCase("never")){
+                    if(sharedPreferences.contains("numDays")){
+                        editor.remove("numDays");
+                        editor.apply();
+                    }
+                    editor.putInt("numDays", -1);
+                    editor.apply();
+                    Log.d("numDays","SHRD:-1 (NEVER)");
+                    return;
+                }
 
-                                if (!sharedPreferences.contains("numDays")) {
-                                    editor.putInt("numDays", picker.getValue());
-                                    editor.apply();
+                int daysNum;
+                try{
+                    daysNum = Integer.parseInt(daysStr.split(" ")[0]);
+                } catch (Exception e) {return;}
 
-                                } else {
-                                    editor.remove("numDays");
-                                    editor.apply();
-                                    editor.putInt("numDays", picker.getValue());
-                                    editor.apply();
-
-                                }
-
-                                getFragmentManager().beginTransaction().detach(getFragmentManager().getFragments().get(4)).attach(getFragmentManager().getFragments().get(4)).commitAllowingStateLoss();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .show();
-
+                if(sharedPreferences.contains("numDays")){
+                    editor.remove("numDays");
+                    editor.apply();
+                }
+                editor.putInt("numDays", daysNum);
+                editor.apply();
+                Log.d("numDays", "SHRD:" + sharedPreferences.getInt("numDays",-10));
             }
-        }); */
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // Do nothing
+            }
+        });
 
         /** END EVENT LISTENERS */
 
 
         return view;
     }
-
-    /* User Menu will become superfluous or can be re-added to `APP SETTINGS` fragment
-       at a later date. -ph
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        this.menu = menu;
-
-        menu.add(Menu.NONE, 0, Menu.NONE, "")
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-        menu.findItem(0).setIcon(R.drawable.ic_user).setEnabled(false);
-        menu.findItem(0).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
-
-        menu.add(Menu.NONE, 1, Menu.NONE, username + "   ")
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.findItem(1).setEnabled(false);
-
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    */
 }
