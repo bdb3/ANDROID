@@ -6,14 +6,17 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.edwin.photoarchive.Activities.ActivityEditDeleteTags;
@@ -39,18 +42,18 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-
 public class TabFragment2 extends Fragment {
     private Context context = null;
     private HashSet<String> imgPathSet = new LinkedHashSet<String>();
-    private LinearLayout picContainer;
-    private LinearLayout picContainer2;
-    private Button uploadBtn;
     private Menu menu;
     private Map<String, Map<String, Map<String, String>>> imagesTagsMap = new LinkedHashMap<String, Map<String, Map<String, String>>>();
     private SharedPreferences sharedPreferences;
+    private Spinner catSpinner;
     private ArrayList<TaggedImageObject> taggedImagesList = new ArrayList<TaggedImageObject>();
     private String username;
+    private LinearLayout picContainer;
+    private LinearLayout picContainer2;
+    private Button uploadBtn;
 
     // TODO https://mobikul.com/how-to-get-data-from-dynamically-created-views-android/
     // Make it when the data is updated, the tag information is saved.
@@ -61,6 +64,33 @@ public class TabFragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = this.getContext();
         View view = inflater.inflate(R.layout.tab_fragment_2, container, false);
+
+        /** BEG DECLARE VIEW OBJECTS */
+
+        catSpinner = (Spinner) view.findViewById(R.id.category_spinner_tagging);
+
+        /** END DECLARE VIEW OBJECTS */
+
+
+        /** BEG GET SHAREDPREFERENCES DATA */
+
+        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+        String[] contextsArray = null;
+        Gson gson = new Gson();
+        try{
+            contextsArray = gson.fromJson(sharedPreferences.getString("contexts", null), String[].class);
+        } catch (Exception e) { Log.d("TabFragment2","CRITICAL ERROR! JSON PARSE EXCEPTION"); }
+
+        /** END GET SHAREDPREFERENCES DATA */
+
+
+        /** BEG VIEW CONTENT CODE */
+
+        ArrayAdapter<String> catAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, contextsArray);
+        catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        catSpinner.setAdapter(catAdapter);
+
+        /** END VIEW CONTENT CODE */
 
         /*
         setHasOptionsMenu(true);

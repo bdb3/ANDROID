@@ -22,52 +22,67 @@ public class TabFragment4 extends Fragment {
     private Context context = null;
     private String username;
     private SharedPreferences sharedPreferences;
-    private Spinner categorySpinner;
-    private ArrayAdapter<String> adapter;
+    private Spinner categorySearchSpinner;
     private String filter;
-    private String[] contextsArray;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = this.getContext();
         View view = inflater.inflate(R.layout.tab_fragment_4, container, false);
+
+        /** BEG DECLARE VIEW OBJECTS */
+
+        categorySearchSpinner = (Spinner) view.findViewById(R.id.categorySpinner);
+
+        /** END DECLARE VIEW OBJECTS */
+
+
+        /** BEG GET SHAREDPREFERENCES DATA */
+
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
-        categorySpinner = (Spinner) view.findViewById(R.id.categorySpinner);
-        adapter = null;
-        filter = "";
+        String[] contextsArray = null;
         Gson gson = new Gson();
-        contextsArray = null;
-        try {
+        try{
             contextsArray = gson.fromJson(sharedPreferences.getString("contexts", null), String[].class);
-            adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, contextsArray);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorySpinner.setAdapter(adapter);
-        } catch (Exception e) {
+        } catch (Exception e) { Log.d("TabFragment2","CRITICAL ERROR! JSON PARSE EXCEPTION"); }
+        username = sharedPreferences.getString("loggedInUser", null);
 
-        }
+        /** END GET SHAREDPREFERENCES DATA */
 
-        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        /** BEG VIEW CONTENT CODE */
+
+        ArrayAdapter<String> categorySearchAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, contextsArray);
+        categorySearchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySearchSpinner.setAdapter(categorySearchAdapter);
+
+        /** END VIEW CONTENT CODE */
+
+
+        /** BEG EVENTLISTENERS */
+
+        categorySearchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                filter = categorySpinner.getItemAtPosition(i).toString();
+                filter = categorySearchSpinner.getItemAtPosition(i).toString();
+                /* ASYNC */
                 new AzureBlobDownloader(getActivity(), username, filter).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+                // Do Nothing
             }
         });
-        if (sharedPreferences.contains("loggedInUser")) {
-            username = sharedPreferences.getString("loggedInUser", null);
 
-        }
+        /** END EVENT LISTENERS */
 
-        //Must be Serial or else it hangs!
+
+        /* ASYNC */
+        // Must be Serial or else it hangs!
         new AzureBlobDownloader(this.getActivity(), username, filter).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
 
         return view;
     }
-
-
 }

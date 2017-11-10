@@ -36,6 +36,9 @@ public class TabFragment5 extends Fragment {
         return Integer.toString(sharedPreferences.getInt("numDays", 90));
     }
 
+    // TODO Check WIFI Switch Logic
+    // TODO Check GPS Switch Logic
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
