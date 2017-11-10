@@ -43,10 +43,11 @@
             android:layout_width="match_parent"
             android:layout_height="110dp"
             android:layout_below="@+id/textViewTaken"
-            android:layout_marginTop="6dp">
+            android:layout_marginTop="6dp"
+            android:padding="5dp">
 
             <LinearLayout
-                android:id="@+id/picContainer"
+                android:id="@+id/inapp_picture_container"
                 android:layout_width="wrap_content"
                 android:layout_height="110dp"
                 android:orientation="horizontal" />

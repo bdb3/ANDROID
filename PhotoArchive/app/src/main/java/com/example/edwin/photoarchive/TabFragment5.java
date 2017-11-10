@@ -34,6 +34,7 @@ public class TabFragment5 extends Fragment {
     private Menu menu;
     private String username;
     private SharedPreferences sharedPreferences;
+    private String android_id;
 
     public String getDays(Intent i) {
         String str;
@@ -60,55 +61,82 @@ public class TabFragment5 extends Fragment {
 
         setHasOptionsMenu(true);
         final View view = inflater.inflate(R.layout.tab_fragment_5, container, false);
-        Button logOutButton = (Button) view.findViewById(R.id.button7);
 
+        /** BEG DECLARE VIEW OBJECTS */
+
+        Button logOutButton = (Button) view.findViewById(R.id.button7);
+        Switch swLocation = (Switch) view.findViewById(R.id.switch2);
         // DELETE DAYS SPINNER defined here -ph
         Spinner delDaySpinner = (Spinner) view.findViewById(R.id.del_img_day_count);
+        TextView androidIdView = (TextView) view.findViewById(R.id.settings_android_id_view);
+        TextView androidUserView = (TextView) view.findViewById(R.id.settings_android_user_view);
 
-        // Textview for old edit, irrelevant code now -ph
-        // TextView deleteDays = (TextView) view.findViewById(R.id.textView8);
-        // deleteDays.setText("Delete after " + getDays() + " " + "days");
+        /** END DECLARE VIEW OBJECTS */
+
+
+        /** BEG GET SHAREDPREFERENCES DATA */
 
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
-
-        if (sharedPreferences.contains("loggedInUser")) {
+        // Get ANDROID_ID
+        android_id = sharedPreferences.getString("androidID",null);
+        if (sharedPreferences.contains("loggedInUser"))
             username = sharedPreferences.getString("loggedInUser", null);
 
-        }
+        /** END GET SHAREDPREFERENCES DATA */
+
+
+        /** BEG VIEW CONTENT CODE */
+
+        // ANDROID_ID Text View
+        androidIdView.setText(android_id);
+
+        // Username Text View
+        androidUserView.setText(username);
+
+        // Delete Days Spinner
+        ArrayAdapter<CharSequence> delDayAdapter = ArrayAdapter.createFromResource(this.getContext(), R.array.del_img_day_array, android.R.layout.simple_spinner_item);
+        delDayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        delDaySpinner.setAdapter(delDayAdapter);
+
+        // GPS Switch state
+        gps = new GPSTracker(getContext());
+        if (gps.isGPSEnabled) swLocation.setChecked(true);
+        else swLocation.setChecked(false);
+
+        /** END VIEW CONTENT CODE */
+
+
+        /** BEG EVENTLISTENERS */
 
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Log out confirmation")
-                        .setMessage("Are you sure you want to log out?")
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+            new AlertDialog.Builder(getActivity())
+                .setTitle("Log out confirmation")
+                .setMessage("Are you sure you want to log out?")
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
 
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.remove("loggedInUser");
-                                editor.apply();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.remove("loggedInUser");
+                        editor.apply();
 
-                                Intent i = new Intent(getActivity(), MainActivity.class);
-                                startActivity(i);
+                        Intent i = new Intent(getActivity(), MainActivity.class);
+                        startActivity(i);
 
-                                Toast.makeText(getContext(), "You have been logged out", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "You have been logged out", Toast.LENGTH_SHORT).show();
 
-                            }
-                        })
-                        .create()
-                        .show();
-
+                    }
+                })
+                .create()
+                .show();
             }
         });
 
         // String Resource Array to create Simple Spinner -ph
-        ArrayAdapter<CharSequence> delDayAdapter = ArrayAdapter.createFromResource(this.getContext(), R.array.del_img_day_array, android.R.layout.simple_spinner_item);
-        delDayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        delDaySpinner.setAdapter(delDayAdapter);
 
         // TODO: ADD SPINNER LOGIC TO SET DAYS IN SHARED PREFERENCES -ph
 
@@ -162,17 +190,8 @@ public class TabFragment5 extends Fragment {
             }
         }); */
 
-        Switch swLocation = (Switch) view.findViewById(R.id.switch2);
+        /** END EVENT LISTENERS */
 
-        gps = new GPSTracker(getContext());
-
-
-        if (gps.isGPSEnabled) {
-            swLocation.setChecked(true);
-        } else {
-            swLocation.setChecked(false);
-
-        }
 
         return view;
     }

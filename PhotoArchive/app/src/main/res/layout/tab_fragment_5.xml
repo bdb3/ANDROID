@@ -7,7 +7,7 @@
     android:fillViewport="true"
     android:isScrollContainer="false">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -31,8 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:padding="20dp"
-            android:textSize="20dp"
-            android:text="@string/text_view_five_title" />
+            android:text="@string/text_view_five_title"
+            android:textSize="20dp" />
 
         <Switch
             android:id="@+id/switch2"
@@ -42,8 +42,8 @@
             android:layout_alignParentEnd="true"
             android:layout_below="@id/switch1"
             android:padding="20dp"
-            android:textSize="20dp"
-            android:text="@string/text_view_six_title" />
+            android:text="@string/text_view_six_title"
+            android:textSize="20dp" />
 
         <Button
             android:id="@+id/button7"
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:text="Log out" />
+            android:text="Change Username" />
 
         <!-- for deciding how many days keep images, replacing EDIT button -->
         <Spinner
@@ -62,7 +62,60 @@
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/switch2"
             android:layout_marginTop="8dp"
-            android:padding="15dp"/>
+            android:padding="15dp" />
+
+        <TextView
+            android:id="@+id/settings_android_user_view_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/settings_android_id_view_label"
+            android:paddingBottom="7dp"
+            android:paddingLeft="24dp"
+            android:text="@string/settings_us_label"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/settings_android_id_view_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button7"
+            android:paddingBottom="14dp"
+            android:paddingLeft="24dp"
+            android:text="@string/settings_id_label"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/settings_android_id_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/settings_android_user_view"
+            android:layout_toEndOf="@+id/settings_android_id_view_label"
+            android:paddingBottom="14dp"
+            android:paddingLeft="7dp"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/settings_android_user_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/settings_android_info"
+            android:layout_toEndOf="@+id/settings_android_id_view_label"
+            android:paddingLeft="7dp"
+            android:paddingBottom="7dp"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/settings_android_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/settings_android_user_view_label"
+            android:paddingBottom="7dp"
+            android:paddingLeft="14dp"
+            android:text="@string/settings_info_title"
+            android:textColor="#000000"
+            android:textSize="20dp" />
+
+
         <!--<Button
             android:id="@+id/button8"
             style="?android:attr/buttonStyleSmall"
@@ -97,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/switch1"
-            android:background="@android:color/darker_gray"/>
+            android:background="@android:color/darker_gray" />
 
         <!--<TextView
             android:id="@+id/textView6"
@@ -118,15 +171,15 @@
 
         <!-- style="@style/Base.TextAppearance.AppCompat.Widget.Switch" to make text look the same -->
         <TextView
-            style="@style/Base.TextAppearance.AppCompat.Widget.Switch"
             android:id="@+id/textView8"
+            style="@style/Base.TextAppearance.AppCompat.Widget.Switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/switch2"
             android:layout_marginTop="0dp"
             android:padding="20dp"
-            android:text="Auto delete Images"
+            android:text="@string/autodelete_text"
             android:textSize="20dp" />
 
         <!-- Text view Divider 3 -->

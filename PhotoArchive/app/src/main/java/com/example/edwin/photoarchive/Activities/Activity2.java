@@ -24,15 +24,12 @@ public class Activity2 extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Spinner categorySpinner=(Spinner)findViewById(R.id.categorySpinner);
 
-
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Dash"));
         tabLayout.addTab(tabLayout.newTab().setText("Tags"));
         tabLayout.addTab(tabLayout.newTab().setText("Camera"));
         tabLayout.addTab(tabLayout.newTab().setText("History"));
         tabLayout.addTab(tabLayout.newTab().setText("Settings"));
-
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_home);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_upload);
@@ -46,8 +43,6 @@ public class Activity2 extends AppCompatActivity {
         tabLayout.getTabAt(3).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(4).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
 
-
-
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
@@ -58,13 +53,11 @@ public class Activity2 extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
             int position = extras.getInt("viewpager_position");
             viewPager.setCurrentItem(position);
         }
-
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -106,8 +99,6 @@ public class Activity2 extends AppCompatActivity {
 
                 }
 
-
-
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
 
@@ -119,6 +110,4 @@ public class Activity2 extends AppCompatActivity {
             }
         });
     }
-
-   
 }

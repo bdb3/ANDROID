@@ -45,7 +45,6 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
 
     public View getView( final int position, View convertView, ViewGroup parent) {
 
-
         ImageView imageView;
 
         if (convertView == null) {
@@ -57,9 +56,7 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
 
         } else {
             imageView = (ImageView) convertView;
-
-
-       }
+        }
         imageView.clearColorFilter();
         inAppViewAllActivityInstance.removeFromImageViewSet(imageView);
 
@@ -68,54 +65,41 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
         if(inAppViewAllActivityInstance.imagePathSetContains(this.imgPathList.get(position))){
             imageView.setColorFilter(Color.argb(110, 20, 197, 215));
             inAppViewAllActivityInstance.addToImageViewSet(imageView);
-
         }
-
 
         Glide.with(callerActivity).load(this.imgPathList.get(position)).into(imageView);
 
+        imageView.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v){
+                ImageView iv = (ImageView) v;
+                if (iv.getColorFilter() == null) {
+                    iv.setColorFilter(Color.argb(110, 20, 197, 215));
+                    inAppViewAllActivityInstance.addToImagePathSet(imgPathList.get(position));
+                    inAppViewAllActivityInstance.addToImageViewSet(iv);
+                    inAppViewAllActivityInstance.setTitle("Selected: " + inAppViewAllActivityInstance.getImagePathSetSize());
+                } else {
+                    iv.clearColorFilter();
+                    inAppViewAllActivityInstance.removeFromImagePathSet(imgPathList.get(position));
+                    inAppViewAllActivityInstance.removeFromImageViewSet(iv);
+                    if (inAppViewAllActivityInstance.getImagePathSetSize() == 0) {
+                        inAppViewAllActivityInstance.setTitle("Gallery (" + imgPathList.size() + ")");
+                    } else {
+                        inAppViewAllActivityInstance.setTitle("Selected: " + inAppViewAllActivityInstance.getImagePathSetSize());
+                    }
+                }
+                return true;
+            }
+        });
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageView iv = (ImageView) v;
-
                 if(! inAppViewAllActivityInstance.getIsSelectEnabled()) {
-
                     Intent i = new Intent(callerActivity, ImagePreview.class);
                     i.putExtra("imagePath", imgPathList.get(position));
                     callerActivity.startActivity(i);
                 }
-                else{
-                    if(iv.getColorFilter() == null){
-                        iv.setColorFilter(Color.argb(110, 20, 197, 215));
-
-                        inAppViewAllActivityInstance.addToImagePathSet(imgPathList.get(position));
-                        inAppViewAllActivityInstance.addToImageViewSet(iv);
-
-                        inAppViewAllActivityInstance.setTitle("Selected: " + inAppViewAllActivityInstance.getImagePathSetSize());
-
-                    }
-
-                    else {
-                        iv.clearColorFilter();
-
-                        inAppViewAllActivityInstance.removeFromImagePathSet(imgPathList.get(position));
-                        inAppViewAllActivityInstance.removeFromImageViewSet(iv);
-
-                        if(inAppViewAllActivityInstance.getImagePathSetSize() == 0){
-                            inAppViewAllActivityInstance.setTitle("In App (" + imgPathList.size()+")");
-
-                        }
-                        else{
-                            inAppViewAllActivityInstance.setTitle("Selected: " + inAppViewAllActivityInstance.getImagePathSetSize());
-
-                        }
-
-                    }
-
-                }
-
             }
         });
 

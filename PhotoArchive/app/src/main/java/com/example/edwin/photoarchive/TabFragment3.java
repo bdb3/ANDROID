@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
 import com.example.edwin.photoarchive.Helpers.ExtractLatLong;
 import com.example.edwin.photoarchive.Helpers.GPS;
+import com.example.edwin.photoarchive.Helpers.PopulateAppImages;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -55,6 +58,7 @@ public class TabFragment3 extends Fragment {
     private Button button = null;
     private HashSet<String> imgPathSet = new LinkedHashSet<String>();
     private SharedPreferences sharedPreferences;
+    private LinearLayout inAppPictures;
 
     //remove for now -ph [tags]
 //    private LinearLayout tagsContainer;
@@ -90,15 +94,15 @@ public class TabFragment3 extends Fragment {
 
         if (sharedPreferences.contains("loggedInUser")) {
             username = sharedPreferences.getString("loggedInUser", null);
-
         }
 
         //camera btn
         button = (Button) view.findViewById(R.id.button);
-
         final TextView taken = (TextView) view.findViewById(R.id.textViewTaken);
-
         final Button clearTaken = (Button) view.findViewById(R.id.clearTaken);
+
+        inAppPictures = (LinearLayout) view.findViewById(R.id.inapp_picture_container);
+        new PopulateAppImages(inAppPictures, context, getActivity());
 
         // remove this for now -ph  [tags]
         //Button addTags = (Button) view.findViewById(R.id.buttonAddTags);
@@ -238,19 +242,14 @@ public class TabFragment3 extends Fragment {
         });
 
         Bundle extras = getActivity().getIntent().getExtras();
+
         if (extras != null) {
             if (extras.containsKey("cameraImages")) {
-
                 HashSet<String> cameraPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("cameraImages"));
-
                 for (String s : cameraPathSet) {
                     imgPathSet.add(s);
-
-
                 }
-
             }
-
         }
 
         taken.setText("Taken: " + imgPathSet.size());
@@ -338,7 +337,6 @@ public class TabFragment3 extends Fragment {
 
         }
         */
-
 
         return view;
     }
@@ -441,7 +439,6 @@ public class TabFragment3 extends Fragment {
     }
 
     private void clearTags() {
-
         new AlertDialog.Builder(context)
                 .setTitle("Clear confirmation")
                 .setMessage("Are you sure you want to clear all the tags?")
@@ -449,16 +446,12 @@ public class TabFragment3 extends Fragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         clearTags2();
                         Toast.makeText(context, "All tags cleared", Toast.LENGTH_SHORT).show();
-
                     }
                 })
                 .create()
                 .show();
-
-
     }
 
 
@@ -471,7 +464,6 @@ public class TabFragment3 extends Fragment {
         // clearTags.setEnabled(false);
     }
 
-
     private void refreshDash() {
         getActivity().getIntent().replaceExtras(new Bundle());
         getActivity().getIntent().setAction("");
@@ -481,8 +473,5 @@ public class TabFragment3 extends Fragment {
         viewPager.setCurrentItem(0);
         getActivity().getSupportFragmentManager().popBackStack();
         getActivity().recreate();
-
     }
-
-
 }

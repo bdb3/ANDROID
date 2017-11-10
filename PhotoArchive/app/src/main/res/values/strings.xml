@@ -10,6 +10,10 @@
     <string name="text_view_five_title">Upload Photos Via Wi-Fi</string>
     <string name="gallery_button_text">Android Photo Gallery</string>
     <string name="category_spinner_text">Category</string>
+    <string name="autodelete_text">Auto delete Images</string>
+    <string name="settings_info_title">User Information</string>
+    <string name="settings_us_label">Username: </string>
+    <string name="settings_id_label">Android ID: </string>
     <string-array name="del_img_day_array">
         <item>Never</item>
         <item>7 Days</item>

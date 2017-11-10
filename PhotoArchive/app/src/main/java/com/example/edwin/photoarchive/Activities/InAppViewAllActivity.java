@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
+// TODO REMOVE THIS CLASS
+
 public class InAppViewAllActivity extends AppCompatActivity {
     private GridView imageGrid;
     private ArrayList<String> imgPathList;

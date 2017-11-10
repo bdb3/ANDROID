@@ -28,11 +28,8 @@ import java.util.LinkedHashSet;
 public class GalleryViewAllActivity extends AppCompatActivity {
     private GridView imageGrid;
     private ArrayList<String> imgPathList;
-    private Menu menu;
-    private boolean isSelectEnabled = false;
     private HashSet<String> imagePathSet = new LinkedHashSet<String>();
     private HashSet<ImageView> imageViewSet = new HashSet<ImageView>();
-    private Button selectButton;
     private Button clearButton;
     private Button doneButton;
 
@@ -43,16 +40,14 @@ public class GalleryViewAllActivity extends AppCompatActivity {
         ArrayList<String> listOfAllImages = new ArrayList<String>();
         Cursor cursor;
         int column_index_data;
-        // int column_index_folder_name;
         String PathOfImage = null;
         uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-        String[] projection = { MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
+        String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
 
         cursor = activity.getContentResolver().query(uri, projection, null, null, null);
 
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        // column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
         while (cursor.moveToNext()) {
             PathOfImage = cursor.getString(column_index_data);
             listOfAllImages.add(PathOfImage);
@@ -69,17 +64,21 @@ public class GalleryViewAllActivity extends AppCompatActivity {
 
         imageGrid = (GridView) findViewById(R.id.gridView2);
         imgPathList = new ArrayList<String>(getImagesPath(this));
-        setTitle("Gallery (" + imgPathList.size()+")" );
+        setTitle("Gallery (" + imgPathList.size() + ")");
 
         Collections.reverse(imgPathList);
 
         imageGrid.setAdapter(new ImageAdapterForGallery(GalleryViewAllActivity.this, imgPathList, this));
 
 
-        // TODO Buttons do not work, find fix.
+        // DONE Buttons do not work, find fix.
+        //     Buttons were set DISABLED accidentally
+        // DONE CLEAR causes crash and DONE may not function
+        //     Ended up being a silly logic error
+
         // Button to clear image selection
         clearButton = (Button) findViewById(R.id.android_gallery_clear);
-        clearButton.setOnClickListener(new View.OnClickListener(){
+        clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Verify Dialog, defined in function below
@@ -90,25 +89,25 @@ public class GalleryViewAllActivity extends AppCompatActivity {
 
         // Button to submit images
         doneButton = (Button) findViewById(R.id.android_gallery_done);
-        doneButton.setOnClickListener(new View.OnClickListener(){
+        doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(GalleryViewAllActivity.this, Activity2.class);
-                i.putExtra("viewpager_position", 1);
+                i.putExtra("viewpager_position", 2);
 
                 //add images passed from tab 2 to imagePathSet
 
                 Bundle extras = getIntent().getExtras();
-                if(extras != null ){
-                    if(extras.containsKey("selectedImages")){
+                if (extras != null) {
+                    if (extras.containsKey("selectedImages")) {
                         HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImages"));
-                        for(String s: passedImagesPathSet){
+                        for (String s : passedImagesPathSet) {
                             imagePathSet.add(s);
                         }
                     }
                 }
 
-                if(imagePathSet.size()>0){
+                if (imagePathSet.size() > 0) {
                     i.putExtra("selectedImagesFromGallery", imagePathSet);
                 }
 
@@ -116,141 +115,45 @@ public class GalleryViewAllActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        /*
-        selectButton = (Button)findViewById(R.id.button14);
-        selectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectButton.setEnabled(false);
-                isSelectEnabled = true;
-                showOption(0);
-                showOption(1);
-            }
-        });
-        */
     }
 
-    private void showOption(int id) {
-        MenuItem item = menu.findItem(id);
-        item.setVisible(true);
-    }
-
-    public boolean imagePathSetContains(String s){
+    public boolean imagePathSetContains(String s) {
         return imagePathSet.contains(s);
-
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu= menu;
-
-        menu.add(Menu.NONE, 0, Menu.NONE, "Cancel").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-        menu.add(Menu.NONE, 1, Menu.NONE, "Done").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-
-        MenuItem item = menu.findItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                deselectAllImages();
-                return true;
-            }
-        });
-
-        MenuItem item2 = menu.findItem(1).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                Intent i = new Intent(GalleryViewAllActivity.this, Activity2.class);
-                i.putExtra("viewpager_position", 1);
-
-                //add images passed from tab 2 to imagePathSet
-
-                Bundle extras = getIntent().getExtras();
-
-                if(extras != null ){
-                    if(extras.containsKey("selectedImages")){
-
-                        HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImages"));
-
-                        for(String s: passedImagesPathSet){
-                            imagePathSet.add(s);
-
-                        }
-                    }
-
-                }
-
-                if(imagePathSet.size()>0){
-                    i.putExtra("selectedImagesFromGallery", imagePathSet);
-                }
-
-                startActivity(i);
-                finish();
-
-
-                return true;
-            }
-        });
-
-        hideOption(0);
-        hideOption(1);
-
-        super.onCreateOptionsMenu(menu);
-        return true;
-    }
-    */
-
-    public Menu getMenu(){
-        return this.menu;
-    }
-
-    private void hideOption(int id) {
-        MenuItem item = menu.findItem(id);
-        item.setVisible(false);
-    }
-
-    private void deselectAllImages(){
-        setTitle("Gallery (" + imgPathList.size()+")" );
-        hideOption(0);
-        hideOption(1);
-        selectButton.setEnabled(true);
-        isSelectEnabled = false;
+    private void deselectAllImages() {
+        setTitle("Gallery (" + imgPathList.size() + ")");
         imagePathSet.clear();
 
-        for(ImageView iv: imageViewSet){
+        for (ImageView iv : imageViewSet) {
             iv.clearColorFilter();
-
         }
+
         imageViewSet.clear();
     }
 
-    public void addToImagePathSet(String s){
+    public void addToImagePathSet(String s) {
         this.imagePathSet.add(s);
     }
 
-    public void removeFromImagePathSet(String s){
+    public void removeFromImagePathSet(String s) {
         this.imagePathSet.remove(s);
     }
 
-    public void addToImageViewSet(ImageView iv){
+    public void addToImageViewSet(ImageView iv) {
         this.imageViewSet.add(iv);
     }
 
-    public void removeFromImageViewSet(ImageView iv){
+    public void removeFromImageViewSet(ImageView iv) {
         this.imageViewSet.remove(iv);
     }
 
-    public int getImagePathSetSize(){
+    public int getImagePathSetSize() {
         return imagePathSet.size();
     }
 
     // Verify Clearing Selection to prevent frustrating fatfinger errors
-    private AlertDialog verifyClear(){
+    private AlertDialog verifyClear() {
         AlertDialog clearDialog = new AlertDialog.Builder(this)
                 //set message, title, and icon
                 .setTitle("Clear Selection")
