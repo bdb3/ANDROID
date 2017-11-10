@@ -59,8 +59,8 @@ public class TabFragment5 extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
         // Get ANDROID_ID
         android_id = sharedPreferences.getString("androidID",null);
-        if (sharedPreferences.contains("loggedInUser"))
-            username = sharedPreferences.getString("loggedInUser", null);
+        // Get Username
+        username = sharedPreferences.getString("loggedInUser", null);
 
         /** END GET SHAREDPREFERENCES DATA */
 
@@ -101,7 +101,7 @@ public class TabFragment5 extends Fragment {
 
         /** BEG EVENTLISTENERS */
 
-        // Username Change Button FORMALLY Logout Button
+        // Username Change Button FORMERLY Logout Button
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
