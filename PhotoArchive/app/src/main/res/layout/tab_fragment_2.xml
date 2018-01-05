@@ -28,50 +28,6 @@
             android:orientation="vertical"
             android:padding="15dp">
             <!-- QUESTIONS WILL POPULATE HERE USING TabFragment2.java -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Radio Button Title" />
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Testing Radio Button A" />
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Testing Radio Button B" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Check Box Title" />
-
-            <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Testing Checkbox A" />
-
-            <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Testing Checkbox B" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Comments" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top|left"
-                android:inputType="textMultiLine"
-                android:lines="6"
-                android:maxLines="8"
-                android:minLines="4"
-                android:scrollbars="vertical" />
         </LinearLayout>
 
         <!-- Use Fragment Header as Title -ph

@@ -439,7 +439,8 @@ public class TabFragment1 extends Fragment {
                         }
                     });
                 } catch (Exception exception) {
-                    Log.d("Azure", "Attribute error!");
+                    Log.d("Azure", "Attribute error! \n");
+                    exception.printStackTrace();
                 }
                 return null;
             }

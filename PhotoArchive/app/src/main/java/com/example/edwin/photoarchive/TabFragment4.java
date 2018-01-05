@@ -12,9 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
 import com.example.edwin.photoarchive.Activities.TagsActivity;
-import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.AzureClasses.AzureBlobDownloader;
 import com.google.gson.Gson;
 
@@ -52,9 +50,11 @@ public class TabFragment4 extends Fragment {
 
         /** BEG VIEW CONTENT CODE */
 
-        ArrayAdapter<String> categorySearchAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, contextsArray);
-        categorySearchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categorySearchSpinner.setAdapter(categorySearchAdapter);
+        if(contextsArray != null) {
+            ArrayAdapter<String> categorySearchAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, contextsArray);
+            categorySearchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            categorySearchSpinner.setAdapter(categorySearchAdapter);
+        }
 
         /** END VIEW CONTENT CODE */
 
@@ -81,7 +81,6 @@ public class TabFragment4 extends Fragment {
         /* ASYNC */
         // Must be Serial or else it hangs!
         new AzureBlobDownloader(this.getActivity(), username, filter).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-
 
         return view;
     }

@@ -6,17 +6,25 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.edwin.photoarchive.Activities.ActivityEditDeleteTags;
@@ -40,6 +48,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 
 public class TabFragment2 extends Fragment {
@@ -53,7 +62,9 @@ public class TabFragment2 extends Fragment {
     private String username;
     private LinearLayout picContainer;
     private LinearLayout picContainer2;
+    private LinearLayout questionViews;
     private Button uploadBtn;
+    private List<View> questionInstances = new ArrayList<View>();
 
     // TODO https://mobikul.com/how-to-get-data-from-dynamically-created-views-android/
     // Make it when the data is updated, the tag information is saved.
@@ -61,13 +72,14 @@ public class TabFragment2 extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = this.getContext();
         View view = inflater.inflate(R.layout.tab_fragment_2, container, false);
 
         /** BEG DECLARE VIEW OBJECTS */
 
         catSpinner = (Spinner) view.findViewById(R.id.category_spinner_tagging);
+        questionViews = (LinearLayout) view.findViewById(R.id.questions_layout);
 
         /** END DECLARE VIEW OBJECTS */
 
@@ -86,12 +98,159 @@ public class TabFragment2 extends Fragment {
 
         /** BEG VIEW CONTENT CODE */
 
-        ArrayAdapter<String> catAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, contextsArray);
-        catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        catSpinner.setAdapter(catAdapter);
+        if(contextsArray != null) {
+            ArrayAdapter<String> catAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, contextsArray);
+            catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            catSpinner.setAdapter(catAdapter);
+        }
 
         /** END VIEW CONTENT CODE */
 
+
+        /** START TEST CODE */
+
+            // TODO (FRAGMENT2)
+                /* 1. get context_attributes
+                 * 2. get their sortnumber (Context_Attribute)
+                 * 3. get their fieldtype, required, possibleValues (Attribute) */
+
+            /** JSON HERE FOR ATTRIBUTES */
+
+        for( int itemNumber = 0 ; itemNumber < 3 /* TODO ITEMNUMBER LOGIC */ ; itemNumber++ ){
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            // TODO Get attribute as Json
+                    /* Json will contain option type which will use if/elseif to separate */
+
+            TextView questionName = new TextView(getContext());
+            questionName.setText("ItemNumber" + itemNumber); // TEMP
+            questionName.setTextSize(18);
+            questionName.setPadding(0,15,0,5);
+            questionViews.addView(questionName,params);
+
+                    /* RADIO BUTTON */
+
+            if( itemNumber == 0 ) { // TEMP
+                RadioGroup radioGroup = new RadioGroup(getContext());
+                questionInstances.add(radioGroup);
+                for( int radioNumber = 0 ; radioNumber < 2 /* TODO RADIONUMBER LOGIC */; radioNumber++ ) {
+                    RadioButton rb = new RadioButton(getContext());
+                    radioGroup.addView(rb,params);
+                    if (radioNumber == 0)
+                        rb.setChecked(true); // First Option Selected, Can Be Changed
+                    rb.setTag("Option" + itemNumber + "-" + radioNumber);
+                    rb.setText("Option" + itemNumber + "-" + radioNumber);
+                }
+                questionViews.addView(radioGroup,params);
+                continue;
+            }
+
+                    /* CHECK BOX */
+
+            if( itemNumber == 1 ) { // TEMP
+                CheckBox chkBox = new CheckBox(getContext());
+                questionInstances.add(chkBox);
+                chkBox.setTag("Check"+itemNumber);
+                chkBox.setText("Check"+itemNumber);
+                questionViews.addView(chkBox,params);
+                continue;
+            }
+
+                    /* TEXT BOX */
+
+            if( itemNumber == 2) { // TEMP
+                EditText txtBox = new EditText(getContext());
+                questionInstances.add(txtBox);
+                txtBox.setGravity( Gravity.LEFT | Gravity.TOP );
+                txtBox.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                txtBox.setLines(6);
+                txtBox.setMaxLines(8);
+                txtBox.setMinLines(4);
+                txtBox.setVerticalScrollBarEnabled(true);
+                txtBox.setSingleLine(false);
+                questionViews.addView(txtBox,params);
+                continue;
+            }
+        }
+
+        /** END TEST CODE */
+
+
+        /** BEG EVENTLISTENERS */
+
+        catSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // TODO (FRAGMENT2)
+                /* 1. get context_attributes
+                 * 2. get their sortnumber (Context_Attribute)
+                 * 3. get their fieldtype, required, possibleValues (Attribute) */
+
+                /** JSON HERE FOR ATTRIBUTES */
+
+                for( int itemNumber = 0 ; itemNumber < 1 /* TODO ITEMNUMBER LOGIC */ ; itemNumber++ ){
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    // TODO Get attribute as Json
+                    /* Json will contain option type which will use if/elseif to separate */
+
+                    TextView questionName = new TextView(getContext());
+                    questionName.setText("ItemNumber" + itemNumber); // TEMP
+                    questionName.setTextSize(18);
+                    questionName.setPadding(0,15,0,5);
+                    questionViews.addView(questionName,params);
+
+                    /* RADIO BUTTON */
+
+                    if( itemNumber == 0 ) { // TEMP
+                        RadioGroup radioGroup = new RadioGroup(getContext());
+                        questionInstances.add(radioGroup);
+                        for( int radioNumber = 0 ; radioNumber < 2 /* TODO RADIONUMBER LOGIC */; radioNumber++ ) {
+                            RadioButton rb = new RadioButton(getContext());
+                            radioGroup.addView(rb,params);
+                            if (radioNumber == 0)
+                                rb.setChecked(true); // First Option Selected, Can Be Changed
+                            rb.setTag("Option" + itemNumber + "-" + radioNumber);
+                            rb.setText("Option" + itemNumber + "-" + radioNumber);
+                        }
+                        questionViews.addView(radioGroup,params);
+                        continue;
+                    }
+
+                    /* CHECK BOX */
+
+                    if( itemNumber == 1 ) { // TEMP
+                        CheckBox chkBox = new CheckBox(getContext());
+                        questionInstances.add(chkBox);
+                        chkBox.setTag("Check"+itemNumber);
+                        chkBox.setText("Check"+itemNumber);
+                        questionViews.addView(chkBox,params);
+                        continue;
+                    }
+
+                    /* TEXT BOX */
+
+                    if( itemNumber == 2) { // TEMP
+                        EditText txtBox = new EditText(getContext());
+                        questionInstances.add(txtBox);
+                        txtBox.setGravity( Gravity.LEFT | Gravity.TOP );
+                        txtBox.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                        txtBox.setLines(6);
+                        txtBox.setMaxLines(8);
+                        txtBox.setMinLines(4);
+                        txtBox.setVerticalScrollBarEnabled(true);
+                        txtBox.setSingleLine(false);
+                        questionViews.addView(txtBox,params);
+                        continue;
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // Do Nothing
+            }
+        });
+
+        /** END EVENT LISTENERS */
         /*
         setHasOptionsMenu(true);
 
