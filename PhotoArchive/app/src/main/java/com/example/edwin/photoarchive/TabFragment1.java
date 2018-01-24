@@ -2,7 +2,6 @@ package com.example.edwin.photoarchive;
 
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -26,10 +25,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,10 +35,10 @@ import com.example.edwin.photoarchive.Activities.ViewInfo;
 import com.example.edwin.photoarchive.Activities.ViewTags;
 import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
-import com.example.edwin.photoarchive.Adapters.PagerAdapter;
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
-import com.example.edwin.photoarchive.AzureClasses.AzureBlobUploader;
+import com.example.edwin.photoarchive.AzureClasses.Context;
 import com.example.edwin.photoarchive.AzureClasses.Context_Attribute;
+import com.example.edwin.photoarchive.AzureClasses.AzureBlobUploader;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
 import com.example.edwin.photoarchive.Helpers.DeleteAfterXDays;
 import com.google.gson.Gson;
@@ -49,11 +46,7 @@ import com.google.gson.reflect.TypeToken;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,7 +55,7 @@ import java.util.List;
 
 
 public class TabFragment1 extends Fragment {
-    private Context context = null;
+    private android.content.Context context = null;
     private GridView imageGrid;
     private ArrayList<String> imgPathList;
 
@@ -78,7 +71,7 @@ public class TabFragment1 extends Fragment {
     private BroadcastReceiver receiver;
     ProgressBar pb;
 
-    private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes = new LinkedHashMap<>();
+    private HashMap<Context, ArrayList<Attribute>> categoryFieldMap = new LinkedHashMap<>();
 
 
     @Override
@@ -91,7 +84,7 @@ public class TabFragment1 extends Fragment {
 
         tagsStatus = (TextView) view.findViewById(R.id.textView5);
 
-        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, android.content.Context.MODE_PRIVATE);
         pb = (ProgressBar) view.findViewById(R.id.progressBar);
         pb.getProgressDrawable().setColorFilter(Color.rgb(37, 126, 11), PorterDuff.Mode.SRC_IN);
         pb.setScaleY(3f);
@@ -117,7 +110,7 @@ public class TabFragment1 extends Fragment {
         new DeleteAfterXDays(sharedPreferences.getInt("numDays", 90), getActivity(), histFragment);
 
         //IMPORTANT! PULL INFORMATION FROM THE DB
-        pullContextsAndAttributes();
+        pullAzureData();
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -306,7 +299,7 @@ public class TabFragment1 extends Fragment {
     }
 
     private boolean isConnectedViaWifi() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         if (info != null) {
             if (info.getType() == ConnectivityManager.TYPE_WIFI)
@@ -350,15 +343,15 @@ public class TabFragment1 extends Fragment {
     }
 
     //PULL DATA FROM DB
-    private void pullContextsAndAttributes() {
+    private void pullAzureData() {
         //initialize client connection
-        //TODO Contexts are loaded here
+        //TODO Categories are loaded here
         MobileServiceClient mClient = AzureServiceAdapter.getInstance().getClient();
 
         //create table references
-        final MobileServiceTable<com.example.edwin.photoarchive.AzureClasses.Context> contextTable = mClient.getTable(com.example.edwin.photoarchive.AzureClasses.Context.class);
-        final MobileServiceTable<Attribute> attributeTable = mClient.getTable(Attribute.class);
-        final MobileServiceTable<Context_Attribute> caTable = mClient.getTable(Context_Attribute.class);
+        final MobileServiceTable<com.example.edwin.photoarchive.AzureClasses.Context> categoryTable = mClient.getTable(com.example.edwin.photoarchive.AzureClasses.Context.class);
+        final MobileServiceTable<Attribute> fieldTable = mClient.getTable(Attribute.class);
+        final MobileServiceTable<Context_Attribute> catFieldTable = mClient.getTable(Context_Attribute.class);
 
         new AsyncTask<Void, Void, Void>() {
 
@@ -367,63 +360,59 @@ public class TabFragment1 extends Fragment {
                 try {
 
                     //pull data into lists
-                    final List<com.example.edwin.photoarchive.AzureClasses.Context> contexts = contextTable.execute().get();
-                    final List<Attribute> attributes = attributeTable.execute().get();
-                    final List<Context_Attribute> context_attributes = caTable.execute().get();
-                    final ArrayList<String> listOfContexts = new ArrayList<String>();
-                    listOfContexts.add(" All");
+                    final List<com.example.edwin.photoarchive.AzureClasses.Context> categories = categoryTable.execute().get();
+                    // for(com.example.edwin.photoarchive.AzureClasses.Context c: categories) Log.i("F1C", c.getId());
+                    final List<Attribute> attributes = fieldTable.execute().get();
+                    for(Attribute a: attributes) Log.i("F1A", a.getFieldType() + " Q:" + a.getQuestion());
+                    final List<Context_Attribute> contextAttributes = catFieldTable.execute().get();
+                    // for(Context_Attribute ca: contextAttributes) Log.i("F1CA", "" + ca.getSortNumber());
+                    final ArrayList<String> listOfCategory = new ArrayList<>();
+                    // listOfContexts.add(" All");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            for (com.example.edwin.photoarchive.AzureClasses.Context current : contexts) {
-                                listOfContexts.add(current.getId());
-                                //make a new list of possible attributes
-                                ArrayList<Attribute> currentAttributes = new ArrayList<>();
+                            for (Context current : categories) { // Current Context
+                                listOfCategory.add(current.getId()); // Add All Context IDs to listOfCategory
 
-                                if (!contextsAndAttributes.containsKey(current)) {
-
-                                    //generate a list of all of its attributes
-                                    for (Context_Attribute ca : context_attributes) {
-
-
-                                        if (ca.getContextID().equals(current.getId())) {
-
-                                            //get attribute
-                                            String attributeID = ca.getAttributeID();
-
-                                            for (Attribute a : attributes) {
-
-                                                if (a.getId().equals(attributeID)) {
-
-                                                    currentAttributes.add(a);
-
-                                                    break;
-                                                }
+                                ArrayList<Attribute> currentAttributes = new ArrayList<>(); // Empty list of Fields for Current Context
+                                if (!categoryFieldMap.containsKey(current)) { // If this Context is not in the Map already
+                                    ArrayList<Context_Attribute> cfList = new ArrayList<>();
+                                    for (Context_Attribute cf : contextAttributes) {  // Find all the Context_Attribute relations
+                                        if (cf.getContextID().equals(current.getId())) cfList.add(cf); // Add all Context_Attribute relations
+                                    }
+                                    Collections.sort(cfList); // SORT all Context_Attribute relations based on SortNumber
+                                    // This way, the Fields are SORTED by SortNumber
+                                    for (int index = 0; index < cfList.size(); index++ ) { // Counting for loop just to be safe
+                                        String fieldID = cfList.get(index).getAttributeID();
+                                        for (Attribute a : attributes) {
+                                            if (a.getId().equals(fieldID)) {
+                                                currentAttributes.add(a);
+                                                break;
                                             }
                                         }
                                     }
                                 }
 
-                                Collections.sort(currentAttributes);
                                 //push the data into the map
-                                contextsAndAttributes.put(current, currentAttributes);
+                                categoryFieldMap.put(current, currentAttributes);
                             }
-                            Collections.sort(listOfContexts);
+
+                            Collections.sort(listOfCategory);
                             Gson gson = new Gson();
                             SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                            if (sharedPreferences.contains("contexts")) {
-                                editor.remove("contexts");
+                            if (sharedPreferences.contains("categories")) {
+                                editor.remove("categories");
                                 editor.apply();
                             }
-                            editor.putString("contexts", gson.toJson(listOfContexts.toArray(new String[listOfContexts.size()])));
+                            editor.putString("categories", gson.toJson(listOfCategory.toArray(new String[listOfCategory.size()])));
                             editor.apply();
 
                             tagsStatus.setTextColor(Color.GREEN);
                             tagsStatus.setText("Tags status: up to date!");
 
                             //store contextsAndAttributes into extras
-                            getActivity().getIntent().putExtra("azure", contextsAndAttributes);
+                            getActivity().getIntent().putExtra("azure", categoryFieldMap);
                             Fragment tabFrag4 = null;
                             for (Fragment frag : getFragmentManager().getFragments()) {
                                 if (frag instanceof TabFragment4) {
@@ -432,6 +421,18 @@ public class TabFragment1 extends Fragment {
                             }
                             try {
                                 tabFrag4.getFragmentManager().beginTransaction().detach(tabFrag4).attach(tabFrag4).commit();
+                            } catch (Exception e) {
+
+                            }
+
+                            Fragment tabFrag2 = null;
+                            for (Fragment frag : getFragmentManager().getFragments()) {
+                                if (frag instanceof TabFragment2) {
+                                    tabFrag2 = frag;
+                                }
+                            }
+                            try {
+                                tabFrag2.getFragmentManager().beginTransaction().detach(tabFrag2).attach(tabFrag2).commit();
                             } catch (Exception e) {
 
                             }

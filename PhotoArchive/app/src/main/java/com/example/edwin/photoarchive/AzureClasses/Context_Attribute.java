@@ -1,6 +1,10 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
-public class Context_Attribute {
+import android.support.annotation.NonNull;
+
+import java.io.Serializable;
+
+public class Context_Attribute implements Serializable, Comparable {
 
     private String id;
     private String contextID;
@@ -38,5 +42,11 @@ public class Context_Attribute {
     }
     public void setAttributeID(String attributeID) {
         this.attributeID = attributeID;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Context_Attribute obj = (Context_Attribute) o;
+        return this.getSortNumber() - obj.getSortNumber();
     }
 }

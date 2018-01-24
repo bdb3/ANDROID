@@ -1,7 +1,6 @@
 package com.example.edwin.photoarchive;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,31 +24,22 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.edwin.photoarchive.Activities.ActivityEditDeleteTags;
-import com.example.edwin.photoarchive.Activities.GalleryViewAllActivity;
-import com.example.edwin.photoarchive.Activities.InAppViewAllActivity;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
-import com.example.edwin.photoarchive.Helpers.ExtractLatLong;
-import com.example.edwin.photoarchive.Helpers.PopulateAppImages;
-import com.example.edwin.photoarchive.Helpers.PopulateGalleryImages;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class TabFragment2 extends Fragment {
     private Context context = null;
@@ -65,6 +55,8 @@ public class TabFragment2 extends Fragment {
     private LinearLayout questionViews;
     private Button uploadBtn;
     private List<View> questionInstances = new ArrayList<View>();
+    private List<View> titleInstances = new ArrayList<View>();
+    private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> categoryFieldMap;
 
     // TODO https://mobikul.com/how-to-get-data-from-dynamically-created-views-android/
     // Make it when the data is updated, the tag information is saved.
@@ -92,6 +84,16 @@ public class TabFragment2 extends Fragment {
         try{
             contextsArray = gson.fromJson(sharedPreferences.getString("contexts", null), String[].class);
         } catch (Exception e) { Log.d("TabFragment2","CRITICAL ERROR! JSON PARSE EXCEPTION"); }
+        // GET Azure Data
+        try {
+            categoryFieldMap = (HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) getActivity().getIntent().getExtras().get("azure");
+        } catch (Exception e) {
+            Log.d("TabFragment2","CRITICAL ERROR! HASHMAP CANNOT BE ASSIGNED");
+            categoryFieldMap = new LinkedHashMap<>();
+            ArrayList<Attribute> a = new ArrayList<>();
+            a.add(new Attribute("432","It Broke?","RadioButton","false","truefales"));
+            categoryFieldMap.put(new com.example.edwin.photoarchive.AzureClasses.Context("01","test"),a);
+        }
 
         /** END GET SHAREDPREFERENCES DATA */
 
@@ -107,109 +109,64 @@ public class TabFragment2 extends Fragment {
         /** END VIEW CONTENT CODE */
 
 
-        /** START TEST CODE */
-
-            // TODO (FRAGMENT2)
-                /* 1. get context_attributes
-                 * 2. get their sortnumber (Context_Attribute)
-                 * 3. get their fieldtype, required, possibleValues (Attribute) */
-
-            /** JSON HERE FOR ATTRIBUTES */
-
-        for( int itemNumber = 0 ; itemNumber < 3 /* TODO ITEMNUMBER LOGIC */ ; itemNumber++ ){
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            // TODO Get attribute as Json
-                    /* Json will contain option type which will use if/elseif to separate */
-
-            TextView questionName = new TextView(getContext());
-            questionName.setText("ItemNumber" + itemNumber); // TEMP
-            questionName.setTextSize(18);
-            questionName.setPadding(0,15,0,5);
-            questionViews.addView(questionName,params);
-
-                    /* RADIO BUTTON */
-
-            if( itemNumber == 0 ) { // TEMP
-                RadioGroup radioGroup = new RadioGroup(getContext());
-                questionInstances.add(radioGroup);
-                for( int radioNumber = 0 ; radioNumber < 2 /* TODO RADIONUMBER LOGIC */; radioNumber++ ) {
-                    RadioButton rb = new RadioButton(getContext());
-                    radioGroup.addView(rb,params);
-                    if (radioNumber == 0)
-                        rb.setChecked(true); // First Option Selected, Can Be Changed
-                    rb.setTag("Option" + itemNumber + "-" + radioNumber);
-                    rb.setText("Option" + itemNumber + "-" + radioNumber);
-                }
-                questionViews.addView(radioGroup,params);
-                continue;
-            }
-
-                    /* CHECK BOX */
-
-            if( itemNumber == 1 ) { // TEMP
-                CheckBox chkBox = new CheckBox(getContext());
-                questionInstances.add(chkBox);
-                chkBox.setTag("Check"+itemNumber);
-                chkBox.setText("Check"+itemNumber);
-                questionViews.addView(chkBox,params);
-                continue;
-            }
-
-                    /* TEXT BOX */
-
-            if( itemNumber == 2) { // TEMP
-                EditText txtBox = new EditText(getContext());
-                questionInstances.add(txtBox);
-                txtBox.setGravity( Gravity.LEFT | Gravity.TOP );
-                txtBox.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-                txtBox.setLines(6);
-                txtBox.setMaxLines(8);
-                txtBox.setMinLines(4);
-                txtBox.setVerticalScrollBarEnabled(true);
-                txtBox.setSingleLine(false);
-                questionViews.addView(txtBox,params);
-                continue;
-            }
-        }
-
-        /** END TEST CODE */
-
-
         /** BEG EVENTLISTENERS */
 
         catSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                // TODO (FRAGMENT2)
-                /* 1. get context_attributes
-                 * 2. get their sortnumber (Context_Attribute)
-                 * 3. get their fieldtype, required, possibleValues (Attribute) */
 
-                /** JSON HERE FOR ATTRIBUTES */
+                if(questionInstances.size()>0){
+                    for(View v:questionInstances)
+                        ((ViewGroup) v.getParent()).removeView(v);
+                    questionInstances = new ArrayList<>();
+                }
+                if(titleInstances.size()>0){
+                    for(View v:titleInstances)
+                        ((ViewGroup) v.getParent()).removeView(v);
+                    titleInstances = new ArrayList<>();
+                }
 
-                for( int itemNumber = 0 ; itemNumber < 1 /* TODO ITEMNUMBER LOGIC */ ; itemNumber++ ){
+                /** GET CATEGORY FIELDS */
+                com.example.edwin.photoarchive.AzureClasses.Context targetContext = null;
+                for(com.example.edwin.photoarchive.AzureClasses.Context c: categoryFieldMap.keySet()){
+                    if(c.getId().equals(catSpinner.getItemAtPosition(i).toString())){
+                        targetContext = c;
+                    }
+                }
+
+                ArrayList<Attribute> attributes = categoryFieldMap.get(targetContext);
+                // target the Object in the map
+
+                if(attributes != null) {
+                    for (Attribute a : attributes)
+                        Log.i("F2ATRS", a.getFieldType() + " " + a.getPossibleValues() + " " + a.getRequired());
+                } else {Log.i ("F2ATRS", "Attr NULL");}
+
+                for( int itemNumber = 0 ; attributes != null && itemNumber < attributes.size() ; itemNumber++ ){
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    // TODO Get attribute as Json
                     /* Json will contain option type which will use if/elseif to separate */
 
                     TextView questionName = new TextView(getContext());
-                    questionName.setText("ItemNumber" + itemNumber); // TEMP
+                    titleInstances.add(questionName);
+                    questionName.setText(attributes.get(itemNumber).getQuestion()); // TEMP
                     questionName.setTextSize(18);
                     questionName.setPadding(0,15,0,5);
                     questionViews.addView(questionName,params);
 
                     /* RADIO BUTTON */
 
-                    if( itemNumber == 0 ) { // TEMP
+                    if( attributes.get(itemNumber).getFieldType().contains("String") &&
+                            attributes.get(itemNumber).getPossibleValues() != null ) {
+                        String[] options = attributes.get(itemNumber).getPossibleValues().split(",");
                         RadioGroup radioGroup = new RadioGroup(getContext());
                         questionInstances.add(radioGroup);
-                        for( int radioNumber = 0 ; radioNumber < 2 /* TODO RADIONUMBER LOGIC */; radioNumber++ ) {
+                        for( int radioNumber = 0 ; radioNumber < options.length ; radioNumber++ ) {
                             RadioButton rb = new RadioButton(getContext());
                             radioGroup.addView(rb,params);
                             if (radioNumber == 0)
                                 rb.setChecked(true); // First Option Selected, Can Be Changed
-                            rb.setTag("Option" + itemNumber + "-" + radioNumber);
-                            rb.setText("Option" + itemNumber + "-" + radioNumber);
+                            rb.setTag(options[radioNumber]);
+                            rb.setText(options[radioNumber]);
                         }
                         questionViews.addView(radioGroup,params);
                         continue;
@@ -217,18 +174,19 @@ public class TabFragment2 extends Fragment {
 
                     /* CHECK BOX */
 
-                    if( itemNumber == 1 ) { // TEMP
+                    else if( attributes.get(itemNumber).getFieldType().contains("Checkbox") ) {
                         CheckBox chkBox = new CheckBox(getContext());
                         questionInstances.add(chkBox);
-                        chkBox.setTag("Check"+itemNumber);
-                        chkBox.setText("Check"+itemNumber);
+                        chkBox.setTag(attributes.get(itemNumber).getPossibleValues());
+                        chkBox.setText(attributes.get(itemNumber).getPossibleValues());
                         questionViews.addView(chkBox,params);
                         continue;
                     }
 
-                    /* TEXT BOX */
+                    /* TEXT BOX (COMMENT) */
 
-                    if( itemNumber == 2) { // TEMP
+                    else if( attributes.get(itemNumber).getFieldType().contains("String")
+                            && attributes.get(itemNumber).getQuestion().contains("Comment")) {
                         EditText txtBox = new EditText(getContext());
                         questionInstances.add(txtBox);
                         txtBox.setGravity( Gravity.LEFT | Gravity.TOP );
@@ -241,6 +199,17 @@ public class TabFragment2 extends Fragment {
                         questionViews.addView(txtBox,params);
                         continue;
                     }
+
+                    /* TEXT BOX (INTEGER OR STRING) */
+
+                    else if( attributes.get(itemNumber).getFieldType().contains("Integer")
+                            || attributes.get(itemNumber).getFieldType().contains("String") ) {
+                        EditText txtInp = new EditText(getContext());
+                        questionInstances.add(txtInp);
+                        questionViews.addView(txtInp,params);
+                        continue;
+                    }
+
                 }
             }
 

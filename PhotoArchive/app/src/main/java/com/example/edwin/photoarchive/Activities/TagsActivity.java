@@ -1,6 +1,5 @@
 package com.example.edwin.photoarchive.Activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -20,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
+import com.example.edwin.photoarchive.AzureClasses.Context;
 import com.example.edwin.photoarchive.R;
 
 import org.json.JSONObject;
@@ -47,7 +47,7 @@ public class TagsActivity extends AppCompatActivity {
     private String referrer = "";
     private String prefsKey = "";
 
-    private TreeMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> contextsAndAttributes;
+    private TreeMap<Context, ArrayList<Attribute>> contextsAndAttributes;
 
 
     @Override
@@ -59,7 +59,7 @@ public class TagsActivity extends AppCompatActivity {
         Bundle azureDB = getIntent().getExtras();
 
         contextsAndAttributes =
-        new TreeMap<>((HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>>) azureDB.get("azure"));
+        new TreeMap<>((HashMap<Context, ArrayList<Attribute>>) azureDB.get("azure"));
 
 
         linearLayoutContextContainer = (LinearLayout) findViewById(R.id.linearLayoutContextContainer);
@@ -76,9 +76,9 @@ public class TagsActivity extends AppCompatActivity {
 
        // generate context vertical list
 
-        for(Map.Entry<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> entry : contextsAndAttributes.entrySet()){
+        for(Map.Entry<Context, ArrayList<Attribute>> entry : contextsAndAttributes.entrySet()){
 
-            final com.example.edwin.photoarchive.AzureClasses.Context key = entry.getKey();
+            final Context key = entry.getKey();
 
             LinearLayout contextRow = new LinearLayout(this);
             contextRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -133,7 +133,7 @@ public class TagsActivity extends AppCompatActivity {
 
         }
 
-        sharedPreferences = getSharedPreferences(MyTagsPREFERENCES, Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(MyTagsPREFERENCES, android.content.Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if(sharedPreferences.contains(prefsKey)){
@@ -265,7 +265,7 @@ public class TagsActivity extends AppCompatActivity {
                 grayOutSelectedCategories();
 
                 linearLayoutContextContainer.setVisibility(View.VISIBLE);
-                tv9.setText("Select a Category");
+                tv9.setText("Select a Context");
                 done.setVisibility(View.VISIBLE);
 
 
@@ -323,7 +323,7 @@ public class TagsActivity extends AppCompatActivity {
 
     }
 
-    public void showForm(com.example.edwin.photoarchive.AzureClasses.Context choice){
+    public void showForm(Context choice){
 
         tv9.setText(choice.getId());
         linearLayoutContextContainer.setVisibility(View.GONE);

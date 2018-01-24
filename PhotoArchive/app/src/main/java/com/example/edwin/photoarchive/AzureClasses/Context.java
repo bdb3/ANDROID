@@ -29,8 +29,13 @@ public class Context implements Serializable, Comparable {
 
     @Override
     public int compareTo( Object o) {
-       Context ctx = (Context)o;
-
+        Context ctx = (Context)o;
         return this.getId().compareTo(ctx.getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Context c = (Context) obj;
+        return this.id.equals(c.getId());
     }
 }
