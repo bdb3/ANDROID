@@ -33,8 +33,6 @@ public class GalleryViewAllActivity extends AppCompatActivity {
     private Button clearButton;
     private Button doneButton;
 
-    // DONE Long press to select images
-
     public static ArrayList<String> getImagesPath(Activity activity) {
         Uri uri;
         ArrayList<String> listOfAllImages = new ArrayList<String>();
@@ -69,12 +67,6 @@ public class GalleryViewAllActivity extends AppCompatActivity {
         Collections.reverse(imgPathList);
 
         imageGrid.setAdapter(new ImageAdapterForGallery(GalleryViewAllActivity.this, imgPathList, this));
-
-
-        // DONE Buttons do not work, find fix.
-        //     Buttons were set DISABLED accidentally
-        // DONE CLEAR causes crash and DONE may not function
-        //     Ended up being a silly logic error
 
         // Button to clear image selection
         clearButton = (Button) findViewById(R.id.android_gallery_clear);

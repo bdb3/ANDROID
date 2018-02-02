@@ -9,12 +9,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.edwin.photoarchive.Activities.GalleryViewAllActivity;
 import com.example.edwin.photoarchive.Activities.ImagePreview;
-
 import java.util.ArrayList;
 
 public class ImageAdapterForGallery extends BaseAdapter {
@@ -50,12 +48,8 @@ public class ImageAdapterForGallery extends BaseAdapter {
             imageView = new ImageView(callerActivity);
             imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, callerActivity.getResources().getDisplayMetrics()), (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, callerActivity.getResources().getDisplayMetrics())));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-
         } else {
             imageView = (ImageView) convertView;
-
-
         }
         imageView.clearColorFilter();
         galleryActivityInstance.removeFromImageViewSet(imageView);
@@ -63,9 +57,7 @@ public class ImageAdapterForGallery extends BaseAdapter {
         if (galleryActivityInstance.imagePathSetContains(this.imgPathList.get(position))) {
             imageView.setColorFilter(Color.argb(110, 20, 197, 215));
             galleryActivityInstance.addToImageViewSet(imageView);
-
         }
-
 
         Glide.with(callerActivity).load(this.imgPathList.get(position)).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imageView);
 
@@ -88,7 +80,6 @@ public class ImageAdapterForGallery extends BaseAdapter {
 
                     } else {
                         galleryActivityInstance.setTitle("Selected: " + galleryActivityInstance.getImagePathSetSize());
-
                     }
                 }
                 return true;
@@ -99,9 +90,9 @@ public class ImageAdapterForGallery extends BaseAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(callerActivity, ImagePreview.class);
-                i.putExtra("imagePath", imgPathList.get(position));
-                callerActivity.startActivity(i);
+            Intent i = new Intent(callerActivity, ImagePreview.class);
+            i.putExtra("imagePath", imgPathList.get(position));
+            callerActivity.startActivity(i);
             }
         });
 

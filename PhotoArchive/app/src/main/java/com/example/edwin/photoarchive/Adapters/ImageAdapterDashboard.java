@@ -47,25 +47,20 @@ public class ImageAdapterDashboard extends BaseAdapter  {
             imageView = new ImageView(this.context);
             imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics())));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
         } else {
             imageView = (ImageView) convertView;
         }
 
-
         Glide.with(this.context).load(this.imgPathList.get(position)).into(imageView);
-
-
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ImageView iv = (ImageView) v;
 
-                    Intent i = new Intent(context, ImagePreview.class);
-                    i.putExtra("imagePath", imgPathList.get(position));
-                    context.startActivity(i);
-
+                Intent i = new Intent(context, ImagePreview.class);
+                i.putExtra("imagePath", imgPathList.get(position));
+                context.startActivity(i);
             }
         });
 
@@ -75,8 +70,6 @@ public class ImageAdapterDashboard extends BaseAdapter  {
             return false;
         }
     });
-
-
 
         return imageView;
     }

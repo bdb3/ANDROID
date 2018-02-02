@@ -43,12 +43,10 @@ public class AzureBlobUploader extends AzureBlobLoader  {
     private boolean uploaded = true;
     ProgressBar pb;
     private final CustomInputStream.ReadListener readListener = new CustomInputStream.ReadListener() {
-        
         @Override
         public void onRead(long bytes) {
             if(pb.getVisibility() == View.INVISIBLE){
                 pb.setVisibility(View.VISIBLE);
-
             }
             totalBytes += bytes;
             int percentage = (int)((totalBytes * 1D/fileLength) *100);
@@ -65,14 +63,11 @@ public class AzureBlobUploader extends AzureBlobLoader  {
         this.userName = userName;
         this.img = img;
         this.histFragment = f;
-
-
     }
-
 
     @Override
     protected Object doInBackground(Object[] params) {
-        pb =(ProgressBar) this.act.findViewById(R.id.progressBar);
+        pb = (ProgressBar) this.act.findViewById(R.id.progressBar);
 
         File imageFile = new File(this.img.getImgPath());
 
@@ -94,13 +89,11 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
             CloudBlockBlob blob= this.getContainer().getBlockBlobReference(containerName);
 
-
             //UPLOAD!
 
             fileLength = imageFile.length();
             Log.d("FILESIZE", "FILELENGTH: "+fileLength);
-          // blob.upload(new FileInputStream(imageFile), imageFile.length());
-
+            // blob.upload(new FileInputStream(imageFile), imageFile.length());
 
             FileInputStream fis = new FileInputStream(imageFile);
 
@@ -110,9 +103,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
             //-----DATABASE-----//
             //create client
-            this.setDBClient(
-                    AzureServiceAdapter.getInstance().getClient()
-            );
+            this.setDBClient(AzureServiceAdapter.getInstance().getClient());
 
             this.setImageTable(this.getDBClient().getTable(Image.class));
             this.setIcavTable(this.getDBClient().getTable(ICAV.class));
@@ -124,9 +115,11 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             Image img = new Image(validImageID, this.img.getUser(), this.img.getLat(), this.img.getLon());
             this.getImageTable().insert(img);
 
+            // CONTEXT = CATEGORY
             for(String context : this.img.getContextAttributeMap().keySet()){
                 Map<String,String> attributeValueMap = this.img.getContextAttributeMap().get(context);
 
+                // ATTRIBUTE + FIELD
                 for(String attribute : attributeValueMap.keySet()){
                     String value = attributeValueMap.get(attribute);
 
@@ -152,8 +145,6 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
     @Override
     protected void onPostExecute(Object o) {
-
-
         if(!uploaded){
             pb.setProgress(0);
             Toast.makeText(this.act, "An error occurred, please check your internet connection.", Toast.LENGTH_SHORT).show();
@@ -163,7 +154,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
         SharedPreferences sp = this.act.getSharedPreferences(TagsActivity.MyTagsPREFERENCES, android.content.Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
 
-        String savedArraylist  = sp.getString("listOfImagesWithTags", null);
+        String savedArraylist = sp.getString("listOfImagesWithTags", null);
         Type listType = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
         List<TaggedImageObject> taggedImageObjectsList = new Gson().fromJson(savedArraylist, listType);
 
@@ -178,7 +169,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
         //remove the index
 
-        if(toBeRemoved !=-1 && uploaded) {
+        if( toBeRemoved != -1 && uploaded ) {
             pb.setProgress(100);
 
             Toast.makeText(this.act, this.img.getImgPath() + " finished uploading", Toast.LENGTH_SHORT).show();
@@ -214,25 +205,21 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
                 @Override
                 public void run() {
-                   //
-                    new AsyncTask<Void, Void, Void>() {
+                new AsyncTask<Void, Void, Void>() {
 
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                    act.runOnUiThread(new Runnable() {
                         @Override
-                        protected Void doInBackground(Void... voids) {
+                        public void run() {
+                        pb.setProgress(0);
+                        pb.setVisibility(View.INVISIBLE);
 
-                            act.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pb.setProgress(0);
-                                    pb.setVisibility(View.INVISIBLE);
-
-                                }
-                            });
-
-                            return null;
                         }
-                    }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-                    //
+                    });
+                    return null;
+                    }
+                }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
                 }
             }, 500);
 

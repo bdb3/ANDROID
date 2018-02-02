@@ -16,7 +16,7 @@
             android:id="@+id/textViewTaken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Taken: 0"
+            android:text="Selected: 0"
             android:textColor="#000000"
             android:padding="14dp"
             android:textSize="20dp"
@@ -58,12 +58,27 @@
             android:id="@+id/gallery_button"
             style="?android:attr/buttonStyleSmall"
             android:padding="10dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/gallery_button_text"
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:textStyle=""
             android:layout_below="@+id/horiz_image_view"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:id="@+id/inappgallery_button"
+            style="?android:attr/buttonStyleSmall"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/inappgallery_button_text"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:textStyle=""
+            android:layout_below="@+id/gallery_button"
             android:layout_centerHorizontal="true" />
 
         <!-- Removing the tag view function from this tab -ph
@@ -131,18 +146,16 @@
             android:layout_below="@+id/button"
             android:layout_alignParentStart="true" />
 
-
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@id/gallery_button"
-            android:layout_marginTop="10dp"
+            android:layout_below="@id/inappgallery_button"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="#c3c3c3"
             android:text="Camera"
-
             android:textStyle="bold" />
 
 

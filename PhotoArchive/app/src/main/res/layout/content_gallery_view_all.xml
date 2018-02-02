@@ -12,8 +12,6 @@
     tools:context=".Activities.GalleryViewAllActivity"
     tools:showIn="@layout/activity_gallery_view_all"
     >
-    <!--tools:context=".Activities.GalleryViewAllActivity"
-    tools:showIn="@layout/activity_gallery_view_all" -->
 
     <TextView
         android:id="@+id/gallery_inst_txt"
@@ -52,15 +50,6 @@
         android:textStyle="bold"
         android:layout_alignRight="@id/android_gallery_done"
         />
-
-    <!--<Button
-        android:id="@+id/button14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:text="Select" />
-        -->
 
     <GridView
         android:id="@+id/gridView2"

@@ -2,6 +2,7 @@ package com.example.edwin.photoarchive;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -53,10 +54,13 @@ public class TabFragment2 extends Fragment {
     private LinearLayout picContainer;
     private LinearLayout picContainer2;
     private LinearLayout questionViews;
-    private Button uploadBtn;
+    private Button saveFieldsBtn;
+    private ArrayList<Attribute> attributes = null;
+    private com.example.edwin.photoarchive.AzureClasses.Context globalTargetContext = null;
     private List<View> questionInstances = new ArrayList<View>();
     private List<View> titleInstances = new ArrayList<View>();
     private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> categoryFieldMap;
+    SendFields fieldData;
 
     // TODO https://mobikul.com/how-to-get-data-from-dynamically-created-views-android/
     // Make it when the data is updated, the tag information is saved.
@@ -70,6 +74,7 @@ public class TabFragment2 extends Fragment {
 
         /** BEG DECLARE VIEW OBJECTS */
 
+        saveFieldsBtn = (Button) view.findViewById(R.id.save_fields);
         catSpinner = (Spinner) view.findViewById(R.id.category_spinner_tagging);
         questionViews = (LinearLayout) view.findViewById(R.id.questions_layout);
 
@@ -126,16 +131,21 @@ public class TabFragment2 extends Fragment {
                     titleInstances = new ArrayList<>();
                 }
 
+                attributes = null;
+
                 /** GET CATEGORY FIELDS */
                 com.example.edwin.photoarchive.AzureClasses.Context targetContext = null;
-                for(com.example.edwin.photoarchive.AzureClasses.Context c: categoryFieldMap.keySet()){
-                    if(c.getId().equals(catSpinner.getItemAtPosition(i).toString())){
-                        targetContext = c;
+                if(categoryFieldMap != null) {
+                    for (com.example.edwin.photoarchive.AzureClasses.Context c : categoryFieldMap.keySet()) {
+                        if (c.getId().equals(catSpinner.getItemAtPosition(i).toString())) {
+                            targetContext = c;
+                            globalTargetContext = c;
+                        }
                     }
-                }
 
-                ArrayList<Attribute> attributes = categoryFieldMap.get(targetContext);
-                // target the Object in the map
+                    attributes = categoryFieldMap.get(targetContext);
+                    // target the Object in the map
+                }
 
                 if(attributes != null) {
                     for (Attribute a : attributes)
@@ -146,11 +156,24 @@ public class TabFragment2 extends Fragment {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     /* Json will contain option type which will use if/elseif to separate */
 
+                    // DIVIDER
+                    /*
+                    View divider = new View(getContext());
+                    divider.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                    divider.setBackgroundColor(Color.parseColor("#444444"));
+                    titleInstances.add(divider);
+                    questionViews.addView(divider);
+                    */
+
+                    // QUESTION TITLE
                     TextView questionName = new TextView(getContext());
                     titleInstances.add(questionName);
-                    questionName.setText(attributes.get(itemNumber).getQuestion()); // TEMP
+                    String questionText = attributes.get(itemNumber).getQuestion();
+                    if(attributes.get(itemNumber).getRequired().contains("Y"))
+                        questionText += " *";
+                    questionName.setText(questionText);
                     questionName.setTextSize(18);
-                    questionName.setPadding(0,15,0,5);
+                    questionName.setPadding(10,15,10,5);
                     questionViews.addView(questionName,params);
 
                     /* RADIO BUTTON */
@@ -168,8 +191,8 @@ public class TabFragment2 extends Fragment {
                             rb.setTag(options[radioNumber]);
                             rb.setText(options[radioNumber]);
                         }
+                        radioGroup.setPadding(10,10,10,10);
                         questionViews.addView(radioGroup,params);
-                        continue;
                     }
 
                     /* CHECK BOX */
@@ -179,8 +202,8 @@ public class TabFragment2 extends Fragment {
                         questionInstances.add(chkBox);
                         chkBox.setTag(attributes.get(itemNumber).getPossibleValues());
                         chkBox.setText(attributes.get(itemNumber).getPossibleValues());
+                        chkBox.setPadding(10,10,10,10);
                         questionViews.addView(chkBox,params);
-                        continue;
                     }
 
                     /* TEXT BOX (COMMENT) */
@@ -196,8 +219,8 @@ public class TabFragment2 extends Fragment {
                         txtBox.setMinLines(4);
                         txtBox.setVerticalScrollBarEnabled(true);
                         txtBox.setSingleLine(false);
+                        txtBox.setPadding(10,10,10,10);
                         questionViews.addView(txtBox,params);
-                        continue;
                     }
 
                     /* TEXT BOX (INTEGER OR STRING) */
@@ -206,11 +229,18 @@ public class TabFragment2 extends Fragment {
                             || attributes.get(itemNumber).getFieldType().contains("String") ) {
                         EditText txtInp = new EditText(getContext());
                         questionInstances.add(txtInp);
+                        txtInp.setSingleLine(true);
                         questionViews.addView(txtInp,params);
-                        continue;
-                    }
 
+                    }
                 }
+
+                // DIVIDER
+//                View divider = new View(getContext());
+//                divider.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, 1));
+//                divider.setBackgroundColor(Color.parseColor("#444444"));
+//                titleInstances.add(divider);
+//                questionViews.addView(divider);
             }
 
             @Override
@@ -219,19 +249,60 @@ public class TabFragment2 extends Fragment {
             }
         });
 
+
+        saveFieldsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> data = new ArrayList<>();
+                for(int i = 0; i < attributes.size(); i++){
+
+                    /* RADIO BUTTON */
+
+                    if( attributes.get(i).getFieldType().contains("String") &&
+                            attributes.get(i).getPossibleValues() != null ) {
+                        RadioGroup rg = (RadioGroup) questionInstances.get(i);
+                        RadioButton selRB = (RadioButton) view.findViewById(rg.getCheckedRadioButtonId());
+                        data.add(selRB.getTag().toString());
+                    }
+
+                    /* CHECK BOX */
+
+                    else if( attributes.get(i).getFieldType().contains("Checkbox") ) {
+                        CheckBox cb = (CheckBox) questionInstances.get(i);
+                        if(cb.isChecked()) data.add("Yes"); // TODO change when checkbox is finalized db side
+                        else data.add("No");
+                    }
+
+                    /* TEXT BOX (COMMENT) */
+
+                    else if( attributes.get(i).getFieldType().contains("String")
+                            && attributes.get(i).getQuestion().contains("Comment")){
+                        EditText et = (EditText) questionInstances.get(i);
+                        data.add(et.getText().toString());
+                    }
+
+                    /* TEXT BOX (INTEGER OR STRING) */
+
+                    else if( attributes.get(i).getFieldType().contains("Integer")
+                            || attributes.get(i).getFieldType().contains("String") ) {
+                        EditText et = (EditText) questionInstances.get(i);
+                        data.add(et.getText().toString());
+                    }
+                }
+                fieldData.sendData(globalTargetContext,attributes,data);
+            }
+        });
+
+
         /** END EVENT LISTENERS */
+
         /*
         setHasOptionsMenu(true);
 
-
-
         uploadBtn = (Button) view.findViewById(R.id.button5);
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+        username = sharedPreferences.getString("loggedInUser", null);
 
-        if (sharedPreferences.contains("loggedInUser")) {
-            username = sharedPreferences.getString("loggedInUser", null);
-
-        }
 
         ///////////////////////////////////// SEND TO QUEUE CODE/////////////////////////////////////
 
@@ -481,34 +552,48 @@ public class TabFragment2 extends Fragment {
 
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        this.menu = menu;
-        menu.add(Menu.NONE, 0, Menu.NONE, "Cancel")
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        MenuItem item = menu.findItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        this.menu = menu;
+//        menu.add(Menu.NONE, 0, Menu.NONE, "Cancel")
+//                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//        MenuItem item = menu.findItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                //clear set of paths
+//
+//                imgPathSet.clear();
+//                getActivity().setTitle("Photo Archive");
+//                getActivity().getIntent().putExtra("totalSelected", 0);
+//                hideOption(0);
+//                uploadBtn.setEnabled(false);
+//
+//                return true;
+//            }
+//        });
+//
+//
+//        if (imgPathSet.size() < 1) {
+//            hideOption(0);
+//        }
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
 
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                //clear set of paths
-
-                imgPathSet.clear();
-                getActivity().setTitle("Photo Archive");
-                getActivity().getIntent().putExtra("totalSelected", 0);
-                hideOption(0);
-                uploadBtn.setEnabled(false);
-
-                return true;
-            }
-        });
-
-
-        if (imgPathSet.size() < 1) {
-            hideOption(0);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
+    public interface SendFields{
+        void sendData(com.example.edwin.photoarchive.AzureClasses.Context targetCat, ArrayList<Attribute> attributes, ArrayList<String> values);
     }
 
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+
+        try{
+            fieldData = (SendFields) getActivity();
+        }catch(Exception e){
+            throw new ClassCastException("Cannot get data");
+        }
+    }
 
     private void showOption(int id) {
         MenuItem item = menu.findItem(id);

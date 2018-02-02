@@ -17,8 +17,22 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_margin="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="110dp"
+            android:layout_marginTop="15dp"
             android:padding="5dp" />
+
+        <Button
+            android:id="@+id/save_fields"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/category_spinner_tagging"
+            android:layout_marginLeft="-100dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:padding="1dp"
+            android:text="@string/save_fields_text" />
 
         <LinearLayout
             android:id="@+id/questions_layout"
@@ -26,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/category_spinner_tagging"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:padding="0dp">
             <!-- QUESTIONS WILL POPULATE HERE USING TabFragment2.java -->
         </LinearLayout>
 

@@ -23,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.edwin.photoarchive.Activities.GalleryViewAllActivity;
+import com.example.edwin.photoarchive.Activities.InAppViewAllActivity;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
+import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
 import com.example.edwin.photoarchive.Helpers.ExtractLatLong;
 import com.example.edwin.photoarchive.Helpers.GPS;
@@ -52,6 +54,10 @@ public class TabFragment3 extends Fragment {
     private Context context = null;
     GPSTracker gps;
     private Button button = null;
+    private Button uploadBtn = null;
+    private com.example.edwin.photoarchive.AzureClasses.Context globalContext;
+    private ArrayList<Attribute> globalAttribute;
+    private ArrayList<String> globalData;
     private HashSet<String> imgPathSet = new LinkedHashSet<String>();
     private SharedPreferences sharedPreferences;
     private LinearLayout inAppPictures;
@@ -82,15 +88,23 @@ public class TabFragment3 extends Fragment {
         androidGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), GalleryViewAllActivity.class);
-                i.putExtra("selectedImages", imgPathSet);
-                startActivity(i);
+            Intent i = new Intent(getActivity(), GalleryViewAllActivity.class);
+            i.putExtra("selectedImages", imgPathSet);
+            startActivity(i);
             }
         });
 
-        if (sharedPreferences.contains("loggedInUser")) {
-            username = sharedPreferences.getString("loggedInUser", null);
-        }
+        Button inAppGalleryButton = (Button) view.findViewById(R.id.inappgallery_button);
+        inAppGalleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            Intent i = new Intent(getActivity(), InAppViewAllActivity.class);
+            i.putExtra("selectedImages", imgPathSet);
+            startActivity(i);
+            }
+        });
+
+        username = sharedPreferences.getString("loggedInUser", null);
 
         //camera btn
         button = (Button) view.findViewById(R.id.button);
@@ -99,22 +113,14 @@ public class TabFragment3 extends Fragment {
 
         inAppPictures = (LinearLayout) view.findViewById(R.id.inapp_picture_container);
         new PopulateAppImages(inAppPictures, context, getActivity());
-
-        // remove this for now -ph  [tags]
-        //Button addTags = (Button) view.findViewById(R.id.buttonAddTags);
-        //clearTags = (Button) view.findViewById(R.id.buttonClearTags);
-
-
-        final Button uploadBtn = (Button) view.findViewById(R.id.buttonUpload);
+        uploadBtn = (Button) view.findViewById(R.id.buttonUpload);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (hasCamera()) {
-                    launchCamera(null);
-                }
-
+            if (hasCamera()) {
+                launchCamera(null);
+            }
             }
         });
 
@@ -123,38 +129,44 @@ public class TabFragment3 extends Fragment {
             public void onClick(View v) {
 
                 //get tags from shared preferences
-
                 uploadBtn.setEnabled(false);
 
-                String mapString = sharedPreferences.getString("cameraTags", null);
+//                String mapString = sharedPreferences.getString("cameraTags", null);
+//
+//                Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
+//                try {
+//                    JSONObject jsonObject2 = new JSONObject(mapString);
+//                    Iterator<String> keysItr = jsonObject2.keys();
+//
+//                    while (keysItr.hasNext()) {
+//                        String key = keysItr.next();
+//
+//                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
+//                        Iterator<String> keysItr2 = ((JSONObject) jsonObject2.get(key)).keys();
+//
+//                        while (keysItr2.hasNext()) {
+//                            String key2 = keysItr2.next();
+//                            String value = (String) ((JSONObject) jsonObject2.get(key)).get(key2);
+//
+//                            valueMap.put(key2, value);
+//                        }
+//
+//                        outputMap.put(key, valueMap);
+//                    }
+//
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//
+//                }
+
 
                 Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
-                try {
-                    JSONObject jsonObject2 = new JSONObject(mapString);
-                    Iterator<String> keysItr = jsonObject2.keys();
-
-                    while (keysItr.hasNext()) {
-                        String key = keysItr.next();
-
-                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
-                        Iterator<String> keysItr2 = ((JSONObject) jsonObject2.get(key)).keys();
-
-                        while (keysItr2.hasNext()) {
-                            String key2 = keysItr2.next();
-                            String value = (String) ((JSONObject) jsonObject2.get(key)).get(key2);
-
-                            valueMap.put(key2, value);
-                        }
-
-                        outputMap.put(key, valueMap);
-                    }
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-
+                Map<String, String> fieldMap = new LinkedHashMap<>();
+                for(int i = 0; globalAttribute != null && i < globalAttribute.size(); i++){
+                    fieldMap.put(globalAttribute.get(i).getId(), globalData.get(i));
                 }
-                ;
+                outputMap.put(globalContext.getId(),fieldMap);
 
                 for (String s : imgPathSet) {
 
@@ -165,7 +177,7 @@ public class TabFragment3 extends Fragment {
                 }
 
 
-                // put imagesTagsMap in shared preferences
+            // put imagesTagsMap in shared preferences
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
@@ -227,13 +239,11 @@ public class TabFragment3 extends Fragment {
         clearTaken.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imgPathSet.clear();
-                taken.invalidate();
-                taken.setText("Taken: " + imgPathSet.size());
-                clearTaken.setEnabled(false);
-                uploadBtn.setEnabled(false);
-                button.setText("Take Picture");
-
+            imgPathSet.clear();
+            taken.invalidate();
+            taken.setText("Selected: " + imgPathSet.size());
+            clearTaken.setEnabled(false);
+            uploadBtn.setEnabled(false);
             }
         });
 
@@ -248,7 +258,7 @@ public class TabFragment3 extends Fragment {
             }
         }
 
-        taken.setText("Taken: " + imgPathSet.size());
+        taken.setText("Selected: " + imgPathSet.size());
 
         /* Remove this for now -ph [tags]
         addTags.setOnClickListener(new View.OnClickListener() {
@@ -316,8 +326,6 @@ public class TabFragment3 extends Fragment {
 
         if (imgPathSet.size() > 0) {
             clearTaken.setEnabled(true);
-            button.setText("Take another");
-
         }
 
         /* remove this for now -ph  [tags]
@@ -469,5 +477,14 @@ public class TabFragment3 extends Fragment {
         viewPager.setCurrentItem(0);
         getActivity().getSupportFragmentManager().popBackStack();
         getActivity().recreate();
+    }
+
+    public void recData(com.example.edwin.photoarchive.AzureClasses.Context context, ArrayList<Attribute> attributes, ArrayList<String> data){
+        if (context != null && attributes != null && data != null){
+            globalContext = context;
+            globalAttribute = attributes;
+            globalData = data;
+            uploadBtn.setEnabled(true);
+        }
     }
 }

@@ -19,7 +19,7 @@ public class TaggedImageObject {
 
         this.imgPath = imgPath;
         this.lat = lat;
-        this.lon =lon;
+        this.lon = lon;
         this.user = user;
         this.contextAttributeMap = contextAttributeMap;
     }

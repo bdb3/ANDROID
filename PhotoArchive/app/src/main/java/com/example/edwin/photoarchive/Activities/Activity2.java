@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,9 +13,17 @@ import android.widget.Spinner;
 
 import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.Adapters.PagerAdapter;
+import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.R;
+import com.example.edwin.photoarchive.TabFragment1;
+import com.example.edwin.photoarchive.TabFragment2;
+import com.example.edwin.photoarchive.TabFragment3;
 
-public class Activity2 extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class Activity2 extends AppCompatActivity implements TabFragment2.SendFields{
+
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +33,7 @@ public class Activity2 extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Spinner categorySpinner=(Spinner)findViewById(R.id.categorySpinner);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Dash"));
         tabLayout.addTab(tabLayout.newTab().setText("Tags"));
         tabLayout.addTab(tabLayout.newTab().setText("Camera"));
@@ -63,8 +72,6 @@ public class Activity2 extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-
-
 
                     if (tab.getPosition() == 0) {
                         setTitle("Dashboard");
@@ -109,5 +116,16 @@ public class Activity2 extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void sendData(com.example.edwin.photoarchive.AzureClasses.Context targetCat, ArrayList<Attribute> attributes, ArrayList<String> values){
+        TabFragment3 tabFrag3 = null;
+        for (Fragment frag : getSupportFragmentManager().getFragments()) {
+            if (frag instanceof TabFragment3) {
+                tabFrag3 = (TabFragment3) frag;
+            }
+        }
+        tabFrag3.recData(targetCat, attributes, values);
     }
 }

@@ -9,11 +9,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.edwin.photoarchive.Activities.ImagePreview;
 import com.example.edwin.photoarchive.Activities.InAppViewAllActivity;
-
 import java.util.ArrayList;
 
 public class ImageAdapterForAppImages extends BaseAdapter  {
@@ -27,8 +26,6 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
         this.callerActivity = callerActivity;
         this.imgPathList = imgPathList;
         this.inAppViewAllActivityInstance = inAppViewAllActivityInstance;
-
-
     }
 
     public int getCount() {
@@ -51,16 +48,11 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
             imageView = new ImageView(callerActivity);
             imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, callerActivity.getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, callerActivity.getResources().getDisplayMetrics())));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-
-
         } else {
             imageView = (ImageView) convertView;
         }
         imageView.clearColorFilter();
         inAppViewAllActivityInstance.removeFromImageViewSet(imageView);
-
-
 
         if(inAppViewAllActivityInstance.imagePathSetContains(this.imgPathList.get(position))){
             imageView.setColorFilter(Color.argb(110, 20, 197, 215));
@@ -92,20 +84,16 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
             }
         });
 
+        // Changed so CLICK will preview image
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(! inAppViewAllActivityInstance.getIsSelectEnabled()) {
-                    Intent i = new Intent(callerActivity, ImagePreview.class);
-                    i.putExtra("imagePath", imgPathList.get(position));
-                    callerActivity.startActivity(i);
-                }
+                Intent i = new Intent(callerActivity, ImagePreview.class);
+                i.putExtra("imagePath", imgPathList.get(position));
+                callerActivity.startActivity(i);
             }
         });
 
-
         return imageView;
     }
-
-
 }
