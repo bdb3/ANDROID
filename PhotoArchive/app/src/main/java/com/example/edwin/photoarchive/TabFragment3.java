@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -115,6 +117,30 @@ public class TabFragment3 extends Fragment {
         new PopulateAppImages(inAppPictures, context, getActivity());
         uploadBtn = (Button) view.findViewById(R.id.buttonUpload);
 
+
+        // FETCH
+        Gson gson = new Gson();
+
+        String fetchGlobalContext = sharedPreferences.getString("globalContext",null);
+        String fetchGlobalAttributes = sharedPreferences.getString("globalAttributes", null);
+        String fetchGlobalData = sharedPreferences.getString("globalData", null);
+        if(fetchGlobalContext != null) {
+            Log.d("TabFrag3", "fetchGlobalContext Not Null");
+            globalContext = gson.fromJson(fetchGlobalContext, com.example.edwin.photoarchive.AzureClasses.Context.class);
+        }
+        if(fetchGlobalAttributes != null) {
+            Log.d("TabFrag3", "fetchGlobalAttributes Not Null");
+            Type typea = new com.google.common.reflect.TypeToken<ArrayList<Attribute>>() {}.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
+            globalAttribute = gson.fromJson(fetchGlobalAttributes, typea);
+        }
+        if(fetchGlobalData != null) {
+            Log.d("TabFrag3", "fetchGlobalData Not Null");
+            Type type = new com.google.common.reflect.TypeToken<ArrayList<String>>() {}.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
+            globalData = gson.fromJson(fetchGlobalData, type);
+            uploadBtn.setEnabled(true);
+        }
+
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +156,9 @@ public class TabFragment3 extends Fragment {
 
                 //get tags from shared preferences
                 uploadBtn.setEnabled(false);
+
+                Bundle extras = getActivity().getIntent().getExtras();
+                if (extras != null) imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
 
 //                String mapString = sharedPreferences.getString("cameraTags", null);
 //
@@ -176,10 +205,8 @@ public class TabFragment3 extends Fragment {
 
                 }
 
-
             // put imagesTagsMap in shared preferences
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-
 
                 Gson gson = new Gson();
 

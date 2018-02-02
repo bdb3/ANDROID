@@ -118,6 +118,7 @@ public class Activity2 extends AppCompatActivity implements TabFragment2.SendFie
         });
     }
 
+    // Data Transit method implemented from interface
     @Override
     public void sendData(com.example.edwin.photoarchive.AzureClasses.Context targetCat, ArrayList<Attribute> attributes, ArrayList<String> values){
         TabFragment3 tabFrag3 = null;

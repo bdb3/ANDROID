@@ -29,8 +29,10 @@ import android.widget.TextView;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,6 +58,7 @@ public class TabFragment2 extends Fragment {
     private LinearLayout questionViews;
     private Button saveFieldsBtn;
     private ArrayList<Attribute> attributes = null;
+    private ArrayList<String> existingData = null;
     private com.example.edwin.photoarchive.AzureClasses.Context globalTargetContext = null;
     private List<View> questionInstances = new ArrayList<View>();
     private List<View> titleInstances = new ArrayList<View>();
@@ -88,6 +91,13 @@ public class TabFragment2 extends Fragment {
         Gson gson = new Gson();
         try{
             contextsArray = gson.fromJson(sharedPreferences.getString("contexts", null), String[].class);
+            String fetchGlobalContext = sharedPreferences.getString("globalContext",null);
+            String fetchGlobalData = sharedPreferences.getString("globalData", null);
+            if(fetchGlobalContext != null) globalTargetContext = gson.fromJson(fetchGlobalContext, com.example.edwin.photoarchive.AzureClasses.Context.class);
+            if(fetchGlobalData != null) {
+                Type type = new TypeToken<ArrayList<String>>() {}.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
+                existingData = gson.fromJson(fetchGlobalData, type);
+            }
         } catch (Exception e) { Log.d("TabFragment2","CRITICAL ERROR! JSON PARSE EXCEPTION"); }
         // GET Azure Data
         try {
@@ -109,6 +119,15 @@ public class TabFragment2 extends Fragment {
             ArrayAdapter<String> catAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, contextsArray);
             catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             catSpinner.setAdapter(catAdapter);
+            // if data exists
+            if(globalTargetContext != null && existingData != null){
+                int index = 0;
+                for (int i = 0; i < catSpinner.getCount() ; i++)
+                    if (catSpinner.getItemAtPosition(i).equals(globalTargetContext.getId()))
+                        index = i;
+                catSpinner.setSelection(index);
+                generateCatView();
+            }
         }
 
         /** END VIEW CONTENT CODE */
@@ -139,7 +158,10 @@ public class TabFragment2 extends Fragment {
                     for (com.example.edwin.photoarchive.AzureClasses.Context c : categoryFieldMap.keySet()) {
                         if (c.getId().equals(catSpinner.getItemAtPosition(i).toString())) {
                             targetContext = c;
-                            globalTargetContext = c;
+                            if(globalTargetContext != null && !targetContext.getId().equalsIgnoreCase(globalTargetContext.getId())) {
+                                existingData = null;
+                                globalTargetContext = c;
+                            }
                         }
                     }
 
@@ -152,95 +174,8 @@ public class TabFragment2 extends Fragment {
                         Log.i("F2ATRS", a.getFieldType() + " " + a.getPossibleValues() + " " + a.getRequired());
                 } else {Log.i ("F2ATRS", "Attr NULL");}
 
-                for( int itemNumber = 0 ; attributes != null && itemNumber < attributes.size() ; itemNumber++ ){
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    /* Json will contain option type which will use if/elseif to separate */
+                generateCatView();
 
-                    // DIVIDER
-                    /*
-                    View divider = new View(getContext());
-                    divider.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, 1));
-                    divider.setBackgroundColor(Color.parseColor("#444444"));
-                    titleInstances.add(divider);
-                    questionViews.addView(divider);
-                    */
-
-                    // QUESTION TITLE
-                    TextView questionName = new TextView(getContext());
-                    titleInstances.add(questionName);
-                    String questionText = attributes.get(itemNumber).getQuestion();
-                    if(attributes.get(itemNumber).getRequired().contains("Y"))
-                        questionText += " *";
-                    questionName.setText(questionText);
-                    questionName.setTextSize(18);
-                    questionName.setPadding(10,15,10,5);
-                    questionViews.addView(questionName,params);
-
-                    /* RADIO BUTTON */
-
-                    if( attributes.get(itemNumber).getFieldType().contains("String") &&
-                            attributes.get(itemNumber).getPossibleValues() != null ) {
-                        String[] options = attributes.get(itemNumber).getPossibleValues().split(",");
-                        RadioGroup radioGroup = new RadioGroup(getContext());
-                        questionInstances.add(radioGroup);
-                        for( int radioNumber = 0 ; radioNumber < options.length ; radioNumber++ ) {
-                            RadioButton rb = new RadioButton(getContext());
-                            radioGroup.addView(rb,params);
-                            if (radioNumber == 0)
-                                rb.setChecked(true); // First Option Selected, Can Be Changed
-                            rb.setTag(options[radioNumber]);
-                            rb.setText(options[radioNumber]);
-                        }
-                        radioGroup.setPadding(10,10,10,10);
-                        questionViews.addView(radioGroup,params);
-                    }
-
-                    /* CHECK BOX */
-
-                    else if( attributes.get(itemNumber).getFieldType().contains("Checkbox") ) {
-                        CheckBox chkBox = new CheckBox(getContext());
-                        questionInstances.add(chkBox);
-                        chkBox.setTag(attributes.get(itemNumber).getPossibleValues());
-                        chkBox.setText(attributes.get(itemNumber).getPossibleValues());
-                        chkBox.setPadding(10,10,10,10);
-                        questionViews.addView(chkBox,params);
-                    }
-
-                    /* TEXT BOX (COMMENT) */
-
-                    else if( attributes.get(itemNumber).getFieldType().contains("String")
-                            && attributes.get(itemNumber).getQuestion().contains("Comment")) {
-                        EditText txtBox = new EditText(getContext());
-                        questionInstances.add(txtBox);
-                        txtBox.setGravity( Gravity.LEFT | Gravity.TOP );
-                        txtBox.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-                        txtBox.setLines(6);
-                        txtBox.setMaxLines(8);
-                        txtBox.setMinLines(4);
-                        txtBox.setVerticalScrollBarEnabled(true);
-                        txtBox.setSingleLine(false);
-                        txtBox.setPadding(10,10,10,10);
-                        questionViews.addView(txtBox,params);
-                    }
-
-                    /* TEXT BOX (INTEGER OR STRING) */
-
-                    else if( attributes.get(itemNumber).getFieldType().contains("Integer")
-                            || attributes.get(itemNumber).getFieldType().contains("String") ) {
-                        EditText txtInp = new EditText(getContext());
-                        questionInstances.add(txtInp);
-                        txtInp.setSingleLine(true);
-                        questionViews.addView(txtInp,params);
-
-                    }
-                }
-
-                // DIVIDER
-//                View divider = new View(getContext());
-//                divider.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, 1));
-//                divider.setBackgroundColor(Color.parseColor("#444444"));
-//                titleInstances.add(divider);
-//                questionViews.addView(divider);
             }
 
             @Override
@@ -261,7 +196,7 @@ public class TabFragment2 extends Fragment {
                     if( attributes.get(i).getFieldType().contains("String") &&
                             attributes.get(i).getPossibleValues() != null ) {
                         RadioGroup rg = (RadioGroup) questionInstances.get(i);
-                        RadioButton selRB = (RadioButton) view.findViewById(rg.getCheckedRadioButtonId());
+                        RadioButton selRB = (RadioButton) questionViews.findViewById(rg.getCheckedRadioButtonId());
                         data.add(selRB.getTag().toString());
                     }
 
@@ -289,6 +224,27 @@ public class TabFragment2 extends Fragment {
                         data.add(et.getText().toString());
                     }
                 }
+
+                sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
+
+                // Store data, convert to String
+                Gson gson = new Gson();
+                String contextString = gson.toJson(globalTargetContext);
+                String attributesString = gson.toJson(attributes);
+                String dataString = gson.toJson(data);
+
+                // Store
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("globalContext", contextString);
+                editor.putString("globalAttributes", attributesString);
+                editor.putString("globalData", dataString);
+
+                editor.commit();
+
+                Log.d("Cont",contextString);
+                Log.d("Attr",attributesString);
+                Log.d("Data",dataString);
+
                 fieldData.sendData(globalTargetContext,attributes,data);
             }
         });
@@ -580,10 +536,12 @@ public class TabFragment2 extends Fragment {
 //        super.onCreateOptionsMenu(menu, inflater);
 //    }
 
+    // for transporting data between Fragments - ph
     public interface SendFields{
         void sendData(com.example.edwin.photoarchive.AzureClasses.Context targetCat, ArrayList<Attribute> attributes, ArrayList<String> values);
     }
 
+    // make sure you get the fieldData object from Activity2
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
@@ -632,6 +590,108 @@ public class TabFragment2 extends Fragment {
 
     }
 
+    private void generateCatView(){
+        for( int itemNumber = 0 ; attributes != null && itemNumber < attributes.size() ; itemNumber++ ){
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    /* Json will contain option type which will use if/elseif to separate */
 
+            // DIVIDER
+            /*
+            View divider = new View(getContext());
+            divider.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, 1));
+            divider.setBackgroundColor(Color.parseColor("#444444"));
+            titleInstances.add(divider);
+            questionViews.addView(divider);
+            */
+
+            // QUESTION TITLE
+            TextView questionName = new TextView(getContext());
+            titleInstances.add(questionName);
+            String questionText = attributes.get(itemNumber).getQuestion();
+            if(attributes.get(itemNumber).getRequired().contains("Y"))
+                questionText += " *";
+            questionName.setText(questionText);
+            questionName.setTextSize(18);
+            questionName.setPadding(10,15,10,5);
+            questionViews.addView(questionName,params);
+
+                    /* RADIO BUTTON */
+
+            if( attributes.get(itemNumber).getFieldType().contains("String") &&
+                    attributes.get(itemNumber).getPossibleValues() != null ) {
+                String[] options = attributes.get(itemNumber).getPossibleValues().split(",");
+                RadioGroup radioGroup = new RadioGroup(getContext());
+                questionInstances.add(radioGroup);
+                for( int radioNumber = 0 ; radioNumber < options.length ; radioNumber++ ) {
+                    RadioButton rb = new RadioButton(getContext());
+                    radioGroup.addView(rb,params);
+                    if (existingData == null && radioNumber == 0) { // CHECK EXISTING DATA
+                        rb.setChecked(true); // First Option Selected, Can Be Changed
+                    } else if (existingData != null && options[radioNumber].equals(existingData.get(itemNumber))){
+                        rb.setChecked(true);
+                    }
+                    rb.setTag(options[radioNumber]);
+                    rb.setText(options[radioNumber]);
+                }
+                radioGroup.setPadding(10,10,10,10);
+
+                questionViews.addView(radioGroup,params);
+            }
+
+                    /* CHECK BOX */
+
+            else if( attributes.get(itemNumber).getFieldType().contains("Checkbox") ) {
+                CheckBox chkBox = new CheckBox(getContext());
+                questionInstances.add(chkBox);
+                chkBox.setTag(attributes.get(itemNumber).getPossibleValues());
+                chkBox.setText(attributes.get(itemNumber).getPossibleValues());
+                chkBox.setPadding(10,10,10,10);
+                // CHECK EXISTING DATA
+                if(existingData != null && existingData.get(itemNumber).equalsIgnoreCase("Yes")){
+                    chkBox.setChecked(true);
+                }
+                questionViews.addView(chkBox,params);
+            }
+
+                    /* TEXT BOX (COMMENT) */
+
+            else if( attributes.get(itemNumber).getFieldType().contains("String")
+                    && attributes.get(itemNumber).getQuestion().contains("Comment")) {
+                EditText txtBox = new EditText(getContext());
+                questionInstances.add(txtBox);
+                txtBox.setGravity( Gravity.LEFT | Gravity.TOP );
+                txtBox.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                txtBox.setLines(6);
+                txtBox.setMaxLines(8);
+                txtBox.setMinLines(4);
+                txtBox.setVerticalScrollBarEnabled(true);
+                txtBox.setSingleLine(false);
+                txtBox.setPadding(10,10,10,10);
+                if(existingData != null){
+                    txtBox.setText(existingData.get(itemNumber));
+                }
+                questionViews.addView(txtBox,params);
+            }
+
+                    /* TEXT BOX (INTEGER OR STRING) */
+
+            else if( attributes.get(itemNumber).getFieldType().contains("Integer")
+                    || attributes.get(itemNumber).getFieldType().contains("String") ) {
+                EditText txtInp = new EditText(getContext());
+                questionInstances.add(txtInp);
+                txtInp.setSingleLine(true);
+                if(existingData != null){
+                    txtInp.setText(existingData.get(itemNumber));
+                }
+                questionViews.addView(txtInp,params);
+            }
+        }
+        // DIVIDER
+//        View divider = new View(getContext());
+//        divider.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, 1));
+//        divider.setBackgroundColor(Color.parseColor("#444444"));
+//        titleInstances.add(divider);
+//        questionViews.addView(divider);
+    }
 }
 
