@@ -400,11 +400,11 @@ public class TabFragment1 extends Fragment {
                             Gson gson = new Gson();
                             SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                            if (sharedPreferences.contains("categories")) {
-                                editor.remove("categories");
+                            if (sharedPreferences.contains("contexts")) {
+                                editor.remove("contexts");
                                 editor.apply();
                             }
-                            editor.putString("categories", gson.toJson(listOfCategory.toArray(new String[listOfCategory.size()])));
+                            editor.putString("contexts", gson.toJson(listOfCategory.toArray(new String[listOfCategory.size()])));
                             editor.apply();
 
                             tagsStatus.setTextColor(Color.GREEN);
