@@ -627,7 +627,7 @@ public class TabFragment2 extends Fragment {
                     radioGroup.addView(rb,params);
                     if (existingData == null && radioNumber == 0) { // CHECK EXISTING DATA
                         rb.setChecked(true); // First Option Selected, Can Be Changed
-                    } else if (existingData != null && options[radioNumber].equals(existingData.get(itemNumber))){
+                    } else if (existingData != null && existingData.size()>1 && options[radioNumber].equals(existingData.get(itemNumber))){
                         rb.setChecked(true);
                     }
                     rb.setTag(options[radioNumber]);
@@ -647,7 +647,7 @@ public class TabFragment2 extends Fragment {
                 chkBox.setText(attributes.get(itemNumber).getPossibleValues());
                 chkBox.setPadding(10,10,10,10);
                 // CHECK EXISTING DATA
-                if(existingData != null && existingData.get(itemNumber).equalsIgnoreCase("Yes")){
+                if(existingData != null &&existingData.size()>1&& existingData.get(itemNumber).equalsIgnoreCase("Yes")){
                     chkBox.setChecked(true);
                 }
                 questionViews.addView(chkBox,params);
@@ -667,7 +667,7 @@ public class TabFragment2 extends Fragment {
                 txtBox.setVerticalScrollBarEnabled(true);
                 txtBox.setSingleLine(false);
                 txtBox.setPadding(10,10,10,10);
-                if(existingData != null){
+                if(existingData != null && existingData.size()>1){
                     txtBox.setText(existingData.get(itemNumber));
                 }
                 questionViews.addView(txtBox,params);
@@ -680,7 +680,7 @@ public class TabFragment2 extends Fragment {
                 EditText txtInp = new EditText(getContext());
                 questionInstances.add(txtInp);
                 txtInp.setSingleLine(true);
-                if(existingData != null){
+                if(existingData != null&& existingData.size() >1){
                     txtInp.setText(existingData.get(itemNumber));
                 }
                 questionViews.addView(txtInp,params);
