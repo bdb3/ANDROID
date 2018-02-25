@@ -12,6 +12,8 @@ import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class AzureBlobDownloader extends AzureBlobLoader{
     private Activity act;
@@ -62,7 +64,8 @@ public class AzureBlobDownloader extends AzureBlobLoader{
                 azurePaths.add(prefix + img.getImageID().replaceFirst("_", "/") + getSas());
             }
 
-
+            Set<String> convertedPaths=new LinkedHashSet<>(azurePaths);
+            azurePaths=new ArrayList<String>(convertedPaths);
         } catch (Exception e) {
             Log.d("Azure", e.toString()); e.printStackTrace();
         }
