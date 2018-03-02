@@ -146,7 +146,7 @@ public class TabFragment3 extends Fragment {
         Type dataType = new com.google.common.reflect.TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
         if(fetchStoredDataMap!=null){
              storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
-
+            uploadBtn.setEnabled(true);
 
 
         }
@@ -171,7 +171,6 @@ public class TabFragment3 extends Fragment {
                 Bundle extras = getActivity().getIntent().getExtras();
                 if (extras != null){
                     imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
-                    uploadBtn.setEnabled(true);
                 }
 
 //                String mapString = sharedPreferences.getString("cameraTags", null);
