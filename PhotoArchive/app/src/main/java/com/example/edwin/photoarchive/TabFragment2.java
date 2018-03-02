@@ -104,7 +104,7 @@ public class TabFragment2 extends Fragment {
             String fetchStoredDataMap = sharedPreferences.getString("storedDataMap",null);
             if(fetchStoredDataMap==null) {
                 storedDataMap=new HashMap<String, HashMap<String, String>>();
-                Log.d("TabFrag2DataMap",storedDataMap.toString());
+                //Log.d("TabFrag2DataMap",storedDataMap.toString());
             }
             else{
                 Type dataType = new TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
@@ -114,7 +114,6 @@ public class TabFragment2 extends Fragment {
             if(fetchGlobalData != null) {
                 Type type = new TypeToken<ArrayList<String>>() {}.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
                 existingData = gson.fromJson(fetchGlobalData, type);
-                Log.d("TabFrag2PrintData", existingData.toString());
             }
         } catch (Exception e) { Log.d("TabFragment2","CRITICAL ERROR! JSON PARSE EXCEPTION"); }
         // GET Azure Data
@@ -176,7 +175,12 @@ public class TabFragment2 extends Fragment {
                     for (com.example.edwin.photoarchive.AzureClasses.Context c : categoryFieldMap.keySet()) {
                         if (c.getId().equals(catSpinner.getItemAtPosition(i).toString())) {
                             targetContext = c;
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
                             currentlySelectedContext=(targetContext.getId());
+                            editor.putString("currentlySelectedContext",currentlySelectedContext);
+                            editor.commit();
+
                             if(globalTargetContext != null && !targetContext.getId().equalsIgnoreCase(globalTargetContext.getId())) {
                                 existingData = null;
                                 globalTargetContext = c;

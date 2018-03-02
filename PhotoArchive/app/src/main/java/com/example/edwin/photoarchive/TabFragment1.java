@@ -122,7 +122,7 @@ public class TabFragment1 extends Fragment {
                     if (netInfo.getState() == NetworkInfo.State.CONNECTED) {
 
                         permissionsStatus.invalidate();
-                        permissionsStatus.setText("Required Permissions: all granted \nRepair Task ID:" + sharedPreferences.getString("repairTaskID", null));
+                        permissionsStatus.setText("Required Permissions: all granted");
 
                         permissionsStatus.setTextColor(Color.BLACK);
 

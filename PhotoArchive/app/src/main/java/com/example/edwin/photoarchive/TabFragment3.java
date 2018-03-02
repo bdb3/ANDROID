@@ -63,6 +63,8 @@ public class TabFragment3 extends Fragment {
     private HashSet<String> imgPathSet = new LinkedHashSet<String>();
     private SharedPreferences sharedPreferences;
     private LinearLayout inAppPictures;
+    private HashMap<String,HashMap<String,String>> storedDataMap;
+    private String currentlySelectedContext;
 
     //remove for now -ph [tags]
 //    private LinearLayout tagsContainer;
@@ -137,7 +139,16 @@ public class TabFragment3 extends Fragment {
             Log.d("TabFrag3", "fetchGlobalData Not Null");
             Type type = new com.google.common.reflect.TypeToken<ArrayList<String>>() {}.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
             globalData = gson.fromJson(fetchGlobalData, type);
-            uploadBtn.setEnabled(true);
+        }
+
+        String fetchStoredDataMap = sharedPreferences.getString("storedDataMap",null);
+        String fetchCurrentlySelectedContext=sharedPreferences.getString("currentlySelectedContext",null);
+        Type dataType = new com.google.common.reflect.TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
+        if(fetchStoredDataMap!=null){
+             storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
+
+
+
         }
 
 
@@ -158,7 +169,10 @@ public class TabFragment3 extends Fragment {
                 uploadBtn.setEnabled(false);
 
                 Bundle extras = getActivity().getIntent().getExtras();
-                if (extras != null) imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
+                if (extras != null){
+                    imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
+                    uploadBtn.setEnabled(true);
+                }
 
 //                String mapString = sharedPreferences.getString("cameraTags", null);
 //
@@ -192,10 +206,15 @@ public class TabFragment3 extends Fragment {
 
                 Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
                 Map<String, String> fieldMap = new LinkedHashMap<>();
-                for(int i = 0; globalAttribute != null && i < globalAttribute.size(); i++){
-                    fieldMap.put(globalAttribute.get(i).getId(), globalData.get(i));
-                }
-                outputMap.put(globalContext.getId(),fieldMap);
+
+
+//                for(int i = 0; globalAttribute != null && i < globalAttribute.size(); i++){
+//                    fieldMap.put(globalAttribute.get(i).getId(), globalData.get(i));
+//                }
+
+
+                outputMap.put(currentlySelectedContext,storedDataMap.get(currentlySelectedContext));
+                //outputMap.put(globalContext.getId(),fieldMap);
 
                 for (String s : imgPathSet) {
 

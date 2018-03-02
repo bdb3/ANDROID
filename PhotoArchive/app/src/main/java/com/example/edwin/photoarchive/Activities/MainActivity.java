@@ -14,7 +14,11 @@ import android.widget.Toast;
 
 import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.R;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 import android.provider.Settings.Secure;
 import android.provider.Settings;
@@ -22,6 +26,9 @@ import android.provider.Settings;
 public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private String android_id;
+    private HashMap<String, HashMap<String, String>> storedDataMap;
+    private HashMap<String,String> innerDataMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,26 +40,44 @@ public class MainActivity extends AppCompatActivity {
         AzureServiceAdapter.Initialize(this);
 
         // THIS PART READS FROM A LINK
+        // Link Design is flexible
+        // Current Link Design = user/Context/Attribute/Value/Attribute/Value/Attribute/Value
         try {
+            Gson gson = new Gson();
             Uri data = getIntent().getData();
             List<String> params = data.getPathSegments();
+
+            int j=0;
             for(String s:params) {
-                Log.d("URI Passing", s);
+
+                Log.d("URI Passing", j+"  "+s);
+                j++;
             }
+            // This checks if theres a stored data map, if there is load it
+            String fetchStoredDataMap = sharedPreferences.getString("storedDataMap",null);
+            if(fetchStoredDataMap==null) {
+                storedDataMap=new HashMap<String, HashMap<String, String>>();
+
+            }
+            else{
+                Type dataType = new TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
+                storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
+            }
+
+            // This loads the URI parameters into the stored data map
+            String currentlySelectedContext=params.get(1);
+            innerDataMap=new HashMap<String,String>();
+            for(int i=2;i+1<params.size();i+=2){
+                innerDataMap.put(params.get(i),params.get(i+1));
+            }
+            storedDataMap.put(currentlySelectedContext,innerDataMap);
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-
-            String username = android_id;  //
-            String repairID = params.get(2);
-            if(params.get(1).equals("repairtask")){
-                editor.putString("repairTaskID",repairID);
-            }
-            // TODO Potential Security Risk
-
+            String username = params.get(0);
             editor.putString("loggedInUser", username);
+            editor.putString("storedDataMap",gson.toJson(storedDataMap));
             editor.apply();
 
-            String misc = params.get(2);
         } catch(Exception e) {}
         //
 

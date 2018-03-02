@@ -341,11 +341,7 @@ public class TagsActivity extends AppCompatActivity {
             textView.setTextColor(Color.BLACK);
             attrList.addView(textView);
             final EditText editText = new EditText(getApplicationContext());
-            Log.d("Attribute",s.getId());
-            if(s.getId().equals("Repair Task ID")&&sharedPreferences.contains("repairTaskID")){
-                editText.setText(sharedPreferences.getString("repairTaskID",null));
-            }
-            //TODO STicky forms based on filled info
+
             //EditText event listener, all fields are required before btn is enabled
 
             editText.addTextChangedListener(new TextWatcher() {
