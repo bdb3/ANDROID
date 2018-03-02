@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -59,9 +60,13 @@ public class TabFragment2 extends Fragment {
     private Button saveFieldsBtn;
     private ArrayList<Attribute> attributes = null;
     private ArrayList<String> existingData = null;
+    private HashMap<String, HashMap<String, String>> storedDataMap; // This is a map of all the stored data
+    private HashMap<String,String> innerDataMap; // This is the map that is stored for each Category in the Stored Data Map
+    private HashMap<String,String> innerDataMapRetrieved=null; // This is the map that is retrieved to populate the fields
     private com.example.edwin.photoarchive.AzureClasses.Context globalTargetContext = null;
     private List<View> questionInstances = new ArrayList<View>();
     private List<View> titleInstances = new ArrayList<View>();
+    private String currentlySelectedContext=""; // The currently selected Context is A Permits (first attribute) By default
     private HashMap<com.example.edwin.photoarchive.AzureClasses.Context, ArrayList<Attribute>> categoryFieldMap;
     SendFields fieldData;
 
@@ -91,12 +96,25 @@ public class TabFragment2 extends Fragment {
         Gson gson = new Gson();
         try{
             contextsArray = gson.fromJson(sharedPreferences.getString("contexts", null), String[].class);
+
             String fetchGlobalContext = sharedPreferences.getString("globalContext",null);
-            String fetchGlobalData = sharedPreferences.getString("globalData", null);
+            String fetchGlobalData = sharedPreferences.getString("globalData", null); // Global Data Being Stored
             if(fetchGlobalContext != null) globalTargetContext = gson.fromJson(fetchGlobalContext, com.example.edwin.photoarchive.AzureClasses.Context.class);
+
+            String fetchStoredDataMap = sharedPreferences.getString("storedDataMap",null);
+            if(fetchStoredDataMap==null) {
+                storedDataMap=new HashMap<String, HashMap<String, String>>();
+                Log.d("TabFrag2DataMap",storedDataMap.toString());
+            }
+            else{
+                Type dataType = new TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
+                storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
+            }
+
             if(fetchGlobalData != null) {
                 Type type = new TypeToken<ArrayList<String>>() {}.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
                 existingData = gson.fromJson(fetchGlobalData, type);
+                Log.d("TabFrag2PrintData", existingData.toString());
             }
         } catch (Exception e) { Log.d("TabFragment2","CRITICAL ERROR! JSON PARSE EXCEPTION"); }
         // GET Azure Data
@@ -106,7 +124,7 @@ public class TabFragment2 extends Fragment {
             Log.d("TabFragment2","CRITICAL ERROR! HASHMAP CANNOT BE ASSIGNED");
             categoryFieldMap = new LinkedHashMap<>();
             ArrayList<Attribute> a = new ArrayList<>();
-            a.add(new Attribute("432","It Broke?","RadioButton","false","truefales"));
+            a.add(new Attribute("432","It Broke?","RadioButton","false","truefalse"));
             categoryFieldMap.put(new com.example.edwin.photoarchive.AzureClasses.Context("01","test"),a);
         }
 
@@ -134,17 +152,17 @@ public class TabFragment2 extends Fragment {
 
 
         /** BEG EVENTLISTENERS */
-
+// TODO ---------- CATEGORY SPINNER IS LOCATED HERE
         catSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if(questionInstances.size()>0){
+                if(questionInstances.size()>0){ // If Question Instances Exists
                     for(View v:questionInstances)
                         ((ViewGroup) v.getParent()).removeView(v);
                     questionInstances = new ArrayList<>();
                 }
-                if(titleInstances.size()>0){
+                if(titleInstances.size()>0){ // If Title Instances Exists
                     for(View v:titleInstances)
                         ((ViewGroup) v.getParent()).removeView(v);
                     titleInstances = new ArrayList<>();
@@ -158,13 +176,13 @@ public class TabFragment2 extends Fragment {
                     for (com.example.edwin.photoarchive.AzureClasses.Context c : categoryFieldMap.keySet()) {
                         if (c.getId().equals(catSpinner.getItemAtPosition(i).toString())) {
                             targetContext = c;
+                            currentlySelectedContext=(targetContext.getId());
                             if(globalTargetContext != null && !targetContext.getId().equalsIgnoreCase(globalTargetContext.getId())) {
                                 existingData = null;
                                 globalTargetContext = c;
                             }
                         }
                     }
-
                     attributes = categoryFieldMap.get(targetContext);
                     // target the Object in the map
                 }
@@ -184,7 +202,7 @@ public class TabFragment2 extends Fragment {
             }
         });
 
-
+// TODO -----SAVE FIELDS BUTTON IS LOCATED HERE
         saveFieldsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -233,8 +251,22 @@ public class TabFragment2 extends Fragment {
                 String attributesString = gson.toJson(attributes);
                 String dataString = gson.toJson(data);
 
-                // Store
+                // TODO Store
+                // Processing Arrays
+
                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                // Creating a new hashmap to store the array of info
+                // This process creates a new hashmap to be stored based on the Context key
+                innerDataMap=new HashMap<String, String>();
+                for(int i=0;i<attributes.size();i++){
+                    innerDataMap.put(attributes.get(i).getId(),data.get(i));
+                }
+                storedDataMap.put(currentlySelectedContext, innerDataMap);
+                // End of this process
+
+                editor.putString("storedDataMap",gson.toJson(storedDataMap));
+
+                Log.d("TabFrag2DataMapSave",storedDataMap.toString());
                 editor.putString("globalContext", contextString);
                 editor.putString("globalAttributes", attributesString);
                 editor.putString("globalData", dataString);
@@ -574,7 +606,7 @@ public class TabFragment2 extends Fragment {
 
         //getActivity().getIntent().putExtra("totalSelected", 0);
         hideOption(0);
-        imagesTagsMap.clear();
+        //imagesTagsMap.clear();
 
         //remove tags
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -591,6 +623,7 @@ public class TabFragment2 extends Fragment {
     }
 
     private void generateCatView(){
+
         for( int itemNumber = 0 ; attributes != null && itemNumber < attributes.size() ; itemNumber++ ){
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     /* Json will contain option type which will use if/elseif to separate */
@@ -603,12 +636,15 @@ public class TabFragment2 extends Fragment {
             titleInstances.add(divider);
             questionViews.addView(divider);
             */
+            // TODO Logic of the Attributes Being Pulled and Stored
+            // Item Number in a list of Attributes
+            //
 
             // QUESTION TITLE
             TextView questionName = new TextView(getContext());
             titleInstances.add(questionName);
             String questionText = attributes.get(itemNumber).getQuestion();
-            if(attributes.get(itemNumber).getRequired().contains("Y"))
+            if(attributes.get(itemNumber).getRequired().contains("Y"))   // Sets an asterisk next to the question if the field is required
                 questionText += " *";
             questionName.setText(questionText);
             questionName.setTextSize(18);
@@ -625,11 +661,16 @@ public class TabFragment2 extends Fragment {
                 for( int radioNumber = 0 ; radioNumber < options.length ; radioNumber++ ) {
                     RadioButton rb = new RadioButton(getContext());
                     radioGroup.addView(rb,params);
-                    if (existingData == null && radioNumber == 0) { // CHECK EXISTING DATA
+
+                    if (innerDataMapRetrieved == null && radioNumber == 0) { // CHECK EXISTING DATA
                         rb.setChecked(true); // First Option Selected, Can Be Changed
-                    } else if (existingData != null && existingData.size()>1 && options[radioNumber].equals(existingData.get(itemNumber))){
-                        rb.setChecked(true);
+                    } else if (storedDataMap.containsKey(currentlySelectedContext)) {
+                        if(options[radioNumber].equalsIgnoreCase(storedDataMap.get(currentlySelectedContext).get(attributes.get(itemNumber).getId()))) {
+
+                            rb.setChecked(true);
+                        }
                     }
+
                     rb.setTag(options[radioNumber]);
                     rb.setText(options[radioNumber]);
                 }
@@ -646,10 +687,18 @@ public class TabFragment2 extends Fragment {
                 chkBox.setTag(attributes.get(itemNumber).getPossibleValues());
                 chkBox.setText(attributes.get(itemNumber).getPossibleValues());
                 chkBox.setPadding(10,10,10,10);
-                // CHECK EXISTING DATA
-                if(existingData != null &&existingData.size()>1&& existingData.get(itemNumber).equalsIgnoreCase("Yes")){
-                    chkBox.setChecked(true);
+                // CHECK EXISTING DATA'
+
+//                if(existingData != null &&existingData.size()>1&& existingData.get(itemNumber).equalsIgnoreCase("Yes")){
+//                    chkBox.setChecked(true);
+//                }
+                if(storedDataMap.containsKey(currentlySelectedContext)){
+                    if(storedDataMap.get(currentlySelectedContext).get(attributes.get(itemNumber).getId()).equalsIgnoreCase("Yes")){
+                        chkBox.setChecked(true);
+                    }
                 }
+
+
                 questionViews.addView(chkBox,params);
             }
 
@@ -667,9 +716,18 @@ public class TabFragment2 extends Fragment {
                 txtBox.setVerticalScrollBarEnabled(true);
                 txtBox.setSingleLine(false);
                 txtBox.setPadding(10,10,10,10);
-                if(existingData != null && existingData.size()>1){
-                    txtBox.setText(existingData.get(itemNumber));
+
+//                if(existingData != null && existingData.size()>1){
+//                    txtBox.setText(existingData.get(itemNumber));
+//                }
+
+                if(storedDataMap.containsKey(currentlySelectedContext)){
+                    txtBox.setText(storedDataMap.get(currentlySelectedContext).get(attributes.get(itemNumber).getId()));
                 }
+                else{
+                    txtBox.setText("");
+                }
+
                 questionViews.addView(txtBox,params);
             }
 
@@ -680,9 +738,18 @@ public class TabFragment2 extends Fragment {
                 EditText txtInp = new EditText(getContext());
                 questionInstances.add(txtInp);
                 txtInp.setSingleLine(true);
-                if(existingData != null&& existingData.size() >1){
-                    txtInp.setText(existingData.get(itemNumber));
+
+//                if(existingData != null&& existingData.size() >1){
+//                    txtInp.setText(existingData.get(itemNumber));
+//                }
+
+                if(storedDataMap.containsKey(currentlySelectedContext)){
+                        txtInp.setText(storedDataMap.get(currentlySelectedContext).get(attributes.get(itemNumber).getId()));
                 }
+                else{
+                    txtInp.setText("");
+                }
+
                 questionViews.addView(txtInp,params);
             }
         }

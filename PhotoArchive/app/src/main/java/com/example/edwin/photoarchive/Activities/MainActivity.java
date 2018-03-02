@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
         // DONE INITIALIZE AZURE SERVICES
         AzureServiceAdapter.Initialize(this);
-        // CODE TO READ URLS WITH PARAMETERS ////////////////////////////
-        // URI Intent With Parameters
+
+        // THIS PART READS FROM A LINK
         try {
             Uri data = getIntent().getData();
             List<String> params = data.getPathSegments();
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
-            String username = params.get(0).trim();
+            String username = android_id;  //
             String repairID = params.get(2);
             if(params.get(1).equals("repairtask")){
                 editor.putString("repairTaskID",repairID);
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
             String misc = params.get(2);
         } catch(Exception e) {}
-        // CODE TO READ URLS WITH PARAMETERS ////////////////////////////
+        //
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

@@ -46,9 +46,6 @@ public class AzureBlobDownloader extends AzureBlobLoader{
             //THIS IS THE PROBLEM RIGHT HERE :/
 
             List<ICAV> dbImages = this.getIcavTable().where().field("contextID").eq(filter).execute().get();
-            if(filter.equals(" All")){
-                dbImages = this.getIcavTable().execute().get();
-            }
 
 
             //add prefix for https and blob storage navigation
@@ -60,7 +57,7 @@ public class AzureBlobDownloader extends AzureBlobLoader{
 
             for(ICAV img : dbImages){
 
-                Log.d("Images Loading",prefix + img.getImageID().replaceFirst("_", "/") +getSas());
+                //Log.d("Images Loading",prefix + img.getImageID().replaceFirst("_", "/") +getSas());
                 azurePaths.add(prefix + img.getImageID().replaceFirst("_", "/") + getSas());
             }
 
