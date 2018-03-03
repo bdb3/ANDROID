@@ -171,6 +171,7 @@ public class TabFragment1 extends Fragment {
 
 
             for (TaggedImageObject t : taggedImageObjectsList) {
+
                 if (pb.getVisibility() == View.INVISIBLE) {
                     pb.setVisibility(View.VISIBLE);
 

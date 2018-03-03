@@ -141,13 +141,13 @@ public class TabFragment3 extends Fragment {
             globalData = gson.fromJson(fetchGlobalData, type);
         }
 
-        String fetchStoredDataMap = sharedPreferences.getString("storedDataMap",null);
-        String fetchCurrentlySelectedContext=sharedPreferences.getString("currentlySelectedContext",null);
-        Type dataType = new com.google.common.reflect.TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
-        if(fetchStoredDataMap!=null){
-             storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
-            uploadBtn.setEnabled(true);
+        final String fetchStoredDataMap = sharedPreferences.getString("storedDataMap",null);
+        final String fetchCurrentlySelectedContext=sharedPreferences.getString("currentlySelectedContext",null);
 
+        if(fetchStoredDataMap!=null){
+            Type dataType = new com.google.common.reflect.TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
+            storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
+            uploadBtn.setEnabled(true);
 
         }
 
@@ -164,13 +164,14 @@ public class TabFragment3 extends Fragment {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Gson gson=new Gson();
                 //get tags from shared preferences
                 uploadBtn.setEnabled(false);
 
                 Bundle extras = getActivity().getIntent().getExtras();
                 if (extras != null){
                     imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
+
                 }
 
 //                String mapString = sharedPreferences.getString("cameraTags", null);
@@ -201,8 +202,6 @@ public class TabFragment3 extends Fragment {
 //                    e.printStackTrace();
 //
 //                }
-
-
                 Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
                 Map<String, String> fieldMap = new LinkedHashMap<>();
 
@@ -211,14 +210,15 @@ public class TabFragment3 extends Fragment {
 //                    fieldMap.put(globalAttribute.get(i).getId(), globalData.get(i));
 //                }
 
+                outputMap.put(fetchCurrentlySelectedContext,storedDataMap.get(fetchCurrentlySelectedContext));
 
-                outputMap.put(currentlySelectedContext,storedDataMap.get(currentlySelectedContext));
+
                 //outputMap.put(globalContext.getId(),fieldMap);
 
                 for (String s : imgPathSet) {
 
                     ExtractLatLong ell = new ExtractLatLong(s);
-                    TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username, outputMap);
+                    TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username,outputMap);
                     taggedImagesList.add(tagImgObj);
 
                 }
@@ -226,7 +226,7 @@ public class TabFragment3 extends Fragment {
             // put imagesTagsMap in shared preferences
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                Gson gson = new Gson();
+
 
                 if (!sharedPreferences.contains("listOfImagesWithTags")) {
 
@@ -248,6 +248,7 @@ public class TabFragment3 extends Fragment {
                     for (String s : imgPathSet) {
                         ExtractLatLong ell = new ExtractLatLong(s);
                         TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username, outputMap);
+                        Log.d("TabFrag3",tagImgObj.toString());
                         taggedImageObjectsList.add(tagImgObj);
 
                     }

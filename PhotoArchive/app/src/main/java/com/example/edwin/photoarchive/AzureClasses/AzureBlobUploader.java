@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -100,12 +101,12 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             CustomInputStream cis = new CustomInputStream(fis, readListener, 2000, fileLength);
             blob.upload(cis, fileLength);
 
-
             //-----DATABASE-----//
             //create client
             this.setDBClient(AzureServiceAdapter.getInstance().getClient());
 
-            this.setImageTable(this.getDBClient().getTable(Image.class));
+
+            this.setImageTable((this.getDBClient().getTable(Image.class)));
             this.setIcavTable(this.getDBClient().getTable(ICAV.class));
 
             //IMG TABLE QUERY
@@ -116,9 +117,11 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             this.getImageTable().insert(img);
 
             // CONTEXT = CATEGORY
+            Log.d("TaggedImage", this.img.toString());
+
             for(String context : this.img.getContextAttributeMap().keySet()){
                 Map<String,String> attributeValueMap = this.img.getContextAttributeMap().get(context);
-
+                Log.d("TaggedImage",this.img.getContextAttributeMap().toString());
                 // ATTRIBUTE + FIELD
                 for(String attribute : attributeValueMap.keySet()){
                     String value = attributeValueMap.get(attribute);
