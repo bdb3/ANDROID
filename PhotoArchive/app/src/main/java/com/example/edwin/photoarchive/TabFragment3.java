@@ -65,6 +65,7 @@ public class TabFragment3 extends Fragment {
     private LinearLayout inAppPictures;
     private HashMap<String,HashMap<String,String>> storedDataMap;
     private String currentlySelectedContext;
+    private int selectedSize=0;
 
     //remove for now -ph [tags]
 //    private LinearLayout tagsContainer;
@@ -143,14 +144,18 @@ public class TabFragment3 extends Fragment {
 
         final String fetchStoredDataMap = sharedPreferences.getString("storedDataMap",null);
         final String fetchCurrentlySelectedContext=sharedPreferences.getString("currentlySelectedContext",null);
+        final int fetchImagePathSize = sharedPreferences.getInt("imgPathSize",0);
 
         if(fetchStoredDataMap!=null){
             Type dataType = new com.google.common.reflect.TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
             storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
-            uploadBtn.setEnabled(true);
 
         }
-
+        Bundle extras = getActivity().getIntent().getExtras();
+        try{
+            selectedSize= ((LinkedHashSet)extras.get("selectedImagesFromGallery")).size();
+        }
+        catch(Exception e){}
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,44 +169,48 @@ public class TabFragment3 extends Fragment {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Gson gson=new Gson();
                 //get tags from shared preferences
                 uploadBtn.setEnabled(false);
 
                 Bundle extras = getActivity().getIntent().getExtras();
-                if (extras != null){
-                    imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
+                try {
+                    if ((extras != null))
+                        imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
+                }
+                catch(Exception e){
 
                 }
 
-//                String mapString = sharedPreferences.getString("cameraTags", null);
-//
-//                Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
-//                try {
-//                    JSONObject jsonObject2 = new JSONObject(mapString);
-//                    Iterator<String> keysItr = jsonObject2.keys();
-//
-//                    while (keysItr.hasNext()) {
-//                        String key = keysItr.next();
-//
-//                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
-//                        Iterator<String> keysItr2 = ((JSONObject) jsonObject2.get(key)).keys();
-//
-//                        while (keysItr2.hasNext()) {
-//                            String key2 = keysItr2.next();
-//                            String value = (String) ((JSONObject) jsonObject2.get(key)).get(key2);
-//
-//                            valueMap.put(key2, value);
-//                        }
-//
-//                        outputMap.put(key, valueMap);
-//                    }
-//
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//
-//                }
+    //                String mapString = sharedPreferences.getString("cameraTags", null);
+    //
+    //                Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
+    //                try {
+    //                    JSONObject jsonObject2 = new JSONObject(mapString);
+    //                    Iterator<String> keysItr = jsonObject2.keys();
+    //
+    //                    while (keysItr.hasNext()) {
+    //                        String key = keysItr.next();
+    //
+    //                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
+    //                        Iterator<String> keysItr2 = ((JSONObject) jsonObject2.get(key)).keys();
+    //
+    //                        while (keysItr2.hasNext()) {
+    //                            String key2 = keysItr2.next();
+    //                            String value = (String) ((JSONObject) jsonObject2.get(key)).get(key2);
+    //
+    //                            valueMap.put(key2, value);
+    //                        }
+    //
+    //                        outputMap.put(key, valueMap);
+    //                    }
+    //
+    //
+    //                } catch (Exception e) {
+    //                    e.printStackTrace();
+    //
+    //                }
                 Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
                 Map<String, String> fieldMap = new LinkedHashMap<>();
 
@@ -287,13 +296,13 @@ public class TabFragment3 extends Fragment {
             public void onClick(View v) {
             imgPathSet.clear();
             taken.invalidate();
-            taken.setText("Selected: " + imgPathSet.size());
+            taken.setText("Selected: " + imgPathSet.size()+selectedSize);
             clearTaken.setEnabled(false);
             uploadBtn.setEnabled(false);
             }
         });
 
-        Bundle extras = getActivity().getIntent().getExtras();
+        extras = getActivity().getIntent().getExtras();
 
         if (extras != null) {
             if (extras.containsKey("cameraImages")) {
@@ -304,7 +313,7 @@ public class TabFragment3 extends Fragment {
             }
         }
 
-        taken.setText("Selected: " + imgPathSet.size());
+        taken.setText("Selected: " + (imgPathSet.size()+selectedSize));
 
         /* Remove this for now -ph [tags]
         addTags.setOnClickListener(new View.OnClickListener() {
@@ -359,7 +368,7 @@ public class TabFragment3 extends Fragment {
         }
 
 
-        if (tagNames.size() > 0 && imgPathSet.size() > 0) {
+        if (imgPathSet.size()+selectedSize> 0) {
             uploadBtn.setEnabled(true);
 
         }
