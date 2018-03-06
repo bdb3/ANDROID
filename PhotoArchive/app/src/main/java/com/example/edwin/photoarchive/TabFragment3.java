@@ -302,7 +302,7 @@ public class TabFragment3 extends Fragment {
             }
         });
 
-        extras = getActivity().getIntent().getExtras();
+//       Bundle extras = getActivity().getIntent().getExtras();
 
         if (extras != null) {
             if (extras.containsKey("cameraImages")) {
