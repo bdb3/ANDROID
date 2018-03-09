@@ -148,8 +148,8 @@ public class TabFragment3 extends Fragment {
         }
 
         final String fetchStoredDataMap = sharedPreferences.getString("storedDataMap", null);
-        final String fetchCurrentlySelectedContext = sharedPreferences.getString("currentlySelectedContext", null);
-        final int fetchImagePathSize = sharedPreferences.getInt("imgPathSize", 0);
+//        final String fetchCurrentlySelectedContext = sharedPreferences.getString("currentlySelectedContext", null);
+//        final int fetchImagePathSize = sharedPreferences.getInt("imgPathSize", 0);
 
         if (fetchStoredDataMap != null) {
             Type dataType = new com.google.common.reflect.TypeToken<HashMap<String, HashMap<String, String>>>() {
@@ -191,6 +191,7 @@ public class TabFragment3 extends Fragment {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String fetchCurrentlySelectedContext = sharedPreferences.getString("currentlySelectedContext", null);
                 if (storedDataMap != null && storedDataMap.containsKey(fetchCurrentlySelectedContext)) {
                     Gson gson = new Gson();
                     //get tags from shared preferences

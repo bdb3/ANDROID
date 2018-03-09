@@ -178,6 +178,7 @@ public class TabFragment2 extends Fragment {
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             currentlySelectedContext=(targetContext.getId());
+                            editor.remove("currentlySelectedContext");
                             editor.putString("currentlySelectedContext",currentlySelectedContext);
                             editor.commit();
 
