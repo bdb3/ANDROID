@@ -68,9 +68,9 @@ public class TabFragment3 extends Fragment {
     private HashSet<String> imgPathSet = new LinkedHashSet<String>();
     private SharedPreferences sharedPreferences;
     private LinearLayout inAppPictures;
-    private HashMap<String,HashMap<String,String>> storedDataMap;
+    private HashMap<String, HashMap<String, String>> storedDataMap;
     private String currentlySelectedContext;
-    private int selectedSize=0;
+    private int selectedSize = 0;
 
     //remove for now -ph [tags]
 //    private LinearLayout tagsContainer;
@@ -98,9 +98,9 @@ public class TabFragment3 extends Fragment {
         androidGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Intent i = new Intent(getActivity(), GalleryViewAllActivity.class);
-            i.putExtra("selectedImages", imgPathSet);
-            startActivity(i);
+                Intent i = new Intent(getActivity(), GalleryViewAllActivity.class);
+                i.putExtra("selectedImages", imgPathSet);
+                startActivity(i);
             }
         });
 
@@ -108,9 +108,9 @@ public class TabFragment3 extends Fragment {
         inAppGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Intent i = new Intent(getActivity(), InAppViewAllActivity.class);
-            i.putExtra("selectedImages", imgPathSet);
-            startActivity(i);
+                Intent i = new Intent(getActivity(), InAppViewAllActivity.class);
+                i.putExtra("selectedImages", imgPathSet);
+                startActivity(i);
             }
         });
 
@@ -127,41 +127,44 @@ public class TabFragment3 extends Fragment {
         // FETCH
         Gson gson = new Gson();
 
-        String fetchGlobalContext = sharedPreferences.getString("globalContext",null);
+        String fetchGlobalContext = sharedPreferences.getString("globalContext", null);
         String fetchGlobalAttributes = sharedPreferences.getString("globalAttributes", null);
         String fetchGlobalData = sharedPreferences.getString("globalData", null);
-        if(fetchGlobalContext != null) {
+        if (fetchGlobalContext != null) {
             Log.d("TabFrag3", "fetchGlobalContext Not Null");
             globalContext = gson.fromJson(fetchGlobalContext, com.example.edwin.photoarchive.AzureClasses.Context.class);
         }
-        if(fetchGlobalAttributes != null) {
+        if (fetchGlobalAttributes != null) {
             Log.d("TabFrag3", "fetchGlobalAttributes Not Null");
-            Type typea = new com.google.common.reflect.TypeToken<ArrayList<Attribute>>() {}.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
+            Type typea = new com.google.common.reflect.TypeToken<ArrayList<Attribute>>() {
+            }.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
             globalAttribute = gson.fromJson(fetchGlobalAttributes, typea);
         }
-        if(fetchGlobalData != null) {
+        if (fetchGlobalData != null) {
             Log.d("TabFrag3", "fetchGlobalData Not Null");
-            Type type = new com.google.common.reflect.TypeToken<ArrayList<String>>() {}.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
+            Type type = new com.google.common.reflect.TypeToken<ArrayList<String>>() {
+            }.getType(); // I have no idea what this does specifically but it is needed GSON Convert the String
             globalData = gson.fromJson(fetchGlobalData, type);
         }
 
-        final String fetchStoredDataMap = sharedPreferences.getString("storedDataMap",null);
-        final String fetchCurrentlySelectedContext=sharedPreferences.getString("currentlySelectedContext",null);
-        final int fetchImagePathSize = sharedPreferences.getInt("imgPathSize",0);
+        final String fetchStoredDataMap = sharedPreferences.getString("storedDataMap", null);
+        final String fetchCurrentlySelectedContext = sharedPreferences.getString("currentlySelectedContext", null);
+        final int fetchImagePathSize = sharedPreferences.getInt("imgPathSize", 0);
 
-        if(fetchStoredDataMap!=null){
-            Type dataType = new com.google.common.reflect.TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
-            storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
+        if (fetchStoredDataMap != null) {
+            Type dataType = new com.google.common.reflect.TypeToken<HashMap<String, HashMap<String, String>>>() {
+            }.getType();
+            storedDataMap = gson.fromJson(sharedPreferences.getString("storedDataMap", null), dataType);
 
         }
 
         Bundle extras = getActivity().getIntent().getExtras();
 
-        if( getActivity().getIntent().hasExtra("selectedImagesFromGallery") ) {
-            Log.d("TabFrag3ImgPt","Extras not null");
+        if (getActivity().getIntent().hasExtra("selectedImagesFromGallery")) {
+            Log.d("TabFrag3ImgPt", "Extras not null");
             imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
             selectedSize = imgPathSet.size();
-            for(String imagePath: imgPathSet) {
+            for (String imagePath : imgPathSet) {
                 Log.d("TabFrag3ImgPt", imagePath);
                 final ImageView imageView = new ImageView(context);
                 imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getActivity().getResources().getDisplayMetrics()), (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getActivity().getResources().getDisplayMetrics())));
@@ -179,124 +182,126 @@ public class TabFragment3 extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if (hasCamera()) {
-                launchCamera(null);
-            }
+                if (hasCamera()) {
+                    launchCamera(null);
+                }
             }
         });
 
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (storedDataMap != null && storedDataMap.containsKey(fetchCurrentlySelectedContext)) {
+                    Gson gson = new Gson();
+                    //get tags from shared preferences
+                    uploadBtn.setEnabled(false);
 
-                Gson gson=new Gson();
-                //get tags from shared preferences
-                uploadBtn.setEnabled(false);
+                    Bundle extras = getActivity().getIntent().getExtras();
+                    try {
+                        if (getActivity().getIntent().hasExtra("selectedImagesFromGallery"))
+                            imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
+                        else
+                            return;
+                    } catch (Exception e) {
 
-                Bundle extras = getActivity().getIntent().getExtras();
-                try {
-                    if (getActivity().getIntent().hasExtra("selectedImagesFromGallery"))
-                        imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
-                    else
-                        return;
-                }
-                catch(Exception e){
+                    }
 
-                }
-
-    //                String mapString = sharedPreferences.getString("cameraTags", null);
-    //
-    //                Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
-    //                try {
-    //                    JSONObject jsonObject2 = new JSONObject(mapString);
-    //                    Iterator<String> keysItr = jsonObject2.keys();
-    //
-    //                    while (keysItr.hasNext()) {
-    //                        String key = keysItr.next();
-    //
-    //                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
-    //                        Iterator<String> keysItr2 = ((JSONObject) jsonObject2.get(key)).keys();
-    //
-    //                        while (keysItr2.hasNext()) {
-    //                            String key2 = keysItr2.next();
-    //                            String value = (String) ((JSONObject) jsonObject2.get(key)).get(key2);
-    //
-    //                            valueMap.put(key2, value);
-    //                        }
-    //
-    //                        outputMap.put(key, valueMap);
-    //                    }
-    //
-    //
-    //                } catch (Exception e) {
-    //                    e.printStackTrace();
-    //
-    //                }
-                Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
-                Map<String, String> fieldMap = new LinkedHashMap<>();
+                    //                String mapString = sharedPreferences.getString("cameraTags", null);
+                    //
+                    //                Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
+                    //                try {
+                    //                    JSONObject jsonObject2 = new JSONObject(mapString);
+                    //                    Iterator<String> keysItr = jsonObject2.keys();
+                    //
+                    //                    while (keysItr.hasNext()) {
+                    //                        String key = keysItr.next();
+                    //
+                    //                        Map<String, String> valueMap = new LinkedHashMap<String, String>();
+                    //                        Iterator<String> keysItr2 = ((JSONObject) jsonObject2.get(key)).keys();
+                    //
+                    //                        while (keysItr2.hasNext()) {
+                    //                            String key2 = keysItr2.next();
+                    //                            String value = (String) ((JSONObject) jsonObject2.get(key)).get(key2);
+                    //
+                    //                            valueMap.put(key2, value);
+                    //                        }
+                    //
+                    //                        outputMap.put(key, valueMap);
+                    //                    }
+                    //
+                    //
+                    //                } catch (Exception e) {
+                    //                    e.printStackTrace();
+                    //
+                    //                }
+                    Map<String, Map<String, String>> outputMap = new LinkedHashMap<String, Map<String, String>>();
+                    Map<String, String> fieldMap = new LinkedHashMap<>();
 
 
 //                for(int i = 0; globalAttribute != null && i < globalAttribute.size(); i++){
 //                    fieldMap.put(globalAttribute.get(i).getId(), globalData.get(i));
 //                }
 
-                outputMap.put(fetchCurrentlySelectedContext,storedDataMap.get(fetchCurrentlySelectedContext));
-
-
-                //outputMap.put(globalContext.getId(),fieldMap);
-
-                for (String s : imgPathSet) {
-
-                    ExtractLatLong ell = new ExtractLatLong(s);
-                    TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username,outputMap);
-                    taggedImagesList.add(tagImgObj);
-
-                }
-
-            // put imagesTagsMap in shared preferences
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-
-
-
-                if (!sharedPreferences.contains("listOfImagesWithTags")) {
-
-                    String taggedImageslistAsString = gson.toJson(taggedImagesList);
-                    editor.putString("listOfImagesWithTags", taggedImageslistAsString);
-                    editor.apply();
-                    clearTaken.performClick();
-                    clearTags2();
-                    refreshDash();
+                    outputMap.put(fetchCurrentlySelectedContext, storedDataMap.get(fetchCurrentlySelectedContext));
                     Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
 
-                } else {
-                    String savedArraylist = sharedPreferences.getString("listOfImagesWithTags", null);
-                    Type type = new TypeToken<ArrayList<TaggedImageObject>>() {
-                    }.getType();
-                    ArrayList<TaggedImageObject> taggedImageObjectsList = gson.fromJson(savedArraylist, type);
-
+                    //outputMap.put(globalContext.getId(),fieldMap);
 
                     for (String s : imgPathSet) {
+
                         ExtractLatLong ell = new ExtractLatLong(s);
                         TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username, outputMap);
-                        Log.d("TabFrag3",tagImgObj.toString());
-                        taggedImageObjectsList.add(tagImgObj);
+                        taggedImagesList.add(tagImgObj);
 
                     }
-                    String taggedImageslistAsString = gson.toJson(taggedImageObjectsList);
-                    editor.remove("listOfImagesWithTags");
-                    editor.apply();
-                    editor.putString("listOfImagesWithTags", taggedImageslistAsString);
-                    editor.apply();
-                    clearTaken.performClick();
-                    clearTags2();
-                    refreshDash();
-                    Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
+
+                    // put imagesTagsMap in shared preferences
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
+                    if (!sharedPreferences.contains("listOfImagesWithTags")) {
+
+                        String taggedImageslistAsString = gson.toJson(taggedImagesList);
+                        editor.putString("listOfImagesWithTags", taggedImageslistAsString);
+                        editor.apply();
+                        clearTaken.performClick();
+                        clearTags2();
+                        refreshDash();
+                        Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
+
+                    } else {
+                        String savedArraylist = sharedPreferences.getString("listOfImagesWithTags", null);
+                        Type type = new TypeToken<ArrayList<TaggedImageObject>>() {
+                        }.getType();
+                        ArrayList<TaggedImageObject> taggedImageObjectsList = gson.fromJson(savedArraylist, type);
+
+
+                        for (String s : imgPathSet) {
+                            ExtractLatLong ell = new ExtractLatLong(s);
+                            TaggedImageObject tagImgObj = new TaggedImageObject(s, ell.getLat(), ell.getLon(), username, outputMap);
+                            Log.d("TabFrag3", tagImgObj.toString());
+                            taggedImageObjectsList.add(tagImgObj);
+
+                        }
+                        String taggedImageslistAsString = gson.toJson(taggedImageObjectsList);
+                        editor.remove("listOfImagesWithTags");
+                        editor.apply();
+                        editor.putString("listOfImagesWithTags", taggedImageslistAsString);
+                        editor.apply();
+                        clearTaken.performClick();
+                        clearTags2();
+                        refreshDash();
+                        Toast.makeText(context, "Upload has started", Toast.LENGTH_LONG).show();
+
+
+                    }
+
+
+                    //END OF UPLOAD CODE
                 }
-
-
-                //END OF UPLOAD CODE
+                else{
+                    Toast.makeText(context, "Please fill out the category page first", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -315,12 +320,12 @@ public class TabFragment3 extends Fragment {
         clearTaken.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            imgPathSet.clear();
-            selectedSize = imgPathSet.size();
-            taken.invalidate();
-            taken.setText("Selected: " + selectedSize);
-            clearTaken.setEnabled(false);
-            uploadBtn.setEnabled(false);
+                imgPathSet.clear();
+                selectedSize = imgPathSet.size();
+                taken.invalidate();
+                taken.setText("Selected: " + selectedSize);
+                clearTaken.setEnabled(false);
+                uploadBtn.setEnabled(false);
             }
         });
 
@@ -390,7 +395,7 @@ public class TabFragment3 extends Fragment {
         }
 
 
-        if (imgPathSet.size()+selectedSize> 0) {
+        if (imgPathSet.size() + selectedSize > 0) {
             uploadBtn.setEnabled(true);
 
         }
@@ -556,8 +561,8 @@ public class TabFragment3 extends Fragment {
         getActivity().recreate();
     }
 
-    public void recData(com.example.edwin.photoarchive.AzureClasses.Context context, ArrayList<Attribute> attributes, ArrayList<String> data){
-        if (context != null && attributes != null && data != null){
+    public void recData(com.example.edwin.photoarchive.AzureClasses.Context context, ArrayList<Attribute> attributes, ArrayList<String> data) {
+        if (context != null && attributes != null && data != null) {
             globalContext = context;
             globalAttribute = attributes;
             globalData = data;
