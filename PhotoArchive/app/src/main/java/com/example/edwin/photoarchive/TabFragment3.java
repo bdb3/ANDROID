@@ -446,7 +446,6 @@ public class TabFragment3 extends Fragment {
 
         } catch (IOException e) {
             e.printStackTrace();
-
         }
 
         i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
@@ -460,12 +459,12 @@ public class TabFragment3 extends Fragment {
         if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_OK) {
             Toast.makeText(context, "Photo saved in In-app images", Toast.LENGTH_LONG).show();
 
+            Log.d("CAMERA", imageFileLocation);
 
             //exif code
             gps = new GPSTracker(context);
 
             if (gps.isGPSEnabled) {
-
 
                 ExifInterface exif = null;
 
@@ -484,14 +483,12 @@ public class TabFragment3 extends Fragment {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-
                 }
             }
             imgPathSet.add(imageFileLocation);
 
-
             getActivity().getIntent().putExtra("viewpager_position", 2);
-            getActivity().getIntent().putExtra("cameraImages", imgPathSet);
+            getActivity().getIntent().putExtra("selectedImagesFromGallery", imgPathSet);
             getActivity().recreate();
 
         } else if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == Activity.RESULT_CANCELED) {
@@ -502,11 +499,9 @@ public class TabFragment3 extends Fragment {
         } else {
             File file = new File(imageFileLocation);
             file.delete();
+
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(imageFileLocation))));
-
         }
-
-
     }
 
 
