@@ -50,7 +50,6 @@ public class PopulateAppImages {
                     imgPathList2.add(inAppImagesPath + "/" + inAppImgList[i]);
                 }
             }
-
         }
 
 

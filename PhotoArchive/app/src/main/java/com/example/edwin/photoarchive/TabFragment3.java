@@ -15,15 +15,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.edwin.photoarchive.Activities.GalleryViewAllActivity;
+import com.example.edwin.photoarchive.Activities.ImagePreview;
 import com.example.edwin.photoarchive.Activities.InAppViewAllActivity;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 import com.example.edwin.photoarchive.AzureClasses.Attribute;
@@ -117,9 +122,7 @@ public class TabFragment3 extends Fragment {
         final Button clearTaken = (Button) view.findViewById(R.id.clearTaken);
 
         inAppPictures = (LinearLayout) view.findViewById(R.id.inapp_picture_container);
-        new PopulateAppImages(inAppPictures, context, getActivity());
         uploadBtn = (Button) view.findViewById(R.id.buttonUpload);
-
 
         // FETCH
         Gson gson = new Gson();
@@ -151,11 +154,27 @@ public class TabFragment3 extends Fragment {
             storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
 
         }
+
         Bundle extras = getActivity().getIntent().getExtras();
-        try{
-            selectedSize= ((LinkedHashSet)extras.get("selectedImagesFromGallery")).size();
+
+        if( getActivity().getIntent().hasExtra("selectedImagesFromGallery") ) {
+            Log.d("TabFrag3ImgPt","Extras not null");
+            imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
+            selectedSize = imgPathSet.size();
+            for(String imagePath: imgPathSet) {
+                Log.d("TabFrag3ImgPt", imagePath);
+                final ImageView imageView = new ImageView(context);
+                imageView.setLayoutParams(new GridView.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getActivity().getResources().getDisplayMetrics()), (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getActivity().getResources().getDisplayMetrics())));
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                Glide.with(context).load(imagePath).into(imageView);
+
+                inAppPictures.addView(imageView);
+
+                ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) imageView.getLayoutParams();
+                marginParams.setMargins(0, 0, 10, 0);
+            }
         }
-        catch(Exception e){}
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,8 +195,10 @@ public class TabFragment3 extends Fragment {
 
                 Bundle extras = getActivity().getIntent().getExtras();
                 try {
-                    if ((extras != null))
+                    if (getActivity().getIntent().hasExtra("selectedImagesFromGallery"))
                         imgPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImagesFromGallery"));
+                    else
+                        return;
                 }
                 catch(Exception e){
 
@@ -295,8 +316,9 @@ public class TabFragment3 extends Fragment {
             @Override
             public void onClick(View v) {
             imgPathSet.clear();
+            selectedSize = imgPathSet.size();
             taken.invalidate();
-            taken.setText("Selected: " + imgPathSet.size()+selectedSize);
+            taken.setText("Selected: " + selectedSize);
             clearTaken.setEnabled(false);
             uploadBtn.setEnabled(false);
             }
@@ -304,16 +326,16 @@ public class TabFragment3 extends Fragment {
 
 //       Bundle extras = getActivity().getIntent().getExtras();
 
-        if (extras != null) {
-            if (extras.containsKey("cameraImages")) {
-                HashSet<String> cameraPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("cameraImages"));
-                for (String s : cameraPathSet) {
-                    imgPathSet.add(s);
-                }
-            }
-        }
+//        if (extras != null) {
+//            if (extras.containsKey("cameraImages")) {
+//                HashSet<String> cameraPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("cameraImages"));
+//                for (String s : cameraPathSet) {
+//                    imgPathSet.add(s);
+//                }
+//            }
+//        }
 
-        taken.setText("Selected: " + (imgPathSet.size()+selectedSize));
+        taken.setText("Selected: " + selectedSize);
 
         /* Remove this for now -ph [tags]
         addTags.setOnClickListener(new View.OnClickListener() {
