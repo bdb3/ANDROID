@@ -176,11 +176,10 @@ public class TabFragment2 extends Fragment {
                         if (c.getId().equals(catSpinner.getItemAtPosition(i).toString())) {
                             targetContext = c;
 
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            currentlySelectedContext=(targetContext.getId());
-                            editor.remove("currentlySelectedContext");
-                            editor.putString("currentlySelectedContext",currentlySelectedContext);
-                            editor.commit();
+//                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                              currentlySelectedContext=(targetContext.getId());
+//                            editor.putString("currentlySelectedContext",currentlySelectedContext);
+//                            editor.commit();
 
                             if(globalTargetContext != null && !targetContext.getId().equalsIgnoreCase(globalTargetContext.getId())) {
                                 existingData = null;
@@ -275,7 +274,8 @@ public class TabFragment2 extends Fragment {
                 editor.putString("globalContext", contextString);
                 editor.putString("globalAttributes", attributesString);
                 editor.putString("globalData", dataString);
-
+                editor.putString("currentlySelectedContext",currentlySelectedContext);
+                editor.commit();
                 editor.commit();
 
                 Log.d("Cont",contextString);
