@@ -66,16 +66,11 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
 
                             valueMap.put(key2, value);
                         }
-
                         outputMap.put(key, valueMap);
                     }
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
-
-                };
-
+                }
 
                 //find attributes and values in map using key=name
 
@@ -94,7 +89,6 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                     et.setText(value);
                     et.setEnabled(false);
                     linearLayoutEditTags.addView(et);
-
                 }
 
                 final ImageButton deleteBtn = (ImageButton) findViewById(R.id.button13);
@@ -110,8 +104,6 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                                 .setNegativeButton(android.R.string.cancel, null)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override public void onClick(DialogInterface dialog, int which) {
-
-
                                         // delete tag
                                         outputMap.remove(name);
 
@@ -123,7 +115,7 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                                         editor.putString("listOfTags", finalJsonObject.toString() );
                                         editor.apply();
 
-                                        Intent i= new Intent(ActivityEditDeleteTags.this, Activity2.class);
+                                        Intent i= new Intent(ActivityEditDeleteTags.this, MainActivity.class);
                                         i.putExtra("viewpager_position", 1);
 
                                         // get images sent  from tab 2 and send them back
@@ -139,17 +131,14 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                                             }
 
                                         }
-
                                         startActivity(i);
                                         finish();
 
                                         Toast.makeText(getApplicationContext(), "Tag deleted", Toast.LENGTH_SHORT).show();
-
                                     }
                                 })
                                 .create()
                                 .show();
-
                     }
                 });
 
@@ -171,7 +160,6 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
 
                             }
                         }
-
                         // add cancel and ok btns
 
                         LinearLayout okCancelBtnsContainer = new LinearLayout(getApplicationContext());
@@ -191,7 +179,6 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                         cancel.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
                                 recreate();
                             }
                         });
@@ -225,50 +212,31 @@ public class ActivityEditDeleteTags extends AppCompatActivity {
                                 recreate();
                             }
                         });
-
-
                         okCancelBtnsContainer.addView(cancel);
 
                         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
                         layoutParams1.setMargins(0,25,0,0);
-
                         linearLayoutEditTags.addView(okCancelBtnsContainer, layoutParams1);
-
-
                     }
                 });
-
-
-
             }
-
-
         }
-
-
     }
 
-
     public void backToTab2(View v){
-        Intent i= new Intent(ActivityEditDeleteTags.this, Activity2.class);
+        Intent i= new Intent(ActivityEditDeleteTags.this, MainActivity.class);
         i.putExtra("viewpager_position", 1);
-
         // get images sent  from tab 2 and send them back
 
         Bundle extras = getIntent().getExtras();
-
         if(extras != null ){
             if(extras.containsKey("selectedImages")){
-
                 HashSet<String> passedImagesPathSet = new LinkedHashSet<String>((LinkedHashSet) extras.get("selectedImages"));
-
                 i.putExtra("selectedImagesFromGallery", passedImagesPathSet);
             }
-
         }
-
         startActivity(i);
         finish();
     }

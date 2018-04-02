@@ -9,7 +9,7 @@
     android:paddingRight="3dp"
     android:paddingTop="1dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Activities.GalleryViewAllActivity"
+    tools:category=".Activities.GalleryViewAllActivity"
     tools:showIn="@layout/activity_gallery_view_all"
     >
 

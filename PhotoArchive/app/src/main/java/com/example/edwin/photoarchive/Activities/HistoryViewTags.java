@@ -115,9 +115,7 @@ public class HistoryViewTags extends AppCompatActivity {
             public void onLoaderReset(final Loader<List<ICAV>> loader) {
             }
         });
-
     }
-
 }
 
 

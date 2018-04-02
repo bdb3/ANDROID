@@ -50,43 +50,33 @@ public abstract class AzureBlobLoader extends AsyncTask {
     public String getSas() {
         return sas;
     }
-
     public StorageCredentials getAccountSAS() {
         return accountSAS;
     }
-
     public CloudStorageAccount getAccount() {
         return account;
     }
-
     public CloudBlobClient getBlobClient() {
         return blobClient;
     }
-
     public CloudBlobContainer getContainer() {
         return container;
     }
-
     public MobileServiceClient getDBClient() {
         return DBClient;
     }
-
     public void setDBClient(MobileServiceClient DBClient) {
         this.DBClient = DBClient;
     }
-
     public MobileServiceTable<Image> getImageTable() {
         return imageTable;
     }
-
     public void setImageTable(MobileServiceTable<Image> imageTable) {
         this.imageTable = imageTable;
     }
-
     public MobileServiceTable<ICAV> getIcavTable() {
         return icavTable;
     }
-
     public void setIcavTable(MobileServiceTable<ICAV> icavTable) {
         this.icavTable = icavTable;
     }

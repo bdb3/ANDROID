@@ -27,9 +27,6 @@ public class ImageAdapterHistory extends BaseAdapter  {
     public ImageAdapterHistory(Context context, ArrayList<String> imgPathList) {
         this.context = context;
         this.imgPathList = imgPathList;
-//      (ArrayList<String>)results[0];
-//        this.icavObjects=(HashMap<String,ArrayList<String>>)results[1];
-        //Collections.reverse(this.imgPathList);
     }
 
     public int getCount() {
@@ -82,11 +79,6 @@ public class ImageAdapterHistory extends BaseAdapter  {
             }
         });
 
-
-
         return imageView;
     }
-
-
-
 }

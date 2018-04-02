@@ -18,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.edwin.photoarchive.Activities.MainActivity;
+import com.example.edwin.photoarchive.Activities.Login;
 import com.example.edwin.photoarchive.Activities.TagsActivity;
 
 public class TabFragment5 extends Fragment {
@@ -26,15 +26,6 @@ public class TabFragment5 extends Fragment {
     private String username;
     private SharedPreferences sharedPreferences;
     private String android_id;
-
-    public String getDays(Intent i) {
-        return i.getExtras().getString("numDays", "90");
-    }
-
-    public String getDays() {
-        sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
-        return Integer.toString(sharedPreferences.getInt("numDays", 90));
-    }
 
     // TODO Check WIFI Switch Logic
     // TODO Check GPS Switch Logic
@@ -119,7 +110,7 @@ public class TabFragment5 extends Fragment {
                         editor.remove("loggedInUser");
                         editor.apply();
 
-                        Intent i = new Intent(getActivity(), MainActivity.class);
+                        Intent i = new Intent(getActivity(), Login.class);
                         startActivity(i);
 
                         Toast.makeText(getContext(), "Your username has been reset.", Toast.LENGTH_SHORT).show();
@@ -175,7 +166,6 @@ public class TabFragment5 extends Fragment {
         });
 
         /** END EVENT LISTENERS */
-
 
         return view;
     }

@@ -21,7 +21,6 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
     private ArrayList<String> imgPathList;
     private InAppViewAllActivity inAppViewAllActivityInstance;
 
-
     public ImageAdapterForAppImages(Activity callerActivity, ArrayList<String> imgPathList, InAppViewAllActivity inAppViewAllActivityInstance) {
         this.callerActivity = callerActivity;
         this.imgPathList = imgPathList;
@@ -93,7 +92,6 @@ public class ImageAdapterForAppImages extends BaseAdapter  {
                 callerActivity.startActivity(i);
             }
         });
-
         return imageView;
     }
 }

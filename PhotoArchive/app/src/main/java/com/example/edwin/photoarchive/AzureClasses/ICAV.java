@@ -1,7 +1,6 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
 public class ICAV {
-
     private String id;
     private String imageID;
     private String contextID;

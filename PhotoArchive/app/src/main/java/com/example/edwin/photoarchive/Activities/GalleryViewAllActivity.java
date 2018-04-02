@@ -2,20 +2,15 @@ package com.example.edwin.photoarchive.Activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -88,7 +83,7 @@ public class GalleryViewAllActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(GalleryViewAllActivity.this, Activity2.class);
+                Intent i = new Intent(GalleryViewAllActivity.this, MainActivity.class);
                 i.putExtra("viewpager_position", 2);
 
                 //add images passed from tab 2 to imagePathSet
@@ -125,7 +120,6 @@ public class GalleryViewAllActivity extends AppCompatActivity {
         for (ImageView iv : imageViewSet) {
             iv.clearColorFilter();
         }
-
         imageViewSet.clear();
     }
 

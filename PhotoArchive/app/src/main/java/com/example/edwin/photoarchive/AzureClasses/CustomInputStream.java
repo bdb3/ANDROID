@@ -7,7 +7,6 @@ import java.io.InputStream;
  * Created by Edwin on 4/18/2017.
  */
 public class CustomInputStream extends InputStream {
-
     private final InputStream wraped;
     private final ReadListener listener;
     private long minimumBytesPerCall;
@@ -22,9 +21,7 @@ public class CustomInputStream extends InputStream {
         this.minimumBytesPerCall = minimumBytesPerCall;
         this.size = size;
         this.remainder = size % minimumBytesPerCall;
-
     }
-
 
     @Override
     public int read() throws IOException {
@@ -32,6 +29,7 @@ public class CustomInputStream extends InputStream {
         if (read >= 0) {
             bytesRead++;
         }
+
         if (bytesRead == minimumBytesPerCall) {
             totalRead+=bytesRead;
             listener.onRead(bytesRead);
@@ -40,7 +38,6 @@ public class CustomInputStream extends InputStream {
 
         if((size -totalRead) == remainder){
             minimumBytesPerCall = remainder;
-
         }
 
         return read;

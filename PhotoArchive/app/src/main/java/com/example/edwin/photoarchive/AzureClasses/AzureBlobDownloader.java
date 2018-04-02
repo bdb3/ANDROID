@@ -30,7 +30,6 @@ public class AzureBlobDownloader extends AzureBlobLoader{
     }
     @Override
     protected Object doInBackground(Object[] params) {
-
         //We create an array list to store the final paths
         ArrayList<String> azurePaths = new ArrayList<>();
         try {
@@ -43,10 +42,7 @@ public class AzureBlobDownloader extends AzureBlobLoader{
 
             Log.d("Azure", "About to execute query");
 
-            //THIS IS THE PROBLEM RIGHT HERE :/
-
             List<ICAV> dbImages = this.getIcavTable().where().field("contextID").eq(filter).execute().get();
-
 
             //add prefix for https and blob storage navigation
             //TODO Blob Storage Full path
@@ -56,7 +52,6 @@ public class AzureBlobDownloader extends AzureBlobLoader{
             Log.d("Azure",""+dbImages.size());
 
             for(ICAV img : dbImages){
-
                 //Log.d("Images Loading",prefix + img.getImageID().replaceFirst("_", "/") +getSas());
                 azurePaths.add(prefix + img.getImageID().replaceFirst("_", "/") + getSas());
             }
@@ -66,7 +61,6 @@ public class AzureBlobDownloader extends AzureBlobLoader{
         } catch (Exception e) {
             Log.d("Azure", e.toString()); e.printStackTrace();
         }
-
         return azurePaths;
     }
 
@@ -86,8 +80,6 @@ public class AzureBlobDownloader extends AzureBlobLoader{
             imageAdapter.notifyDataSetChanged();
         }catch(NullPointerException e){
             e.printStackTrace();
-
         }
-
     }
 }

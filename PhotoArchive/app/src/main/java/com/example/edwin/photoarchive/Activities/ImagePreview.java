@@ -15,7 +15,6 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.example.edwin.photoarchive.R;
 
-
 public class ImagePreview extends AppCompatActivity {
     private ImageView img;
     private ProgressBar progressBar;
@@ -45,10 +44,6 @@ public class ImagePreview extends AppCompatActivity {
                     //Hide loading, show image
                 }
             });
-
         }
-
     }
-
-
 }

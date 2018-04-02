@@ -21,7 +21,6 @@ public class ImageAdapterForGallery extends BaseAdapter {
     private ArrayList<String> imgPathList;
     private GalleryViewAllActivity galleryActivityInstance;
 
-
     public ImageAdapterForGallery(Activity callerActivity, ArrayList<String> imgPathList, GalleryViewAllActivity galleryActivityInstance) {
         this.callerActivity = callerActivity;
         this.imgPathList = imgPathList;
@@ -98,6 +97,4 @@ public class ImageAdapterForGallery extends BaseAdapter {
 
         return imageView;
     }
-
-
 }

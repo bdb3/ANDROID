@@ -34,7 +34,6 @@ public class TabFragment4 extends Fragment {
 
         /** END DECLARE VIEW OBJECTS */
 
-
         /** BEG GET SHAREDPREFERENCES DATA */
 
         sharedPreferences = getActivity().getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
@@ -47,7 +46,6 @@ public class TabFragment4 extends Fragment {
 
         /** END GET SHAREDPREFERENCES DATA */
 
-
         /** BEG VIEW CONTENT CODE */
 
         if(contextsArray != null) {
@@ -57,7 +55,6 @@ public class TabFragment4 extends Fragment {
         }
 
         /** END VIEW CONTENT CODE */
-
 
         /** BEG EVENTLISTENERS */
 
@@ -76,7 +73,6 @@ public class TabFragment4 extends Fragment {
         });
 
         /** END EVENT LISTENERS */
-
 
         /* ASYNC */
         // Must be Serial or else it hangs!

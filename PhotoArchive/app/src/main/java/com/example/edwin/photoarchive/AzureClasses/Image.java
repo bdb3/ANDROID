@@ -1,7 +1,6 @@
 package com.example.edwin.photoarchive.AzureClasses;
 
 public class Image {
-
     private String id;
     private String userid;
     private double lat;

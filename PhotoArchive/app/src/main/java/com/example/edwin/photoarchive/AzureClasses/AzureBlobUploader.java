@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 public class AzureBlobUploader extends AzureBlobLoader  {
     private Activity act;
     //TODO SQL website
@@ -51,10 +50,7 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             }
             totalBytes += bytes;
             int percentage = (int)((totalBytes * 1D/fileLength) *100);
-
             pb.setProgress((percentage >= 90) ? 90 : percentage);
-
-           // System.out.println("progress: "+percentage);
         }
     };
 
@@ -105,7 +101,6 @@ public class AzureBlobUploader extends AzureBlobLoader  {
             //create client
             this.setDBClient(AzureServiceAdapter.getInstance().getClient());
 
-
             this.setImageTable((this.getDBClient().getTable(Image.class)));
             this.setIcavTable(this.getDBClient().getTable(ICAV.class));
 
@@ -135,16 +130,13 @@ public class AzureBlobUploader extends AzureBlobLoader  {
 
                     this.getIcavTable().insert(icavRow);
                 }
-
             }
         } catch (Exception e) {
             System.out.println(e.toString());
             uploaded = false;
         }
-
         return null;
     }
-
 
     @Override
     protected void onPostExecute(Object o) {
@@ -225,12 +217,6 @@ public class AzureBlobUploader extends AzureBlobLoader  {
                 }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
                 }
             }, 500);
-
-
-
         }
-
-
     }
-
 }

@@ -70,8 +70,6 @@ public class ImageAdapterDashboard extends BaseAdapter  {
             return false;
         }
     });
-
         return imageView;
     }
-
 }

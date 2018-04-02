@@ -18,7 +18,6 @@ public class ViewInfo extends AppCompatActivity {
 
         final LinearLayout linearLayoutInfo = (LinearLayout) findViewById(R.id.linearLayoutInfo);
 
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             final String path = extras.getString("imagePath");
@@ -27,17 +26,12 @@ public class ViewInfo extends AppCompatActivity {
             float lat = (float )ell.getLat();
             float lon = (float) ell.getLon();
 
-
             if ( lat == 0 && lon == 0 ) {
-
                 TextView tv3 = new TextView(this);
                 tv3.setText("No EXIF data available");
                 tv3.setTextColor(Color.BLACK);
                 linearLayoutInfo.addView(tv3);
-
-
             } else {
-
                 TextView tv = new TextView(this);
                 tv.setTextColor(Color.BLACK);
                 tv.setText("Lat: " + lat);
@@ -47,12 +41,7 @@ public class ViewInfo extends AppCompatActivity {
                 tv2.setText("Lon: " + lon);
                 tv2.setTextColor(Color.BLACK);
                 linearLayoutInfo.addView(tv2);
-
             }
         }
-
-
     }
-
-
 }

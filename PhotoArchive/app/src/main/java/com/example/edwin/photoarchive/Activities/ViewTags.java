@@ -31,69 +31,59 @@ public class ViewTags extends AppCompatActivity {
         final LinearLayout linearLayoutTags = (LinearLayout) findViewById(R.id.linearLayoutTags);
 
         Bundle extras = getIntent().getExtras();
-        if(extras != null) {
+        if (extras != null) {
             final String path = extras.getString("imagePath");
 
             SharedPreferences sharedPreferences = getSharedPreferences(TagsActivity.MyTagsPREFERENCES, android.content.Context.MODE_PRIVATE);
 
-            if(sharedPreferences.contains("listOfImagesWithTags")) {
-                String savedArraylist  = sharedPreferences.getString("listOfImagesWithTags", null);
-                Type listType = new TypeToken<ArrayList<TaggedImageObject>>(){}.getType();
+            if (sharedPreferences.contains("listOfImagesWithTags")) {
+                String savedArraylist = sharedPreferences.getString("listOfImagesWithTags", null);
+                Type listType = new TypeToken<ArrayList<TaggedImageObject>>() {
+                }.getType();
                 List<TaggedImageObject> taggedImageObjectsList = new Gson().fromJson(savedArraylist, listType);
 
                 TaggedImageObject t = null;
 
-                for(TaggedImageObject f: taggedImageObjectsList){
-                    if(f.getImgPath().equals(path)){
+                for (TaggedImageObject f : taggedImageObjectsList) {
+                    if (f.getImgPath().equals(path)) {
                         t = f;
                         break;
-
                     }
+                }
+                try {
+                    JSONObject jsonObject3 = new JSONObject(t.getContextAttributeMap());
+                    Iterator<String> keysItr = jsonObject3.keys();
 
-            }
-                    try {
-                        JSONObject jsonObject3 = new JSONObject(t.getContextAttributeMap());
-                        Iterator<String> keysItr = jsonObject3.keys();
+                    while (keysItr.hasNext()) {
+                        String key = keysItr.next();
 
-                        while (keysItr.hasNext()) {
-                            String key = keysItr.next();
+                        Button ctx = new Button(this);
+                        ctx.setText(key);
+                        ctx.setClickable(false);
+                        linearLayoutTags.addView(ctx);
 
-                            Button ctx = new Button(this);
-                            ctx.setText(key);
-                            ctx.setClickable(false);
-                            linearLayoutTags.addView(ctx);
+                        Iterator<String> keysItr2 = ((JSONObject) jsonObject3.get(key)).keys();
 
-                            Iterator<String> keysItr2 = ((JSONObject) jsonObject3.get(key)).keys();
+                        while (keysItr2.hasNext()) {
+                            String key2 = keysItr2.next();
 
-                            while (keysItr2.hasNext()) {
-                                String key2 = keysItr2.next();
+                            TextView q = new TextView(this);
+                            q.setTextColor(Color.BLACK);
+                            q.setText(key2);
+                            linearLayoutTags.addView(q);
 
-                                TextView q = new TextView(this);
-                                q.setTextColor(Color.BLACK);
-                                q.setText(key2);
-                                linearLayoutTags.addView(q);
+                            String value = (String) ((JSONObject) jsonObject3.get(key)).get(key2);
 
-
-                                String value = (String) ((JSONObject) jsonObject3.get(key)).get(key2);
-
-                                EditText a = new EditText(this);
-                                a.setText(value);
-                                a.setEnabled(false);
-                                linearLayoutTags.addView(a);
-
-                            }
-
+                            EditText a = new EditText(this);
+                            a.setText(value);
+                            a.setEnabled(false);
+                            linearLayoutTags.addView(a);
                         }
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    };
-
-
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-
         }
     }
 }

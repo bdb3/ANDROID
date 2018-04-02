@@ -1,122 +1,108 @@
 package com.example.edwin.photoarchive.Activities;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
+import android.widget.Spinner;
 
-import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
+import com.example.edwin.photoarchive.Adapters.PagerAdapter;
+import com.example.edwin.photoarchive.AzureClasses.Field;
+import com.example.edwin.photoarchive.AzureClasses.Category;
 import com.example.edwin.photoarchive.R;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
+import com.example.edwin.photoarchive.TabFragment2;
+import com.example.edwin.photoarchive.TabFragment3;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import android.provider.Settings.Secure;
-import android.provider.Settings;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
-    private SharedPreferences sharedPreferences;
-    private String android_id;
-    private HashMap<String, HashMap<String, String>> storedDataMap;
-    private HashMap<String,String> innerDataMap;
+public class MainActivity extends AppCompatActivity implements TabFragment2.SendFields {
 
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sharedPreferences = getSharedPreferences(TagsActivity.MyTagsPREFERENCES, Context.MODE_PRIVATE);
-        // Use ANDROID_ID as unique identifier
-        android_id = Settings.System.getString(this.getContentResolver(), Secure.ANDROID_ID);
-
-        // DONE INITIALIZE AZURE SERVICES
-        AzureServiceAdapter.Initialize(this);
-
-        // THIS PART READS FROM A LINK
-        // Link Design is flexible
-        // Current Link Design = user/Context/Attribute/Value/Attribute/Value/Attribute/Value
-        try {
-            Gson gson = new Gson();
-            Uri data = getIntent().getData();
-            List<String> params = data.getPathSegments();
-
-            int j=0;
-            for(String s:params) {
-
-                Log.d("URI Passing", j+"  "+s);
-                j++;
-            }
-            // This checks if theres a stored data map, if there is load it
-            String fetchStoredDataMap = sharedPreferences.getString("storedDataMap",null);
-            if(fetchStoredDataMap==null) {
-                storedDataMap=new HashMap<String, HashMap<String, String>>();
-
-            }
-            else{
-                Type dataType = new TypeToken<HashMap<String,HashMap<String,String>>>() {}.getType();
-                storedDataMap=gson.fromJson(sharedPreferences.getString("storedDataMap",null),dataType);
-            }
-
-            // This loads the URI parameters into the stored data map
-            String currentlySelectedContext=params.get(1);
-            innerDataMap=new HashMap<String,String>();
-            for(int i=2;i+1<params.size();i+=2){
-                innerDataMap.put(params.get(i),params.get(i+1));
-            }
-            storedDataMap.put(currentlySelectedContext,innerDataMap);
-
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            String username = params.get(0);
-            editor.putString("loggedInUser", username);
-            editor.putString("storedDataMap",gson.toJson(storedDataMap));
-            editor.apply();
-
-        } catch(Exception e) {}
-        //
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_2);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Spinner categorySpinner = (Spinner) findViewById(R.id.categorySpinner);
 
-        if(sharedPreferences.contains("loggedInUser") && sharedPreferences.contains("androidID")) {
-            Intent i= new Intent(MainActivity.this, Activity2.class);
-            startActivity(i);
-            finish();
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Dash"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tags"));
+        tabLayout.addTab(tabLayout.newTab().setText("Camera"));
+        tabLayout.addTab(tabLayout.newTab().setText("History"));
+        tabLayout.addTab(tabLayout.newTab().setText("Settings"));
+
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_home);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_upload);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_camera);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_history);
+        tabLayout.getTabAt(4).setIcon(R.drawable.ic_action_settings);
+
+        tabLayout.getTabAt(0).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(3).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(4).getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(5);
+
+        final PagerAdapter adapter = new PagerAdapter
+                (getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            int position = extras.getInt("viewpager_position");
+            viewPager.setCurrentItem(position);
         }
 
-        // Display ANDROID_ID on 'login'
-        TextView androidIdBox = (TextView) findViewById(R.id.android_id_box);
-        androidIdBox.setText(android_id);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
 
-        // STORE ANDROID_ID into sharedPreferences
-        // TODO CONSIDER Change storage of username and ANDROID_ID
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("androidID",android_id);
-        editor.apply();
+                if (tab.getPosition() == 0) {
+                    setTitle("Dashboard");
+                } else if (tab.getPosition() == 1) {
+                    setTitle("Categories");
+                } else if (tab.getPosition() == 2) {
+                    setTitle("Images");
+                } else if (tab.getPosition() == 3) {
+                    setTitle("Photo Search");
+                } else {
+                    setTitle("Application Settings");
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
     }
 
-    public void signIn(View v){
-        EditText username = (EditText) findViewById(R.id.editText);
-
-        if(username.getText().toString().trim().length() > 3){
-            if(!sharedPreferences.contains("loggedInUser")) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("loggedInUser",username.getText().toString().trim());
-                editor.apply();
-
-                System.out.println(sharedPreferences.getString("loggedInUser",null));
-                Intent i = new Intent(MainActivity.this, Activity2.class);
-                startActivity(i);
-                finish();
+    // Data Transit method implemented from interface
+    @Override
+    public void sendData(Category targetCat, ArrayList<Field> fields, ArrayList<String> values) {
+        TabFragment3 tabFrag3 = null;
+        for (Fragment frag : getSupportFragmentManager().getFragments()) {
+            if (frag instanceof TabFragment3) {
+                tabFrag3 = (TabFragment3) frag;
             }
-        }else{
-            Toast.makeText(getApplicationContext(), "Username must be at least 4 characters long", Toast.LENGTH_SHORT).show();
         }
+        tabFrag3.recData(targetCat, fields, values);
     }
 }

@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.microsoft.windowsazure.mobileservices.*;
 
-
 public class AzureServiceAdapter {
     private String mMobileBackendUrl = "http://boephotoarchive-dev.azurewebsites.net";
     private Context mContext;
@@ -44,7 +43,5 @@ public class AzureServiceAdapter {
     public MobileServiceClient getClient() {
         return mClient;
     }
-
-
     // Place any public methods that operate on mClient here.
 }
