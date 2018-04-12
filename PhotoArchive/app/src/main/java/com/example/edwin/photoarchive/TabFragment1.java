@@ -323,7 +323,7 @@ public class TabFragment1 extends Fragment {
         //create table references
         final MobileServiceTable<Category> categoryTable = mClient.getTable("Category", Category.class);
         final MobileServiceTable<Field> fieldTable = mClient.getTable("Field", Field.class);
-        final MobileServiceTable<CategoryField> catFieldTable = mClient.getTable("Category_Field",CategoryField.class);
+        final MobileServiceTable<CategoryField> catFieldTable = mClient.getTable("Context_Attribute",CategoryField.class);
 
         new AsyncTask<Void, Void, Void>() {
 
@@ -334,7 +334,7 @@ public class TabFragment1 extends Fragment {
                     final List<Category> categories = categoryTable.execute().get();
                     final List<Field> fields = fieldTable.execute().get();
                     for(Field a: fields) Log.i("F1A", a.getFieldType() + " Q:" + a.getQuestion());
-                    final List<CategoryField> categoryField = catFieldTable.execute().get();
+                    final List<CategoryField> catField = catFieldTable.execute().get();
                     final ArrayList<String> listOfCategory = new ArrayList<>();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -345,13 +345,13 @@ public class TabFragment1 extends Fragment {
                                 ArrayList<Field> currentFields = new ArrayList<>(); // Empty list of Fields for Current Category
                                 if (!categoryFieldMap.containsKey(current)) { // If this Category is not in the Map already
                                     ArrayList<CategoryField> cfList = new ArrayList<>();
-                                    for (CategoryField cf : categoryField) {  // Find all the CategoryField relations
-                                        if (cf.getCategoryID().equals(current.getId())) cfList.add(cf); // Add all CategoryField relations
+                                    for (CategoryField cf : catField) {  // Find all the CategoryField relations
+                                        if (cf.getContextID().equals(current.getId())) cfList.add(cf); // Add all CategoryField relations
                                     }
                                     Collections.sort(cfList); // SORT all CategoryField relations based on SortNumber
                                     // This way, the Fields are SORTED by SortNumber
                                     for (int index = 0; index < cfList.size(); index++ ) { // Counting for loop just to be safe
-                                        String fieldID = cfList.get(index).getFieldID();
+                                        String fieldID = cfList.get(index).getAttributeID();
                                         for (Field a : fields) {
                                             if (a.getId().equals(fieldID)) {
                                                 currentFields.add(a);

@@ -4,16 +4,16 @@ import java.io.Serializable;
 
 public class CategoryField implements Serializable, Comparable {
     private String id;
-    private String categoryID;
-    private String fieldID;
+    private String contextID;
+    private String attributeID;
     private int sortNumber;
 
     public CategoryField(){}
 
-    public CategoryField(String id, String categoryID, String fieldID, int sortNumber) {
+    public CategoryField(String id, String contextID, String attributeID, int sortNumber) {
         this.id = id;
-        this.categoryID = categoryID;
-        this.fieldID = fieldID;
+        this.contextID = contextID;
+        this.attributeID = attributeID;
         this.sortNumber = sortNumber;
     }
 
@@ -29,17 +29,17 @@ public class CategoryField implements Serializable, Comparable {
     public void setSortNumber(int sortNumber) {
         this.sortNumber = sortNumber;
     }
-    public String getCategoryID() {
-        return categoryID;
+    public String getContextID() {
+        return contextID;
     }
-    public void setCategoryID(String categoryID) {
-        this.categoryID = categoryID;
+    public void setContextID(String contextID) {
+        this.contextID = contextID;
     }
-    public String getFieldID() {
-        return fieldID;
+    public String getAttributeID() {
+        return attributeID;
     }
-    public void setFieldID(String fieldID) {
-        this.fieldID = fieldID;
+    public void setAttributeID(String attributeID) {
+        this.attributeID = attributeID;
     }
 
     @Override
