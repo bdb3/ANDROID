@@ -35,9 +35,9 @@ import com.example.edwin.photoarchive.Activities.ViewInfo;
 import com.example.edwin.photoarchive.Activities.ViewTags;
 import com.example.edwin.photoarchive.Adapters.AzureServiceAdapter;
 import com.example.edwin.photoarchive.Adapters.ImageAdapterDashboard;
+import com.example.edwin.photoarchive.AzureClasses.CategoryField;
 import com.example.edwin.photoarchive.AzureClasses.Field;
 import com.example.edwin.photoarchive.AzureClasses.Category;
-import com.example.edwin.photoarchive.AzureClasses.CategoryField;
 import com.example.edwin.photoarchive.AzureClasses.AzureBlobUploader;
 import com.example.edwin.photoarchive.AzureClasses.TaggedImageObject;
 import com.example.edwin.photoarchive.Helpers.DeleteAfterXDays;
@@ -321,8 +321,8 @@ public class TabFragment1 extends Fragment {
         MobileServiceClient mClient = AzureServiceAdapter.getInstance().getClient();
 
         //create table references
-        final MobileServiceTable<Category> categoryTable = mClient.getTable("Category", Category.class);
-        final MobileServiceTable<Field> fieldTable = mClient.getTable("Field", Field.class);
+        final MobileServiceTable<Category> categoryTable = mClient.getTable("Category",Category.class);
+        final MobileServiceTable<Field> fieldTable = mClient.getTable("Field",Field.class);
         final MobileServiceTable<CategoryField> catFieldTable = mClient.getTable("Context_Attribute",CategoryField.class);
 
         new AsyncTask<Void, Void, Void>() {
@@ -333,7 +333,7 @@ public class TabFragment1 extends Fragment {
                     //pull data into lists
                     final List<Category> categories = categoryTable.execute().get();
                     final List<Field> fields = fieldTable.execute().get();
-                    for(Field a: fields) Log.i("F1A", a.getFieldType() + " Q:" + a.getQuestion());
+                    //for(Field a: fields) Log.i("F1A", a.getFieldType() + " Q:" + a.getQuestion());
                     final List<CategoryField> catField = catFieldTable.execute().get();
                     final ArrayList<String> listOfCategory = new ArrayList<>();
                     getActivity().runOnUiThread(new Runnable() {

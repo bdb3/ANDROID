@@ -74,11 +74,11 @@ public class MainActivity extends AppCompatActivity implements TabFragment2.Send
                 if (tab.getPosition() == 0) {
                     setTitle("Dashboard");
                 } else if (tab.getPosition() == 1) {
-                    setTitle("Categories");
+                    setTitle("Tags");
                 } else if (tab.getPosition() == 2) {
-                    setTitle("Images");
+                    setTitle("Camera");
                 } else if (tab.getPosition() == 3) {
-                    setTitle("Photo Search");
+                    setTitle("History");
                 } else {
                     setTitle("Application Settings");
                 }
